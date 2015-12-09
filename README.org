@@ -2,9 +2,20 @@
 #+AUTHOR: Alex Recker
 #+EMAIL: alex@reckerfamily.com
 
-* Stripping Things Down
-  
-  #+name: stripping-things-down
-  #+BEGIN_SRC emacs-lisp
-(setq inhibit-startup-message t)
-  #+END_SRC
+This is my literate emacs config.
+
+** Miscellaneous Tweaks
+   
+   First, we disable the splash screen, auto save, auto backups, and other noisy things.
+   
+   #+BEGIN_SRC emacs-lisp
+(setq backup-inhibited 't
+      auto-save-default 'nil
+      visible-bell 'nil
+      inhibit-startup-message 't
+      inhibit-startup-echo-area-message '"")
+(setq-default indent-tabs-mode nil)
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(toggle-scroll-bar -1)
+   #+END_SRC

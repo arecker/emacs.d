@@ -1,6 +1,7 @@
 #+TITLE: Emacs Config
 #+AUTHOR: Alex Recker
 #+EMAIL: alex@reckerfamily.com
+#+STARTUP: showeverything
 
 This is my literate emacs config.
 
@@ -60,5 +61,50 @@ $ ~/.cask/bin/cask install
             (throw 'done t)))
         mode-line-modes))
    #+END_SRC
-   
-   
+
+   Highlight the current line.
+
+   #+BEGIN_SRC emacs-lisp
+(global-hl-line-mode t)
+   #+END_SRC
+
+** Style
+
+*** Font
+    Default on inconsolata.  Fall back to Dejavu for Unicode.
+    #+BEGIN_SRC emacs-lisp
+(set-face-attribute 'default nil
+                    :family "Inconsolata"
+                    :height 150
+                    :weight 'normal
+                    :width 'normal)
+
+(when (functionp 'set-fontset-font)
+  (set-fontset-font "fontset-default"
+                    'unicode
+                    (font-spec :family "DejaVu Sans Mono"
+                               :width 'normal
+                               :size 15.5
+                               :weight 'normal)))
+    #+END_SRC
+
+*** Theme
+    This changes frequently.
+    #+BEGIN_SRC emacs-lisp
+(load-theme 'gruvbox t)
+    #+END_SRC
+
+** Terminal
+   Don't highlight the current line in a terminal.
+   #+BEGIN_SRC emacs-lisp
+(add-hook 'term-mode-hook
+          (function
+           (lambda ()
+             (global-hl-line-mode 0))))
+   #+END_SRC
+   Kill the buffer when the term exits.
+   #+BEGIN_SRC emacs-lisp
+(defadvice term-handle-exit
+    (after term-kill-buffer-on-exit activate)
+  (kill-buffer))
+   #+END_SRC

@@ -4,30 +4,20 @@
 #+STARTUP: showeverything
 
 This is my literate emacs config.
-
 * Installing
-
-  First, clone this repo as your .emacs.d directory
-
+  First, clone this repo as your ~.emacs.d~ directory
 #+BEGIN_SRC shell
 $ git clone https://github.com/arecker/emacs.d ~/.emacs.d
 #+END_SRC
-
   Next, [[http://cask.readthedocs.org/en/latest/guide/installation.html][install cask]] and use it to bootstrap the config with dependencies
-
 #+BEGIN_SRC shell
 $ cd ~/.emacs.d
 $ ~/.cask/bin/cask install
 #+END_SRC
-
   Then load up emacs.  Everything should pretty much just work from there.
-  
 * Configuration
-  
 ** Miscellaneous Tweaks
-   
    First, we disable the splash screen, auto save, auto backups, and other noisy things.
-   
    #+BEGIN_SRC emacs-lisp
 (setq backup-inhibited 't
       auto-save-default 'nil
@@ -38,15 +28,11 @@ $ ~/.cask/bin/cask install
 (tool-bar-mode -1)
 (toggle-scroll-bar -1)
    #+END_SRC
-   
    Tabs are evil.
-   
    #+BEGIN_SRC emacs-lisp
 (setq-default indent-tabs-mode nil)
    #+END_SRC
-   
    This is a magic function that hides all minor modes from the modeline.
-   
    #+BEGIN_SRC emacs-lisp
 (define-minor-mode minor-mode-blackout-mode
   "Hides minor modes from the mode line."
@@ -61,15 +47,11 @@ $ ~/.cask/bin/cask install
             (throw 'done t)))
         mode-line-modes))
    #+END_SRC
-
    Highlight the current line.
-
    #+BEGIN_SRC emacs-lisp
 (global-hl-line-mode t)
    #+END_SRC
-
 ** Style
-
 *** Font
     Default on inconsolata.  Fall back to Dejavu for Unicode.
     #+BEGIN_SRC emacs-lisp
@@ -78,7 +60,6 @@ $ ~/.cask/bin/cask install
                     :height 150
                     :weight 'normal
                     :width 'normal)
-
 (when (functionp 'set-fontset-font)
   (set-fontset-font "fontset-default"
                     'unicode
@@ -87,13 +68,11 @@ $ ~/.cask/bin/cask install
                                :size 15.5
                                :weight 'normal)))
     #+END_SRC
-
 *** Theme
     This changes frequently.
     #+BEGIN_SRC emacs-lisp
 (load-theme 'gruvbox t)
     #+END_SRC
-
 ** Terminal
    Don't highlight the current line in a terminal.
    #+BEGIN_SRC emacs-lisp

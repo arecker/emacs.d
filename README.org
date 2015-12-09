@@ -16,6 +16,11 @@ $ ~/.cask/bin/cask install
 #+END_SRC
   Then load up emacs.  Everything should pretty much just work from there.
 * Configuration
+** User Details
+   #+BEGIN_SRC emacs-lisp
+(setq user-full-name "Alex Recker")
+(setq user-mail-address "alex@reckerfamily.com")
+   #+END_SRC
 ** Miscellaneous Tweaks
    First, we disable the splash screen, auto save, auto backups, and other noisy things.
    #+BEGIN_SRC emacs-lisp

@@ -4,11 +4,30 @@
 
 This is my literate emacs config.
 
+* Installing
+
+  First, clone this repo as your .emacs.d directory
+
+#+BEGIN_SRC shell
+$ git clone https://github.com/arecker/emacs.d ~/.emacs.d
+#+END_SRC
+
+  Next, [[http://cask.readthedocs.org/en/latest/guide/installation.html][install cask]] and use it to bootstrap the config with dependencies
+
+#+BEGIN_SRC shell
+$ cd ~/.emacs.d
+$ ~/.cask/bin/cask install
+#+END_SRC
+
+  Then load up emacs.  Everything should pretty much just work from there.
+  
+* Configuration
+  
 ** Miscellaneous Tweaks
    
    First, we disable the splash screen, auto save, auto backups, and other noisy things.
    
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (setq backup-inhibited 't
       auto-save-default 'nil
       visible-bell 'nil
@@ -17,17 +36,17 @@ This is my literate emacs config.
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (toggle-scroll-bar -1)
-#+END_SRC
-
+   #+END_SRC
+   
    Tabs are evil.
-
-#+BEGIN_SRC emacs-lisp
+   
+   #+BEGIN_SRC emacs-lisp
 (setq-default indent-tabs-mode nil)
-#+END_SRC
-
+   #+END_SRC
+   
    This is a magic function that hides all minor modes from the modeline.
-
-#+BEGIN_SRC emacs-lisp
+   
+   #+BEGIN_SRC emacs-lisp
 (define-minor-mode minor-mode-blackout-mode
   "Hides minor modes from the mode line."
   t)
@@ -40,4 +59,6 @@ This is my literate emacs config.
               (setcdr x (list "" original)))
             (throw 'done t)))
         mode-line-modes))
-#+END_SRC
+   #+END_SRC
+   
+   

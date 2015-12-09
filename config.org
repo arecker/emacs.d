@@ -1,0 +1,10 @@
+#+TITLE: Emacs Config
+#+AUTHOR: Alex Recker
+#+EMAIL: alex@reckerfamily.com
+
+* Stripping Things Down
+  
+  #+name: stripping-things-down
+  #+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-message t)
+  #+END_SRC

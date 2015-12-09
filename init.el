@@ -9,4 +9,4 @@
   (message "No org-mode package found; installing now...")
   (package-install 'org))
 
-(org-babel-load-file "~/.emacs.d/config.org")
+(org-babel-load-file "~/.emacs.d/README.org")

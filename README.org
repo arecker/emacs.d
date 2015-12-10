@@ -119,6 +119,15 @@ This is my literate emacs config.
    #+BEGIN_SRC emacs-lisp
    (add-hook 'after-init-hook 'global-company-mode)
    #+END_SRC
+** Miscellaneous Tools
+   Git Gutter
+   #+BEGIN_SRC emacs-lisp
+   (global-git-gutter-mode +1)
+   #+END_SRC
+   Whitespace cleanup
+   #+BEGIN_SRC emacs-lisp
+   (global-whitespace-cleanup-mode 1)
+   #+END_SRC
 ** Major Modes
 *** HTML
     #+BEGIN_SRC emacs-lisp
@@ -134,6 +143,10 @@ This is my literate emacs config.
     (setq web-mode-markup-indent-offset 2)
     (setq web-mode-enable-current-column-highlight t)
     (add-hook 'web-mode-hook 'emmet-mode)
+    #+END_SRC
+*** JavaScript
+    #+BEGIN_SRC emacs-lisp
+    (add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
     #+END_SRC
 *** Python
     #+BEGIN_SRC emacs-lisp

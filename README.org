@@ -130,4 +130,5 @@ $ ~/.cask/bin/cask install
    #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))
 (global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key (kbd "C-s") 'helm-swoop)
    #+END_SRC

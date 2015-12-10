@@ -62,7 +62,7 @@ $ ~/.cask/bin/cask install
     #+BEGIN_SRC emacs-lisp
 (set-face-attribute 'default nil
                     :family "Inconsolata"
-                    :height 150
+                    :height 130
                     :weight 'normal
                     :width 'normal)
 (when (functionp 'set-fontset-font)
@@ -70,7 +70,7 @@ $ ~/.cask/bin/cask install
                     'unicode
                     (font-spec :family "DejaVu Sans Mono"
                                :width 'normal
-                               :size 15.5
+                               :size 15
                                :weight 'normal)))
     #+END_SRC
 *** Theme

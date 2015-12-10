@@ -243,6 +243,7 @@ This is my literate emacs config.
    #+BEGIN_SRC emacs-lisp
    (set-register ?e '(file . "~/.emacs.d/README.org"))
    (set-register ?g '(file . "~/git"))
+   (set-register ?o '(file . "~/org"))
    (set-register ?d '(file . "~/Desktop"))
    #+END_SRC
 ** Key Bindings

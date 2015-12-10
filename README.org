@@ -2,7 +2,6 @@
 #+AUTHOR: Alex Recker
 #+EMAIL: alex@reckerfamily.com
 #+STARTUP: showeverything
-
 This is my literate emacs config.
 * Installing
   First, clone this repo as your ~.emacs.d~ directory
@@ -210,10 +209,29 @@ This is my literate emacs config.
     #+BEGIN_SRC emacs-lisp
     (setq mu4e-get-mail-command "offlineimap")
     #+END_SRC
+** Services
+   Start the emacs server
+   #+BEGIN_SRC emacs-lisp
+   (load "server")
+   (unless (server-running-p) (server-start))
+   #+END_SRC
+** Fun
+   Print a wilfred quote in the scratch buffer
+   #+BEGIN_SRC emacs-lisp
+(when (executable-find "/usr/local/bin/wilfred-say")
+  (setq initial-scratch-message
+        (concat
+         (mapconcat
+          (lambda (x) (concat ";; " x))
+          (split-string (shell-command-to-string "/usr/local/bin/wilfred-say") "\n"
+                        t) "\n")
+         "\n\n")))
+   #+END_SRC
 ** Key Bindings
    #+BEGIN_SRC emacs-lisp
    (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))
    (global-set-key (kbd "C-x g") 'magit-status)
    (global-set-key (kbd "C-s") 'helm-swoop)
    (global-set-key (kbd "C-x f") 'helm-projectile-find-file)
+   (global-set-key (kbd "C-x M-m") 'mu4e)
    #+END_SRC

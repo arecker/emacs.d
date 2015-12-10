@@ -66,7 +66,7 @@ This is my literate emacs config.
     #+BEGIN_SRC emacs-lisp
     (set-face-attribute 'default nil
                        :family "Inconsolata"
-                       :height 130
+                       :height 150
                        :weight 'normal
                        :width 'normal)
     (when (functionp 'set-fontset-font)

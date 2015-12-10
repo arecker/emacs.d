@@ -247,6 +247,8 @@ This is my literate emacs config.
    #+END_SRC
 ** Key Bindings
    #+BEGIN_SRC emacs-lisp
+   (global-set-key (kbd "M-n") (lambda ()(interactive)(next-line 5)))
+   (global-set-key (kbd "M-p") (lambda ()(interactive)(previous-line 5)))
    (global-set-key (kbd "C-c C-SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))
    (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/usr/bin/zsh")))
    (global-set-key (kbd "C-x g") 'magit-status)

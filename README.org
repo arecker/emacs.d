@@ -108,6 +108,14 @@ This is my literate emacs config.
    (require 'helm)
    (require 'helm-config)
    (helm-mode 1)
+   (setq helm-M-x-fuzzy-match t
+         helm-autoresize-mode t
+         helm-buffers-fuzzy-matching t
+         helm-recentf-fuzzy-match t
+         projectile-completion-system 'helm)
+   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
+   (define-key helm-map (kbd "C-z")  'helm-select-action)
    #+END_SRC
 ** Projectile
    #+BEGIN_SRC emacs-lisp
@@ -173,7 +181,8 @@ This is my literate emacs config.
    (setq message-kill-buffer-on-exit t)
    #+END_SRC
 *** mu4e
-    Add mu4e library, which should be in ~/home/$USER/git/mu~
+    Add mu4e library, which should be in ~/home/$USER/git/mu~.
+    Otherwise, the ~mu4e~ package should be installed somewhere in the system.
     #+BEGIN_SRC emacs-lisp
     (add-to-list 'load-path "~/git/mu/mu4e")
     (require 'mu4e)
@@ -206,4 +215,5 @@ This is my literate emacs config.
    (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))
    (global-set-key (kbd "C-x g") 'magit-status)
    (global-set-key (kbd "C-s") 'helm-swoop)
+   (global-set-key (kbd "C-x f") 'helm-projectile-find-file)
    #+END_SRC

@@ -11,3 +11,4 @@
 (depends-on "magit")
 (depends-on "projectile")
 (depends-on "web-mode")
+(depends-on "yaml-mode")

@@ -6,144 +6,149 @@
 This is my literate emacs config.
 * Installing
   First, clone this repo as your ~.emacs.d~ directory
-#+BEGIN_SRC shell
-$ git clone https://github.com/arecker/emacs.d ~/.emacs.d
-#+END_SRC
+  #+BEGIN_SRC shell
+  $ git clone https://github.com/arecker/emacs.d ~/.emacs.d
+  #+END_SRC
   Next, [[http://cask.readthedocs.org/en/latest/guide/installation.html][install cask]] and use it to bootstrap the config with dependencies
-#+BEGIN_SRC shell
-$ cd ~/.emacs.d
-$ ~/.cask/bin/cask install
-#+END_SRC
+  #+BEGIN_SRC shell
+  $ cd ~/.emacs.d
+  $ ~/.cask/bin/cask install
+  #+END_SRC
   Then load up emacs.  Everything should pretty much just work from there.
 * Configuration
 ** User Details
    #+BEGIN_SRC emacs-lisp
-(setq user-full-name "Alex Recker")
-(setq user-mail-address "alex@reckerfamily.com")
+   (setq user-full-name "Alex Recker")
+   (setq user-mail-address "alex@reckerfamily.com")
    #+END_SRC
 ** Miscellaneous Tweaks
    First, we disable the splash screen, auto save, auto backups, and other noisy things.
    #+BEGIN_SRC emacs-lisp
-(setq backup-inhibited 't
-      auto-save-default 'nil
-      visible-bell 'nil
-      inhibit-startup-message 't
-      inhibit-startup-echo-area-message '"")
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(toggle-scroll-bar -1)
+   (setq backup-inhibited 't
+         auto-save-default 'nil
+         visible-bell 'nil
+         inhibit-startup-message 't
+         inhibit-startup-echo-area-message '"")
+   (menu-bar-mode -1)
+   (tool-bar-mode -1)
+   (toggle-scroll-bar -1)
    #+END_SRC
    Tabs are evil.
    #+BEGIN_SRC emacs-lisp
-(setq-default indent-tabs-mode nil)
+   (setq-default indent-tabs-mode nil)
    #+END_SRC
    Nicer word wrap
    #+BEGIN_SRC emacs-lisp
-(global-visual-line-mode t)
+   (global-visual-line-mode t)
    #+END_SRC
    This is a magic function that hides all minor modes from the modeline.
    #+BEGIN_SRC emacs-lisp
-(define-minor-mode minor-mode-blackout-mode
-  "Hides minor modes from the mode line."
-  t)
-(catch 'done
-  (mapc (lambda (x)
-          (when (and (consp x)
-                     (equal (cadr x) '("" minor-mode-alist)))
-            (let ((original (copy-sequence x)))
-              (setcar x 'minor-mode-blackout-mode)
-              (setcdr x (list "" original)))
-            (throw 'done t)))
-        mode-line-modes))
+   (define-minor-mode minor-mode-blackout-mode
+     "Hides minor modes from the mode line."
+     t)
+   (catch 'done
+     (mapc (lambda (x)
+             (when (and (consp x)
+                        (equal (cadr x) '("" minor-mode-alist)))
+               (let ((original (copy-sequence x)))
+                 (setcar x 'minor-mode-blackout-mode)
+                 (setcdr x (list "" original)))
+               (throw 'done t)))
+           mode-line-modes))
    #+END_SRC
    Highlight the current line.
    #+BEGIN_SRC emacs-lisp
-(global-hl-line-mode t)
+   (global-hl-line-mode t)
    #+END_SRC
 ** Style
 *** Font
     Default on inconsolata.  Fall back to Dejavu for Unicode.
     #+BEGIN_SRC emacs-lisp
-(set-face-attribute 'default nil
-                    :family "Inconsolata"
-                    :height 130
-                    :weight 'normal
-                    :width 'normal)
-(when (functionp 'set-fontset-font)
-  (set-fontset-font "fontset-default"
-                    'unicode
-                    (font-spec :family "DejaVu Sans Mono"
-                               :width 'normal
-                               :size 15
-                               :weight 'normal)))
+    (set-face-attribute 'default nil
+                       :family "Inconsolata"
+                       :height 130
+                       :weight 'normal
+                       :width 'normal)
+    (when (functionp 'set-fontset-font)
+      (set-fontset-font "fontset-default"
+                       'unicode
+                       (font-spec :family "DejaVu Sans Mono"
+                                  :width 'normal
+                                  :size 15
+                                  :weight 'normal)))
     #+END_SRC
 *** Theme
     This changes frequently.
     #+BEGIN_SRC emacs-lisp
-(load-theme 'gruvbox t)
+   (load-theme 'gruvbox t)
     #+END_SRC
 ** Terminal
    Don't highlight the current line in a terminal.
    #+BEGIN_SRC emacs-lisp
-(add-hook 'term-mode-hook
-          (function
-           (lambda ()
-             (global-hl-line-mode 0))))
+   (add-hook 'term-mode-hook
+             (function
+              (lambda ()
+                (global-hl-line-mode 0))))
    #+END_SRC
    Kill the buffer when the term exits.
    #+BEGIN_SRC emacs-lisp
-(defadvice term-handle-exit
-    (after term-kill-buffer-on-exit activate)
-  (kill-buffer))
+   (defadvice term-handle-exit
+       (after term-kill-buffer-on-exit activate)
+     (kill-buffer))
    #+END_SRC
    Set UTF-8
    #+BEGIN_SRC emacs-lisp
-(add-hook 'term-exec-hook
-          (function
-           (lambda ()
-             (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))))
+   (add-hook 'term-exec-hook
+             (function
+              (lambda ()
+                (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))))
    #+END_SRC
 ** Helm
    #+BEGIN_SRC emacs-lisp
-(require 'helm)
-(require 'helm-config)
-(helm-mode 1)
+   (require 'helm)
+   (require 'helm-config)
+   (helm-mode 1)
    #+END_SRC
 ** Projectile
    #+BEGIN_SRC emacs-lisp
-(projectile-global-mode)
-(setq projectile-completion-system 'helm)
-(helm-projectile-on)
+   (projectile-global-mode)
+   (setq projectile-completion-system 'helm)
+   (helm-projectile-on)
    #+END_SRC
 ** Completion
    #+BEGIN_SRC emacs-lisp
-(add-hook 'after-init-hook 'global-company-mode)
+   (add-hook 'after-init-hook 'global-company-mode)
    #+END_SRC
 ** Major Modes
-*** Python
-    #+BEGIN_SRC emacs-lisp
-(elpy-enable)
-(elpy-use-ipython)
-(defalias 'workon 'pyvenv-workon)
-    #+END_SRC
 *** HTML
     #+BEGIN_SRC emacs-lisp
-(require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-(setq web-mode-markup-indent-offset 2)
-(setq web-mode-enable-current-column-highlight t)
-(add-hook 'web-mode-hook 'emmet-mode)
+    (require 'web-mode)
+    (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-enable-current-column-highlight t)
+    (add-hook 'web-mode-hook 'emmet-mode)
     #+END_SRC
+*** Python
+    #+BEGIN_SRC emacs-lisp
+    (elpy-enable)
+    (elpy-use-ipython)
+    (defalias 'workon 'pyvenv-workon)
+    #+END_SRC
+*** YAML
+    #+BEGIN_SRC emacs-lisp
+    (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+    #+END_SRC
+    
 ** Key Bindings
    #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))
-(global-set-key (kbd "C-x g") 'magit-status)
-(global-set-key (kbd "C-s") 'helm-swoop)
+   (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))
+   (global-set-key (kbd "C-x g") 'magit-status)
+   (global-set-key (kbd "C-s") 'helm-swoop)
    #+END_SRC

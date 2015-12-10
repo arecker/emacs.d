@@ -154,6 +154,7 @@ This is my literate emacs config.
 *** JavaScript
     #+BEGIN_SRC emacs-lisp
     (add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
+    (add-hook 'js-mode-hook 'js2-minor-mode)
     #+END_SRC
 *** Python
     #+BEGIN_SRC emacs-lisp
@@ -235,7 +236,8 @@ This is my literate emacs config.
    #+END_SRC
 ** Key Bindings
    #+BEGIN_SRC emacs-lisp
-   (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))
+   (global-set-key (kbd "C-c C-SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))
+   (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/usr/bin/zsh")))
    (global-set-key (kbd "C-x g") 'magit-status)
    (global-set-key (kbd "C-s") 'helm-swoop)
    (global-set-key (kbd "C-x f") 'helm-projectile-find-file)

@@ -92,3 +92,14 @@ $ ~/.cask/bin/cask install
     (after term-kill-buffer-on-exit activate)
   (kill-buffer))
    #+END_SRC
+   Set UTF-8
+   #+BEGIN_SRC emacs-lisp
+(add-hook 'term-exec-hook
+          (function
+           (lambda ()
+             (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))))
+   #+END_SRC
+** Key Bindings
+   #+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))
+   #+END_SRC

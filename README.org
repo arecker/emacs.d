@@ -104,11 +104,16 @@ $ ~/.cask/bin/cask install
              (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))))
    #+END_SRC
 ** Helm
-   Initialize Helm
    #+BEGIN_SRC emacs-lisp
 (require 'helm)
 (require 'helm-config)
 (helm-mode 1)
+   #+END_SRC
+** Projectile
+   #+BEGIN_SRC emacs-lisp
+(projectile-global-mode)
+(setq projectile-completion-system 'helm)
+(helm-projectile-on)
    #+END_SRC
 ** Key Bindings
    #+BEGIN_SRC emacs-lisp

@@ -2,3 +2,4 @@
 .cask
 auto-save-list
 README.el
+/projectile-bookmarks.eld

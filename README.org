@@ -227,6 +227,12 @@ This is my literate emacs config.
                         t) "\n")
          "\n\n")))
    #+END_SRC
+** Registers
+   #+BEGIN_SRC emacs-lisp
+   (set-register ?e '(file . "~/.emacs.d/README.org"))
+   (set-register ?g '(file . "~/git"))
+   (set-register ?d '(file . "~/Desktop"))
+   #+END_SRC
 ** Key Bindings
    #+BEGIN_SRC emacs-lisp
    (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))

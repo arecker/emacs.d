@@ -3,9 +3,11 @@
 
 (depends-on "company")
 (depends-on "elpy")
+(depends-on "emmet-mode")
 (depends-on "helm")
 (depends-on "helm-projectile")
 (depends-on "helm-swoop")
 (depends-on "gruvbox-theme")
 (depends-on "magit")
 (depends-on "projectile")
+(depends-on "web-mode")

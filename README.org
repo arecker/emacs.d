@@ -103,6 +103,13 @@ $ ~/.cask/bin/cask install
            (lambda ()
              (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))))
    #+END_SRC
+** Helm
+   Initialize Helm
+   #+BEGIN_SRC emacs-lisp
+(require 'helm)
+(require 'helm-config)
+(helm-mode 1)
+   #+END_SRC
 ** Key Bindings
    #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))

@@ -1,0 +1,9 @@
+# Python Requirements
+virtualenv
+virtualenvwrapper
+jedi
+rope
+importmagic
+autopep8
+pyflakes
+ipython

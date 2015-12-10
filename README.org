@@ -119,6 +119,13 @@ $ ~/.cask/bin/cask install
    #+BEGIN_SRC emacs-lisp
 (add-hook 'after-init-hook 'global-company-mode)
    #+END_SRC
+** Major Modes
+*** Python
+    #+BEGIN_SRC emacs-lisp
+(elpy-enable)
+(elpy-use-ipython)
+(defalias 'workon 'pyvenv-workon)
+    #+END_SRC
 ** Key Bindings
    #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))

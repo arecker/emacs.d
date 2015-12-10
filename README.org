@@ -79,7 +79,7 @@ This is my literate emacs config.
 *** Theme
     This changes frequently.
     #+BEGIN_SRC emacs-lisp
-   (load-theme 'gruvbox t)
+    (load-theme 'darktooth t)
     #+END_SRC
 ** Terminal
    Don't highlight the current line in a terminal.

@@ -2,6 +2,7 @@
 (source melpa)
 
 (depends-on "company")
+(depends-on "darktooth-theme")
 (depends-on "elpy")
 (depends-on "emmet-mode")
 (depends-on "git-gutter")

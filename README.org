@@ -1,7 +1,7 @@
 #+TITLE: Emacs Config
 #+AUTHOR: Alex Recker
 #+EMAIL: alex@reckerfamily.com
-#+STARTUP: showeverything
+#+STARTUP: content
 This is my literate emacs config.
 * Installing
   First, clone this repo as your ~.emacs.d~ directory
@@ -238,6 +238,10 @@ This is my literate emacs config.
           (split-string (shell-command-to-string "/usr/local/bin/wilfred-say") "\n"
                         t) "\n")
          "\n\n")))
+   #+END_SRC
+** Org Mode
+   #+BEGIN_SRC emacs-lisp
+   (setq org-agenda-files (quote ("~/org")))
    #+END_SRC
 ** Registers
    #+BEGIN_SRC emacs-lisp

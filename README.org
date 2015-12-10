@@ -37,6 +37,10 @@ $ ~/.cask/bin/cask install
    #+BEGIN_SRC emacs-lisp
 (setq-default indent-tabs-mode nil)
    #+END_SRC
+   Nicer word wrap
+   #+BEGIN_SRC emacs-lisp
+(global-visual-line-mode t)
+   #+END_SRC
    This is a magic function that hides all minor modes from the modeline.
    #+BEGIN_SRC emacs-lisp
 (define-minor-mode minor-mode-blackout-mode
@@ -102,4 +106,5 @@ $ ~/.cask/bin/cask install
 ** Key Bindings
    #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))
+(global-set-key (kbd "C-x g") 'magit-status)
    #+END_SRC

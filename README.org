@@ -115,6 +115,10 @@ $ ~/.cask/bin/cask install
 (setq projectile-completion-system 'helm)
 (helm-projectile-on)
    #+END_SRC
+** Completion
+   #+BEGIN_SRC emacs-lisp
+(add-hook 'after-init-hook 'global-company-mode)
+   #+END_SRC
 ** Key Bindings
    #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))

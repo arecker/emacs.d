@@ -2,26 +2,44 @@
 #+AUTHOR: Alex Recker
 #+EMAIL: alex@reckerfamily.com
 #+STARTUP: content
+
 This is my literate emacs config.
+
 * Installing
+
   First, clone this repo as your ~.emacs.d~ directory
+
   #+BEGIN_SRC shell
   $ git clone https://github.com/arecker/emacs.d ~/.emacs.d
   #+END_SRC
+
   Next, [[http://cask.readthedocs.org/en/latest/guide/installation.html][install cask]] and use it to bootstrap the config with dependencies
+
   #+BEGIN_SRC shell
   $ cd ~/.emacs.d
   $ ~/.cask/bin/cask install
   #+END_SRC
+
+  Install the python dependencies listed in ~requirements.txt~
+
+  #+BEGIN_SRC shell
+  $ sudo pip install ~/.emacs.d/requirements.txt
+  #+END_SRC
+
   Then load up emacs.  Everything should pretty much just work from there.
+
 * Configuration
+
 ** User Details
    #+BEGIN_SRC emacs-lisp
    (setq user-full-name "Alex Recker")
    (setq user-mail-address "alex@reckerfamily.com")
    #+END_SRC
+
 ** Miscellaneous Tweaks
+
    First, we disable the splash screen, auto save, auto backups, and other noisy things.
+
    #+BEGIN_SRC emacs-lisp
    (setq backup-inhibited 't
          auto-save-default 'nil
@@ -32,15 +50,21 @@ This is my literate emacs config.
    (tool-bar-mode -1)
    (toggle-scroll-bar -1)
    #+END_SRC
+
    Tabs are evil.
+
    #+BEGIN_SRC emacs-lisp
    (setq-default indent-tabs-mode nil)
    #+END_SRC
+
    Nicer word wrap
+
    #+BEGIN_SRC emacs-lisp
    (global-visual-line-mode t)
    #+END_SRC
+
    This is a magic function that hides all minor modes from the modeline.
+
    #+BEGIN_SRC emacs-lisp
    (define-minor-mode minor-mode-blackout-mode
      "Hides minor modes from the mode line."
@@ -55,11 +79,15 @@ This is my literate emacs config.
                (throw 'done t)))
            mode-line-modes))
    #+END_SRC
+
    Highlight the current line.
+
    #+BEGIN_SRC emacs-lisp
    (global-hl-line-mode t)
    #+END_SRC
+
    Use the system PATH
+
    #+BEGIN_SRC emacs-lisp
    (defun set-exec-path-from-shell-PATH ()
     (let ((path-from-shell (shell-command-to-string "$SHELL -c 'echo $PATH'")))
@@ -69,6 +97,7 @@ This is my literate emacs config.
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
     (setq exec-path (append exec-path '("/usr/local/bin")))
    #+END_SRC
+
 ** Style
 *** Font
     Default on inconsolata.  Fall back to Dejavu for Unicode.

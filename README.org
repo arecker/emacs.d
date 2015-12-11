@@ -31,6 +31,7 @@ This is my literate emacs config.
 * Configuration
 
 ** User Details
+
    #+BEGIN_SRC emacs-lisp
    (setq user-full-name "Alex Recker")
    (setq user-mail-address "alex@reckerfamily.com")
@@ -66,18 +67,18 @@ This is my literate emacs config.
    This is a magic function that hides all minor modes from the modeline.
 
    #+BEGIN_SRC emacs-lisp
-   (define-minor-mode minor-mode-blackout-mode
-     "Hides minor modes from the mode line."
-     t)
-   (catch 'done
-     (mapc (lambda (x)
-             (when (and (consp x)
-                        (equal (cadr x) '("" minor-mode-alist)))
-               (let ((original (copy-sequence x)))
-                 (setcar x 'minor-mode-blackout-mode)
-                 (setcdr x (list "" original)))
-               (throw 'done t)))
-           mode-line-modes))
+     (define-minor-mode minor-mode-blackout-mode
+       "Hides minor modes from the mode line."
+       t)
+     (catch 'done
+       (mapc (lambda (x)
+               (when (and (consp x)
+                          (equal (cadr x) '("" minor-mode-alist)))
+                 (let ((original (copy-sequence x)))
+                   (setcar x 'minor-mode-blackout-mode)
+                   (setcdr x (list "" original)))
+                 (throw 'done t)))
+             mode-line-modes))
    #+END_SRC
 
    Highlight the current line.
@@ -89,59 +90,73 @@ This is my literate emacs config.
    Use the system PATH
 
    #+BEGIN_SRC emacs-lisp
-   (defun set-exec-path-from-shell-PATH ()
-    (let ((path-from-shell (shell-command-to-string "$SHELL -c 'echo $PATH'")))
-      (setenv "PATH" path-from-shell)
-      (setq exec-path (split-string path-from-shell path-separator))))
-(when window-system (set-exec-path-from-shell-PATH))
-(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
-    (setq exec-path (append exec-path '("/usr/local/bin")))
+     (defun set-exec-path-from-shell-PATH ()
+       (let ((path-from-shell (shell-command-to-string "$SHELL -c 'echo $PATH'")))
+         (setenv "PATH" path-from-shell)
+         (setq exec-path (split-string path-from-shell path-separator))))
+     (when window-system (set-exec-path-from-shell-PATH))
+     (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
+     (setq exec-path (append exec-path '("/usr/local/bin")))
    #+END_SRC
 
 ** Style
+
 *** Font
+
     Default on inconsolata.  Fall back to Dejavu for Unicode.
+
     #+BEGIN_SRC emacs-lisp
-    (set-face-attribute 'default nil
-                       :family "Inconsolata"
-                       :height 150
-                       :weight 'normal
-                       :width 'normal)
-    (when (functionp 'set-fontset-font)
-      (set-fontset-font "fontset-default"
-                       'unicode
-                       (font-spec :family "DejaVu Sans Mono"
-                                  :width 'normal
-                                  :size 15
-                                  :weight 'normal)))
+      (set-face-attribute 'default nil
+                          :family "Inconsolata"
+                          :height 150
+                          :weight 'normal
+                          :width 'normal)
+      (when (functionp 'set-fontset-font)
+        (set-fontset-font "fontset-default"
+                          'unicode
+                          (font-spec :family "DejaVu Sans Mono"
+                                     :width 'normal
+                                     :size 15
+                                     :weight 'normal)))
     #+END_SRC
+
 *** Theme
+
     This changes frequently.
+
     #+BEGIN_SRC emacs-lisp
     (load-theme 'darktooth t)
     #+END_SRC
+
 ** Terminal
+
    Don't highlight the current line in a terminal.
+
    #+BEGIN_SRC emacs-lisp
    (add-hook 'term-mode-hook
              (function
               (lambda ()
                 (global-hl-line-mode 0))))
    #+END_SRC
+
    Kill the buffer when the term exits.
+
    #+BEGIN_SRC emacs-lisp
    (defadvice term-handle-exit
        (after term-kill-buffer-on-exit activate)
      (kill-buffer))
    #+END_SRC
+
    Set UTF-8
    #+BEGIN_SRC emacs-lisp
-   (add-hook 'term-exec-hook
-             (function
-              (lambda ()
-                (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))))
+     (add-hook 'term-exec-hook
+               (function
+                (lambda ()
+                  (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))))
    #+END_SRC
+
 ** Helm
+
    #+BEGIN_SRC emacs-lisp
    (require 'helm)
    (require 'helm-config)
@@ -155,27 +170,39 @@ This is my literate emacs config.
    (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
    (define-key helm-map (kbd "C-z")  'helm-select-action)
    #+END_SRC
+
 ** Projectile
+
    #+BEGIN_SRC emacs-lisp
    (projectile-global-mode)
    (setq projectile-completion-system 'helm)
    (helm-projectile-on)
    #+END_SRC
+
 ** Completion
+
    #+BEGIN_SRC emacs-lisp
    (add-hook 'after-init-hook 'global-company-mode)
    #+END_SRC
+
 ** Miscellaneous Tools
+
    Git Gutter
+
    #+BEGIN_SRC emacs-lisp
    (global-git-gutter-mode +1)
    #+END_SRC
+
    Whitespace cleanup
+
    #+BEGIN_SRC emacs-lisp
    (global-whitespace-cleanup-mode 1)
    #+END_SRC
+
 ** Major Modes
+
 *** HTML
+
     #+BEGIN_SRC emacs-lisp
     (require 'web-mode)
     (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
@@ -190,24 +217,32 @@ This is my literate emacs config.
     (setq web-mode-enable-current-column-highlight t)
     (add-hook 'web-mode-hook 'emmet-mode)
     #+END_SRC
+
 *** JavaScript
+
     #+BEGIN_SRC emacs-lisp
     (add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
     (add-hook 'js-mode-hook 'js2-minor-mode)
     #+END_SRC
+
 *** Python
+
     #+BEGIN_SRC emacs-lisp
     (elpy-enable)
     (elpy-use-ipython)
     (defalias 'workon 'pyvenv-workon)
     #+END_SRC
+
 *** YAML
+
     #+BEGIN_SRC emacs-lisp
     (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
     #+END_SRC
     
 ** Mail
+
    Use Gmail for outgoing mail
+
    #+BEGIN_SRC emacs-lisp
    (setq message-send-mail-function 'smtpmail-send-it
        smtpmail-stream-type 'starttls
@@ -215,18 +250,25 @@ This is my literate emacs config.
        smtpmail-smtp-server "smtp.gmail.com"
        smtpmail-smtp-service 587)
    #+END_SRC
+
    Kill message buffer after sending
+
    #+BEGIN_SRC emacs-lisp
    (setq message-kill-buffer-on-exit t)
    #+END_SRC
+
 *** mu4e
+
     Add mu4e library, which should be in ~/home/$USER/git/mu~.
     Otherwise, the ~mu4e~ package should be installed somewhere in the system.
+
     #+BEGIN_SRC emacs-lisp
     (add-to-list 'load-path "~/git/mu/mu4e")
     (require 'mu4e)
     #+END_SRC
+
     Declare Maildir and folders
+
     #+BEGIN_SRC emacs-lisp
     (setq mu4e-maildir "~/Maildir")
     (setq mu4e-drafts-folder "/drafts")
@@ -234,7 +276,9 @@ This is my literate emacs config.
     (setq mu4e-trash-folder  "/trash")
     (setq mu4e-refile-folder "/archives")
     #+END_SRC
+
     Declare folder shortcuts
+
     #+BEGIN_SRC emacs-lisp
     (setq mu4e-maildir-shortcuts
         '( ("/inbox" . ?i)
@@ -242,44 +286,60 @@ This is my literate emacs config.
            ("/trash" . ?t)
            ("/archives" . ?a)))
     #+END_SRC
+
     Don't save sent messages (gmail takes care of that)
+
     #+BEGIN_SRC emacs-lisp
     (setq mu4e-sent-messages-behavior 'delete)
     #+END_SRC
+
     Set update command
+
     #+BEGIN_SRC emacs-lisp
     (setq mu4e-get-mail-command "offlineimap")
     #+END_SRC
+
 ** Services
+
    Start the emacs server
+
    #+BEGIN_SRC emacs-lisp
    (load "server")
    (unless (server-running-p) (server-start))
    #+END_SRC
+
 ** Fun
+
    Print a wilfred quote in the scratch buffer
+
    #+BEGIN_SRC emacs-lisp
-(when (executable-find "/usr/local/bin/wilfred-say")
-  (setq initial-scratch-message
-        (concat
-         (mapconcat
-          (lambda (x) (concat ";; " x))
-          (split-string (shell-command-to-string "/usr/local/bin/wilfred-say") "\n"
-                        t) "\n")
-         "\n\n")))
+     (when (executable-find "/usr/local/bin/wilfred-say")
+       (setq initial-scratch-message
+             (concat
+              (mapconcat
+               (lambda (x) (concat ";; " x))
+               (split-string (shell-command-to-string "/usr/local/bin/wilfred-say") "\n"
+                             t) "\n")
+              "\n\n")))
    #+END_SRC
+
 ** Org Mode
+
    #+BEGIN_SRC emacs-lisp
    (setq org-agenda-files (quote ("~/org")))
    #+END_SRC
+
 ** Registers
+
    #+BEGIN_SRC emacs-lisp
    (set-register ?e '(file . "~/.emacs.d/README.org"))
    (set-register ?g '(file . "~/git"))
    (set-register ?o '(file . "~/org"))
    (set-register ?d '(file . "~/Desktop"))
    #+END_SRC
+
 ** Key Bindings
+
    #+BEGIN_SRC emacs-lisp
    (global-set-key (kbd "M-n") (lambda ()(interactive)(next-line 5)))
    (global-set-key (kbd "M-p") (lambda ()(interactive)(previous-line 5)))

@@ -26,6 +26,12 @@ This is my literate emacs config.
   $ sudo pip install ~/.emacs.d/requirements.txt
   #+END_SRC
 
+  Finally, install ~tern~ globally.
+
+  #+BEGIN_SRC shell
+  sudo npm install -g tern
+  #+END_SRC
+
   Then load up emacs.  Everything should pretty much just work from there.
 
 * Configuration
@@ -221,15 +227,18 @@ This is my literate emacs config.
 *** JavaScript
 
     #+BEGIN_SRC emacs-lisp
-    (add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
-    (add-hook 'js-mode-hook 'js2-minor-mode)
+      (add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
+      (add-hook 'js-mode-hook 'js2-minor-mode)
+      (add-hook 'js-mode-hook (lambda()
+                                (setq company-tern-property-marker "")
+                                (add-to-list 'company-backends 'company-tern)
+                                (tern-mode t)))
     #+END_SRC
 
 *** Python
 
     #+BEGIN_SRC emacs-lisp
     (elpy-enable)
-    (elpy-use-ipython)
     (defalias 'workon 'pyvenv-workon)
     #+END_SRC
 

@@ -2,6 +2,7 @@
 (source melpa)
 
 (depends-on "company")
+(depends-on "company-tern")
 (depends-on "darktooth-theme")
 (depends-on "elpy")
 (depends-on "emmet-mode")
@@ -13,6 +14,7 @@
 (depends-on "js2-mode")
 (depends-on "magit")
 (depends-on "projectile")
+(depends-on "tern")
 (depends-on "web-mode")
 (depends-on "whitespace-cleanup-mode")
 (depends-on "yaml-mode")

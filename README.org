@@ -308,6 +308,12 @@ This is my literate emacs config.
     (setq mu4e-get-mail-command "offlineimap")
     #+END_SRC
 
+    Display HTML emails as plain text
+
+    #+BEGIN_SRC emacs-lisp
+      (setq mu4e-html2text-command "html2text -utf8 -width 72")
+    #+END_SRC
+
 ** Services
 
    Start the emacs server

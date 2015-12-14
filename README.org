@@ -236,10 +236,36 @@ This is my literate emacs config.
     #+END_SRC
 
 *** Python
+    
+    Fill column guide
 
     #+BEGIN_SRC emacs-lisp
-    (elpy-enable)
-    (defalias 'workon 'pyvenv-workon)
+      (setq fci-rule-color "gray")
+      (add-hook 'python-mode-hook 'fci-mode)
+    #+END_SRC
+
+    Elpy suite
+
+    #+BEGIN_SRC emacs-lisp
+      (elpy-enable)
+      (defalias 'workon 'pyvenv-workon)
+    #+END_SRC
+
+*** SQL
+    
+    Indent sql
+
+    #+BEGIN_SRC emacs-lisp
+      (eval-after-load "sql"
+        (load-library "sql-indent"))
+    #+END_SRC
+
+*** Text
+
+    Wrap at 70 characters for note taking modes.
+
+    #+BEGIN_SRC emacs-lisp
+      (add-hook 'text-mode-hook 'turn-on-auto-fill)
     #+END_SRC
 
 *** YAML
@@ -325,7 +351,7 @@ This is my literate emacs config.
 
 ** Fun
 
-   Print a wilfred quote in the scratch buffer
+   Print a wilfred quote in the scratch buffer using the [[https://www.npmjs.com/package/wilfred-say][wilfred-say]] command.
 
    #+BEGIN_SRC emacs-lisp
      (when (executable-find "/usr/local/bin/wilfred-say")

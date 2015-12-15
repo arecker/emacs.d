@@ -235,15 +235,19 @@ This is my literate emacs config.
                                 (tern-mode t)))
     #+END_SRC
 
-*** Python
-    
-    Fill column guide
+*** Markdown
 
     #+BEGIN_SRC emacs-lisp
-      (setq fci-rule-color "gray")
-      (add-hook 'python-mode-hook 'fci-mode)
+      (autoload 'markdown-mode "markdown-mode"
+         "Major mode for editing Markdown files" t)
+      (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
+      (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+      (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+      (add-hook 'markdown-mode-hook 'auto-fill-function)
     #+END_SRC
 
+*** Python
+    
     Elpy suite
 
     #+BEGIN_SRC emacs-lisp

@@ -244,6 +244,7 @@ This is my literate emacs config.
       (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
       (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
       (add-hook 'markdown-mode-hook 'auto-fill-function)
+      (add-hook 'markdown-mode-hook 'flyspell-mode)
     #+END_SRC
 
 *** Python
@@ -270,6 +271,7 @@ This is my literate emacs config.
 
     #+BEGIN_SRC emacs-lisp
       (add-hook 'text-mode-hook 'turn-on-auto-fill)
+      (add-hook 'text-mode-hook 'flyspell-mode)
     #+END_SRC
 
 *** YAML

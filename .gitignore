@@ -3,3 +3,5 @@
 auto-save-list
 README.el
 /projectile-bookmarks.eld
+eshell
+/tramp

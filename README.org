@@ -376,6 +376,12 @@ This is my literate emacs config.
    (setq org-agenda-files (quote ("~/org")))
    #+END_SRC
 
+   Org-reveal
+
+   #+BEGIN_SRC emacs-lisp
+     (require 'ox-reveal)
+   #+END_SRC
+
 ** Registers
 
    #+BEGIN_SRC emacs-lisp
@@ -383,6 +389,19 @@ This is my literate emacs config.
    (set-register ?g '(file . "~/git"))
    (set-register ?o '(file . "~/org"))
    (set-register ?d '(file . "~/Desktop"))
+   #+END_SRC
+
+** Functions
+
+   #+BEGIN_SRC emacs-lisp
+     (defun sudo ()
+       "Edit the current file as root"
+       (interactive)
+       (if (buffer-file-name)
+           (let ((file-name (buffer-file-name)))
+             (kill-buffer (current-buffer))
+             (find-file (concat "/sudo::" file-name))
+             (message "now editing %s as root" file-name))))
    #+END_SRC
 
 ** Key Bindings

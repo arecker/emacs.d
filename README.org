@@ -439,12 +439,13 @@ This is my literate emacs config.
 ** Key Bindings
 
    #+BEGIN_SRC emacs-lisp
-   (global-set-key (kbd "M-n") (lambda ()(interactive)(next-line 5)))
-   (global-set-key (kbd "M-p") (lambda ()(interactive)(previous-line 5)))
-   (global-set-key (kbd "C-c C-SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))
-   (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/usr/bin/zsh")))
-   (global-set-key (kbd "C-x g") 'magit-status)
-   (global-set-key (kbd "C-s") 'helm-swoop)
-   (global-set-key (kbd "C-x f") 'helm-projectile-find-file)
-   (global-set-key (kbd "C-x M-m") 'mu4e)
+     (global-set-key (kbd "M-n") (lambda ()(interactive)(next-line 5)))
+     (global-set-key (kbd "M-p") (lambda ()(interactive)(previous-line 5)))
+     (global-set-key (kbd "C-c C-SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))
+     (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/usr/bin/zsh")))
+     (global-set-key (kbd "C-x g") 'magit-status)
+     (global-set-key (kbd "C-s") 'helm-swoop)
+     (global-set-key (kbd "C-x f") 'helm-projectile-find-file)
+     (global-set-key (kbd "C-x M-m") 'mu4e)
+     (global-set-key (kbd "C-x a") 'org-agenda)
    #+END_SRC

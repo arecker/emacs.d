@@ -1,7 +1,7 @@
 #+TITLE: Emacs Config
 #+AUTHOR: Alex Recker
 #+EMAIL: alex@reckerfamily.com
-#+STARTUP: content
+#+STARTUP: content indent
 
 This is my literate emacs config.
 

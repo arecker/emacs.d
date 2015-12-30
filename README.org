@@ -7,47 +7,47 @@ This is my literate emacs config.
 
 * Installing
 
-  First, clone this repo as your ~.emacs.d~ directory
+First, clone this repo as your ~.emacs.d~ directory
 
-  #+BEGIN_SRC shell
+#+BEGIN_SRC shell
   $ git clone https://github.com/arecker/emacs.d ~/.emacs.d
-  #+END_SRC
+#+END_SRC
 
-  Next, [[http://cask.readthedocs.org/en/latest/guide/installation.html][install cask]] and use it to bootstrap the config with dependencies
+Next, [[http://cask.readthedocs.org/en/latest/guide/installation.html][install cask]] and use it to bootstrap the config with dependencies
 
-  #+BEGIN_SRC shell
+#+BEGIN_SRC shell
   $ cd ~/.emacs.d
   $ ~/.cask/bin/cask install
-  #+END_SRC
+#+END_SRC
 
-  Install the python dependencies listed in ~requirements.txt~
+Install the python dependencies listed in ~requirements.txt~
 
-  #+BEGIN_SRC shell
+#+BEGIN_SRC shell
   $ sudo pip install ~/.emacs.d/requirements.txt
-  #+END_SRC
+#+END_SRC
 
-  Finally, install ~tern~ globally.
+Finally, install ~tern~ globally.
 
-  #+BEGIN_SRC shell
+#+BEGIN_SRC shell
   sudo npm install -g tern
-  #+END_SRC
+#+END_SRC
 
-  Then load up emacs.  Everything should pretty much just work from there.
+Then load up emacs.  Everything should pretty much just work from there.
 
 * Configuration
 
 ** User Details
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (setq user-full-name "Alex Recker")
    (setq user-mail-address "alex@reckerfamily.com")
-   #+END_SRC
+#+END_SRC
 
 ** Miscellaneous Tweaks
 
-   First, we disable the splash screen, auto save, auto backups, and other noisy things.
+First, we disable the splash screen, auto save, auto backups, and other noisy things.
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (setq backup-inhibited 't
          auto-save-default 'nil
          visible-bell 'nil
@@ -56,23 +56,23 @@ This is my literate emacs config.
    (menu-bar-mode -1)
    (tool-bar-mode -1)
    (toggle-scroll-bar -1)
-   #+END_SRC
+#+END_SRC
 
-   Tabs are evil.
+Tabs are evil.
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (setq-default indent-tabs-mode nil)
-   #+END_SRC
+#+END_SRC
 
-   Nicer word wrap
+Nicer word wrap
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (global-visual-line-mode t)
-   #+END_SRC
+#+END_SRC
 
-   This is a magic function that hides all minor modes from the modeline.
+This is a magic function that hides all minor modes from the modeline.
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
      (define-minor-mode minor-mode-blackout-mode
        "Hides minor modes from the mode line."
        t)
@@ -85,29 +85,29 @@ This is my literate emacs config.
                    (setcdr x (list "" original)))
                  (throw 'done t)))
              mode-line-modes))
-   #+END_SRC
+#+END_SRC
 
-   Highlight the current line.
+Highlight the current line.
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (global-hl-line-mode t)
-   #+END_SRC
+#+END_SRC
 
-   Use the system PATH
+Use the system PATH
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
      (defun set-exec-path-from-shell-PATH ()
        (let ((path-from-shell (shell-command-to-string "$SHELL -c 'echo $PATH'")))
          (setenv "PATH" path-from-shell)
          (setq exec-path (split-string path-from-shell path-separator))))
      (when window-system (set-exec-path-from-shell-PATH))
-     (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
+     (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin" ":/Library/TeX/texbin"))
      (setq exec-path (append exec-path '("/usr/local/bin")))
-   #+END_SRC
+#+END_SRC
 
-   Indirect buffers for selected region
+Indirect buffers for selected region
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
      (defvar indirect-mode-name nil
        "Mode to set for indirect buffers.")
      (make-variable-buffer-local 'indirect-mode-name)
@@ -134,18 +134,18 @@ This is my literate emacs config.
          (narrow-to-region start end)
          (goto-char (point-min))
          (shrink-window-if-larger-than-buffer)))
-   #+END_SRC
+#+END_SRC
 
 ** Style
 
 *** Font
 
-    Default on inconsolata.  Fall back to Dejavu for Unicode.
+Default on inconsolata.  Fall back to Dejavu for Unicode.
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
       (set-face-attribute 'default nil
                           :family "Inconsolata"
-                          :height 130
+                          :height 150
                           :weight 'normal
                           :width 'normal)
       (when (functionp 'set-fontset-font)
@@ -155,46 +155,46 @@ This is my literate emacs config.
                                      :width 'normal
                                      :size 15
                                      :weight 'normal)))
-    #+END_SRC
+#+END_SRC
 
 *** Theme
 
-    This changes frequently.
+This changes frequently.
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
     (load-theme 'darktooth t)
-    #+END_SRC
+#+END_SRC
 
 ** Terminal
 
-   Don't highlight the current line in a terminal.
+Don't highlight the current line in a terminal.
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (add-hook 'term-mode-hook
              (function
               (lambda ()
                 (global-hl-line-mode 0))))
-   #+END_SRC
+#+END_SRC
 
-   Kill the buffer when the term exits.
+Kill the buffer when the term exits.
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (defadvice term-handle-exit
        (after term-kill-buffer-on-exit activate)
      (kill-buffer))
-   #+END_SRC
+#+END_SRC
 
-   Set UTF-8
-   #+BEGIN_SRC emacs-lisp
+Set UTF-8
+#+BEGIN_SRC emacs-lisp
      (add-hook 'term-exec-hook
                (function
                 (lambda ()
                   (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))))
-   #+END_SRC
+#+END_SRC
 
 ** Helm
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (require 'helm)
    (require 'helm-config)
    (helm-mode 1)
@@ -206,41 +206,41 @@ This is my literate emacs config.
    (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
    (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
    (define-key helm-map (kbd "C-z")  'helm-select-action)
-   #+END_SRC
+#+END_SRC
 
 ** Projectile
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (projectile-global-mode)
    (setq projectile-completion-system 'helm)
    (helm-projectile-on)
-   #+END_SRC
+#+END_SRC
 
 ** Completion
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (add-hook 'after-init-hook 'global-company-mode)
-   #+END_SRC
+#+END_SRC
 
 ** Miscellaneous Tools
 
-   Git Gutter
+Git Gutter
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (global-git-gutter-mode +1)
-   #+END_SRC
+#+END_SRC
 
-   Whitespace cleanup
+Whitespace cleanup
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (global-whitespace-cleanup-mode 1)
-   #+END_SRC
+#+END_SRC
 
 ** Major Modes
 
 *** HTML
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
     (require 'web-mode)
     (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
@@ -253,22 +253,22 @@ This is my literate emacs config.
     (setq web-mode-markup-indent-offset 2)
     (setq web-mode-enable-current-column-highlight t)
     (add-hook 'web-mode-hook 'emmet-mode)
-    #+END_SRC
+#+END_SRC
 
 *** JavaScript
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
       (add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
       (add-hook 'js-mode-hook 'js2-minor-mode)
       (add-hook 'js-mode-hook (lambda()
                                 (setq company-tern-property-marker "")
                                 (add-to-list 'company-backends 'company-tern)
                                 (tern-mode t)))
-    #+END_SRC
+#+END_SRC
 
 *** Markdown
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
       (autoload 'markdown-mode "markdown-mode"
          "Major mode for editing Markdown files" t)
       (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
@@ -276,121 +276,123 @@ This is my literate emacs config.
       (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
       (add-hook 'markdown-mode-hook 'auto-fill-function)
       (add-hook 'markdown-mode-hook 'flyspell-mode)
-    #+END_SRC
+#+END_SRC
 
 *** Python
     
-    Elpy suite
+Elpy suite
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
       (elpy-enable)
       (defalias 'workon 'pyvenv-workon)
-    #+END_SRC
+#+END_SRC
 
 *** SQL
     
-    Indent sql
+Indent sql
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
       (eval-after-load "sql"
         (load-library "sql-indent"))
-    #+END_SRC
+#+END_SRC
 
 *** Text
 
-    Wrap at 70 characters for note taking modes.
+Wrap at 70 characters for note taking modes.
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
       (add-hook 'text-mode-hook 'turn-on-auto-fill)
       (add-hook 'text-mode-hook 'flyspell-mode)
-    #+END_SRC
+#+END_SRC
 
 *** YAML
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
     (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-    #+END_SRC
+#+END_SRC
     
 ** Mail
 
-   Use Gmail for outgoing mail
+Use Gmail for outgoing mail
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (setq message-send-mail-function 'smtpmail-send-it
        smtpmail-stream-type 'starttls
        smtpmail-default-smtp-server "smtp.gmail.com"
        smtpmail-smtp-server "smtp.gmail.com"
        smtpmail-smtp-service 587)
-   #+END_SRC
+#+END_SRC
 
-   Kill message buffer after sending
+Kill message buffer after sending
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (setq message-kill-buffer-on-exit t)
-   #+END_SRC
+#+END_SRC
 
 *** mu4e
 
-    Add mu4e library, which should be in ~/home/$USER/git/mu~.
-    Otherwise, the ~mu4e~ package should be installed somewhere in the system.
+Add mu4e library, which should be in ~/home/$USER/git/mu~.
+Otherwise, the ~mu4e~ package should be installed somewhere in the system.
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
     (add-to-list 'load-path "~/git/mu/mu4e")
     (require 'mu4e)
-    #+END_SRC
+#+END_SRC
 
-    Declare Maildir and folders
+Declare Maildir and folders
 
-    #+BEGIN_SRC emacs-lisp
-    (setq mu4e-maildir "~/Maildir")
-    (setq mu4e-drafts-folder "/drafts")
-    (setq mu4e-sent-folder   "/sent")
-    (setq mu4e-trash-folder  "/trash")
-    (setq mu4e-refile-folder "/archives")
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+      (setq mu4e-maildir "~/Maildir")
+      (setq mu4e-drafts-folder "/drafts")
+      (setq mu4e-sent-folder   "/sent")
+      (setq mu4e-trash-folder  "/trash")
+      (setq mu4e-refile-folder "/archives")
+#+END_SRC
 
-    Declare folder shortcuts
+Declare folder shortcuts
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
     (setq mu4e-maildir-shortcuts
         '( ("/inbox" . ?i)
            ("/sent" . ?s)
            ("/trash" . ?t)
            ("/archives" . ?a)))
-    #+END_SRC
+#+END_SRC
 
-    Don't save sent messages (gmail takes care of that)
+Don't save sent messages (gmail takes care of that)
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
     (setq mu4e-sent-messages-behavior 'delete)
-    #+END_SRC
+#+END_SRC
 
-    Set update command
+Set update command
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
     (setq mu4e-get-mail-command "offlineimap")
-    #+END_SRC
+#+END_SRC
 
-    Display HTML emails as plain text
+Render HTML
 
-    #+BEGIN_SRC emacs-lisp
-      (setq mu4e-html2text-command "html2text -utf8 -width 72")
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+      (if (eq system-type 'darwin)
+          (setq mu4e-html2text-command "textutil -stdin -format html -convert txt -stdout")
+        (setq mu4e-html2text-command "html2text -utf8 -width 72"))
+#+END_SRC
 
 ** Services
 
-   Start the emacs server
+Start the emacs server
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (load "server")
    (unless (server-running-p) (server-start))
-   #+END_SRC
+#+END_SRC
 
 ** Fun
 
-   Print a wilfred quote in the scratch buffer using the [[https://www.npmjs.com/package/wilfred-say][wilfred-say]] command.
+Print a wilfred quote in the scratch buffer using the [[https://www.npmjs.com/package/wilfred-say][wilfred-say]] command.
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
      (when (executable-find "/usr/local/bin/wilfred-say")
        (setq initial-scratch-message
              (concat
@@ -399,33 +401,33 @@ This is my literate emacs config.
                (split-string (shell-command-to-string "/usr/local/bin/wilfred-say") "\n"
                              t) "\n")
               "\n\n")))
-   #+END_SRC
+#+END_SRC
 
 ** Org Mode
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (setq org-agenda-files (quote ("~/org")))
-   #+END_SRC
+#+END_SRC
 
-   Org-reveal
+Org-reveal
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
      (require 'ox-reveal)
-   #+END_SRC
+#+END_SRC
 
 ** Registers
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
      (set-register ?e '(file . "~/.emacs.d/README.org"))
      (set-register ?g '(file . "~/git"))
      (set-register ?o '(file . "~/org"))
      (set-register ?w '(file . "~/org/work.org"))
      (set-register ?d '(file . "~/Desktop"))
-   #+END_SRC
+#+END_SRC
 
 ** Functions
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
      (defun sudo ()
        "Edit the current file as root"
        (interactive)
@@ -434,11 +436,11 @@ This is my literate emacs config.
              (kill-buffer (current-buffer))
              (find-file (concat "/sudo::" file-name))
              (message "now editing %s as root" file-name))))
-   #+END_SRC
+#+END_SRC
 
 ** Key Bindings
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "M-n") (lambda ()(interactive)(next-line 5)))
      (global-set-key (kbd "M-p") (lambda ()(interactive)(previous-line 5)))
      (global-set-key (kbd "C-c C-SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))
@@ -448,4 +450,6 @@ This is my literate emacs config.
      (global-set-key (kbd "C-x f") 'helm-projectile-find-file)
      (global-set-key (kbd "C-x M-m") 'mu4e)
      (global-set-key (kbd "C-x a") 'org-agenda)
-   #+END_SRC
+     (global-set-key (kbd "C-=") 'er/expand-region)
+#+END_SRC
+

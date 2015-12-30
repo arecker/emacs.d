@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: ipdb
+# key: ipdb
+# binding: direct-keybinding
+# --
+import ipdb
+ipdb.set_trace()

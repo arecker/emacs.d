@@ -1,6 +1,8 @@
 (package-initialize)
 
-(require 'cask "~/.cask/cask.el")
+(if (eq system-type 'darwin)            ;installed with homebrew
+    (require 'cask "/usr/local/share/emacs/site-lisp/cask.el")
+  (require 'cask "~/.cask/cask.el"))
 (cask-initialize)
 
 (when (not (cl-remove-if-not 
@@ -10,3 +12,6 @@
   (package-install 'org))
 
 (org-babel-load-file "~/.emacs.d/README.org")
+
+(if (file-exists-p "~/.emacs.d/healthgrades.org")
+    (org-babel-load-file "~/.emacs.d/healthgrades.org"))

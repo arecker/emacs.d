@@ -6,6 +6,7 @@
 (depends-on "darktooth-theme")
 (depends-on "elpy")
 (depends-on "emmet-mode")
+(depends-on "expand-region")
 (depends-on "git-gutter")
 (depends-on "gruvbox-theme")
 (depends-on "helm")
@@ -22,3 +23,4 @@
 (depends-on "web-mode")
 (depends-on "whitespace-cleanup-mode")
 (depends-on "yaml-mode")
+(depends-on "yasnippet")

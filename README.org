@@ -428,28 +428,39 @@ Org-reveal
 ** Functions
 
 #+BEGIN_SRC emacs-lisp
-     (defun sudo ()
-       "Edit the current file as root"
-       (interactive)
-       (if (buffer-file-name)
-           (let ((file-name (buffer-file-name)))
-             (kill-buffer (current-buffer))
-             (find-file (concat "/sudo::" file-name))
-             (message "now editing %s as root" file-name))))
+  (defun sudo ()
+    "Edit the current file as root"
+    (interactive)
+    (if (buffer-file-name)
+        (let ((file-name (buffer-file-name)))
+          (kill-buffer (current-buffer))
+          (find-file (concat "/sudo::" file-name))
+          (message "now editing %s as root" file-name))))
+
+  (defun org-git-push ()
+    "Commits and pushes changes in org directory"
+    (interactive)
+    (shell-command
+     (expand-file-name "$HOME/bin/git_org.sh" "/")))
 #+END_SRC
 
 ** Key Bindings
 
 #+BEGIN_SRC emacs-lisp
-     (global-set-key (kbd "M-n") (lambda ()(interactive)(next-line 5)))
-     (global-set-key (kbd "M-p") (lambda ()(interactive)(previous-line 5)))
-     (global-set-key (kbd "C-c C-SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))
-     (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/usr/bin/zsh")))
-     (global-set-key (kbd "C-x g") 'magit-status)
-     (global-set-key (kbd "C-s") 'helm-swoop)
-     (global-set-key (kbd "C-x f") 'helm-projectile-find-file)
-     (global-set-key (kbd "C-x M-m") 'mu4e)
-     (global-set-key (kbd "C-x a") 'org-agenda)
-     (global-set-key (kbd "C-=") 'er/expand-region)
+  (global-set-key (kbd "M-n") (lambda ()(interactive)(next-line 5)))
+  (global-set-key (kbd "M-p") (lambda ()(interactive)(previous-line 5)))
+  (global-set-key (kbd "C-c C-SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))
+  (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/usr/bin/zsh")))
+  (global-set-key (kbd "C-x g") 'magit-status)
+  (global-set-key (kbd "C-s") 'helm-swoop)
+  (global-set-key (kbd "C-x f") 'helm-projectile-find-file)
+  (global-set-key (kbd "C-x M-m") 'mu4e)
+  (global-set-key (kbd "C-x a") 'org-agenda)
+  (global-set-key (kbd "C-=") 'er/expand-region)
+  (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
+  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 #+END_SRC
 

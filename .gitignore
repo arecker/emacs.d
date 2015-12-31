@@ -6,3 +6,7 @@ README.el
 eshell
 /tramp
 /.org-id-locations
+/healthgrades.el
+/.mc-lists.el
+/url/cookies
+/recentf

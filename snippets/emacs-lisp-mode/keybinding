@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: keybinding
+# key: global-key
+# binding: direct-keybinding
+# --
+(global-set-key (kbd "") ')

@@ -16,6 +16,7 @@
 (depends-on "js2-mode")
 (depends-on "magit")
 (depends-on "markdown-mode")
+(depends-on "multiple-cursors")
 (depends-on "ox-reveal")
 (depends-on "projectile")
 (depends-on "sql-indent")

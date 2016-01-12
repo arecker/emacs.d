@@ -138,31 +138,36 @@ Indirect buffers for selected region
 
 ** Style
 
-*** Font
-
-Default on inconsolata.  Fall back to Dejavu for Unicode.
-
-#+BEGIN_SRC emacs-lisp
-      (set-face-attribute 'default nil
-                          :family "Inconsolata"
-                          :height 150
-                          :weight 'normal
-                          :width 'normal)
-      (when (functionp 'set-fontset-font)
-        (set-fontset-font "fontset-default"
-                          'unicode
-                          (font-spec :family "DejaVu Sans Mono"
-                                     :width 'normal
-                                     :size 15
-                                     :weight 'normal)))
-#+END_SRC
-
 *** Theme
 
 This changes frequently.
 
 #+BEGIN_SRC emacs-lisp
-    (load-theme 'darktooth t)
+  (load-theme 'gruvbox t)
+#+END_SRC
+
+*** Font
+
+Default on inconsolata.  Fall back to Dejavu for Unicode.
+
+#+BEGIN_SRC emacs-lisp
+  (set-face-attribute 'default nil
+                      :family "Inconsolata"
+                      :height 150
+                      :weight 'normal
+                      :width 'normal)
+  (set-face-attribute 'mode-line nil
+                      :family "Inconsolata"
+                      :height 150
+                      :weight 'normal
+                      :width 'normal)
+  (when (functionp 'set-fontset-font)
+    (set-fontset-font "fontset-default"
+                      'unicode
+                      (font-spec :family "Consolas"
+                                 :width 'normal
+                                 :size 15
+                                 :weight 'normal)))
 #+END_SRC
 
 ** Terminal
@@ -449,8 +454,7 @@ Org-reveal
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "M-n") (lambda ()(interactive)(next-line 5)))
   (global-set-key (kbd "M-p") (lambda ()(interactive)(previous-line 5)))
-  (global-set-key (kbd "C-c C-SPC") '(lambda () (interactive) (ansi-term "/bin/bash")))
-  (global-set-key (kbd "C-c SPC") '(lambda () (interactive) (ansi-term "/usr/bin/zsh")))
+  (global-set-key (kbd "C-x t") '(lambda () (interactive) (ansi-term "/bin/bash")))t
   (global-set-key (kbd "C-x g") 'magit-status)
   (global-set-key (kbd "C-s") 'helm-swoop)
   (global-set-key (kbd "C-x f") 'helm-projectile-find-file)
@@ -462,5 +466,6 @@ Org-reveal
   (global-set-key (kbd "C->") 'mc/mark-next-like-this)
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+  (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
+  (global-set-key (kbd "C-x e") 'eval-region)
 #+END_SRC
-

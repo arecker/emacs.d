@@ -108,32 +108,32 @@ Use the system PATH
 Indirect buffers for selected region
 
 #+BEGIN_SRC emacs-lisp
-     (defvar indirect-mode-name nil
-       "Mode to set for indirect buffers.")
-     (make-variable-buffer-local 'indirect-mode-name)
-     (defun indirect-region (start end)
-       "Edit the current region in another buffer.
-         If the buffer-local variable `indirect-mode-name' is not set, prompt
-         for mode name to choose for the indirect buffer interactively.
-         Otherwise, use the value of said variable as argument to a funcall."
-       (interactive "r")
-       (let ((buffer-name (generate-new-buffer-name "*indirect*"))
-             (mode
-              (if (not indirect-mode-name)
-                  (setq indirect-mode-name
-                        (intern
-                         (completing-read
-                          "Mode: "
-                          (mapcar (lambda (e)
-                                    (list (symbol-name e)))
-                                  (apropos-internal "-mode$" 'commandp))
-                          nil t)))
-                indirect-mode-name)))
-         (pop-to-buffer (make-indirect-buffer (current-buffer) buffer-name))
-         (funcall mode)
-         (narrow-to-region start end)
-         (goto-char (point-min))
-         (shrink-window-if-larger-than-buffer)))
+  (defvar indirect-mode-name nil
+    "Mode to set for indirect buffers.")
+  (make-variable-buffer-local 'indirect-mode-name)
+  (defun indirect-region (start end)
+    "Edit the current region in another buffer.
+      If the buffer-local variable `indirect-mode-name' is not set, prompt
+      for mode name to choose for the indirect buffer interactively.
+      Otherwise, use the value of said variable as argument to a funcall."
+    (interactive "r")
+    (let ((buffer-name (generate-new-buffer-name "*indirect*"))
+          (mode
+           (if (not indirect-mode-name)
+               (setq indirect-mode-name
+                     (intern
+                      (completing-read
+                       "Mode: "
+                       (mapcar (lambda (e)
+                                 (list (symbol-name e)))
+                               (apropos-internal "-mode$" 'commandp))
+                       nil t)))
+             indirect-mode-name)))
+      (pop-to-buffer (make-indirect-buffer (current-buffer) buffer-name))
+      (funcall mode)
+      (narrow-to-region start end)
+      (goto-char (point-min))
+      (shrink-window-if-larger-than-buffer)))
 #+END_SRC
 
 ** Style
@@ -195,6 +195,12 @@ Set UTF-8
                (function
                 (lambda ()
                   (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))))
+#+END_SRC
+
+** TRAMP
+
+#+BEGIN_SRC emacs-lisp
+  (set-default 'tramp-default-proxies-alist (quote ((".*" "\\`root\\'" "/ssh:%h:"))))
 #+END_SRC
 
 ** Helm
@@ -297,8 +303,20 @@ Elpy suite
 Indent sql
 
 #+BEGIN_SRC emacs-lisp
-      (eval-after-load "sql"
-        (load-library "sql-indent"))
+  (eval-after-load "sql"
+    (load-library "sql-indent"))
+  (defun sql-add-newline-first (output)
+    "Add newline to beginning of OUTPUT for `comint-preoutput-filter-functions'"
+    (concat "\n" output))
+
+  (defun sqli-add-hooks ()
+    "Add hooks to `sql-interactive-mode-hook'."
+    (interactive)
+    (add-hook 'comint-preoutput-filter-functions
+              'sql-add-newline-first
+              'toggle-truncate-lines))
+
+  (add-hook 'sql-interactive-mode-hook 'sqli-add-hooks)
 #+END_SRC
 
 *** Text
@@ -411,7 +429,16 @@ Print a wilfred quote in the scratch buffer using the [[https://www.npmjs.com/pa
 ** Org Mode
 
 #+BEGIN_SRC emacs-lisp
-   (setq org-agenda-files (quote ("~/org")))
+  (setq org-agenda-files (quote ("~/org")))
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (ruby . t)
+     (sh . t)
+     (java . t)
+     (js . t)
+     (C . t)))
 #+END_SRC
 
 Org-reveal

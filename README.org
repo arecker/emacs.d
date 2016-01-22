@@ -495,4 +495,7 @@ Org-reveal
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
   (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
   (global-set-key (kbd "C-x e") 'eval-region)
+  (global-set-key (kbd "C-c M-i") 'helm-imenu)
+  (global-set-key (kbd "C-x C-f") 'helm-find-files)
+  (global-set-key (kbd "M-x") 'helm-M-x)
 #+END_SRC

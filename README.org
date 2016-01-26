@@ -402,6 +402,15 @@ Render HTML
         (setq mu4e-html2text-command "html2text -utf8 -width 72"))
 #+END_SRC
 
+*** gnus
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-select-method 
+        '(nnmaildir "gmail" 
+                    (directory "~/Maildir")
+                    (directory-files nnheader-directory-files-safe) 
+                    (get-new-mail nil)))
+#+END_SRC
 ** Services
 
 Start the emacs server
@@ -450,11 +459,12 @@ Org-reveal
 ** Registers
 
 #+BEGIN_SRC emacs-lisp
-     (set-register ?e '(file . "~/.emacs.d/README.org"))
-     (set-register ?g '(file . "~/git"))
-     (set-register ?o '(file . "~/org"))
-     (set-register ?w '(file . "~/org/work.org"))
-     (set-register ?d '(file . "~/Desktop"))
+  (set-register ?e '(file . "~/.emacs.d/README.org"))
+  (set-register ?g '(file . "~/git"))
+  (set-register ?o '(file . "~/org"))
+  (set-register ?p '(file . "~/org/personal.org"))
+  (set-register ?w '(file . "~/org/work.org"))
+  (set-register ?d '(file . "~/Desktop"))
 #+END_SRC
 
 ** Functions
@@ -479,9 +489,9 @@ Org-reveal
 ** Key Bindings
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "M-n") (lambda ()(interactive)(next-line 5)))
+  (global-set-key (kbd "M-n") (lambda ()(interactive)(next-line 5))) ;
   (global-set-key (kbd "M-p") (lambda ()(interactive)(previous-line 5)))
-  (global-set-key (kbd "C-x t") '(lambda () (interactive) (ansi-term "/bin/bash")))t
+  (global-set-key (kbd "C-x t") '(lambda () (interactive) (ansi-term "/bin/bash")))
   (global-set-key (kbd "C-x g") 'magit-status)
   (global-set-key (kbd "C-s") 'helm-swoop)
   (global-set-key (kbd "C-x f") 'helm-projectile-find-file)
@@ -498,4 +508,5 @@ Org-reveal
   (global-set-key (kbd "C-c M-i") 'helm-imenu)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "M-x") 'helm-M-x)
+  (global-set-key (kbd "M-;") 'comment-dwim-2)
 #+END_SRC

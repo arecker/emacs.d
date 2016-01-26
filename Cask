@@ -1,6 +1,7 @@
 (source gnu)
 (source melpa)
 
+(depends-on "comment-dwim-2")
 (depends-on "company")
 (depends-on "company-tern")
 (depends-on "darktooth-theme")

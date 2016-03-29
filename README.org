@@ -425,6 +425,16 @@ Org-reveal
     (interactive)
     (shell-command
      (expand-file-name "$HOME/bin/git_org.sh" "/")))
+
+  (defun helm-execute-selection-action ()
+    "Hack to fix a helm bug"
+    "Execute current action."
+    (helm-log-run-hook 'helm-before-action-hook)
+    ;; Position can be change when `helm-current-buffer'
+    ;; is split, so jump to this position before executing action.
+    (helm-current-position 'restore)
+    (prog1 (helm-execute-selection-action-1)
+      (helm-log-run-hook 'helm-after-action-hook)))
 #+END_SRC
 
 ** Key Bindings
@@ -436,7 +446,6 @@ Org-reveal
   (global-set-key (kbd "C-x g") 'magit-status)
   (global-set-key (kbd "C-s") 'helm-swoop)
   (global-set-key (kbd "C-x f") 'helm-projectile-find-file)
-  (global-set-key (kbd "C-x M-m") 'mu4e)
   (global-set-key (kbd "C-x a") 'org-agenda)
   (global-set-key (kbd "C-=") 'er/expand-region)
   (global-set-key (kbd "C-x C-b") 'helm-buffers-list)

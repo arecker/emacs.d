@@ -352,65 +352,6 @@ Kill message buffer after sending
    (setq message-kill-buffer-on-exit t)
 #+END_SRC
 
-*** mu4e
-
-Add mu4e library, which should be in ~/home/$USER/git/mu~.
-Otherwise, the ~mu4e~ package should be installed somewhere in the system.
-
-#+BEGIN_SRC emacs-lisp
-    (add-to-list 'load-path "~/git/mu/mu4e")
-    (require 'mu4e)
-#+END_SRC
-
-Declare Maildir and folders
-
-#+BEGIN_SRC emacs-lisp
-      (setq mu4e-maildir "~/Maildir")
-      (setq mu4e-drafts-folder "/drafts")
-      (setq mu4e-sent-folder   "/sent")
-      (setq mu4e-trash-folder  "/trash")
-      (setq mu4e-refile-folder "/archives")
-#+END_SRC
-
-Declare folder shortcuts
-
-#+BEGIN_SRC emacs-lisp
-    (setq mu4e-maildir-shortcuts
-        '( ("/inbox" . ?i)
-           ("/sent" . ?s)
-           ("/trash" . ?t)
-           ("/archives" . ?a)))
-#+END_SRC
-
-Don't save sent messages (gmail takes care of that)
-
-#+BEGIN_SRC emacs-lisp
-    (setq mu4e-sent-messages-behavior 'delete)
-#+END_SRC
-
-Set update command
-
-#+BEGIN_SRC emacs-lisp
-    (setq mu4e-get-mail-command "offlineimap")
-#+END_SRC
-
-Render HTML
-
-#+BEGIN_SRC emacs-lisp
-      (if (eq system-type 'darwin)
-          (setq mu4e-html2text-command "textutil -stdin -format html -convert txt -stdout")
-        (setq mu4e-html2text-command "html2text -utf8 -width 72"))
-#+END_SRC
-
-*** gnus
-
-#+BEGIN_SRC emacs-lisp
-  (setq gnus-select-method 
-        '(nnmaildir "gmail" 
-                    (directory "~/Maildir")
-                    (directory-files nnheader-directory-files-safe) 
-                    (get-new-mail nil)))
-#+END_SRC
 ** Services
 
 Start the emacs server

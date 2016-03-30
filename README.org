@@ -1,121 +1,286 @@
 #+TITLE: Emacs Config
 #+AUTHOR: Alex Recker
 #+EMAIL: alex@reckerfamily.com
-#+STARTUP: content indent
+#+STARTUP: indent hidestars
 
-This is my literate emacs config.
+* About
 
-* Installing
+  This is my literate emacs configuration.  To use my emacs
+  environment, first clone this repository.
 
-First, clone this repo as your ~.emacs.d~ directory
+  #+BEGIN_SRC sh
+      git clone https://github.com/arecker/emacs.d ~/.emacs.d[
+  #+END_SRC
 
-#+BEGIN_SRC shell
-  $ git clone https://github.com/arecker/emacs.d ~/.emacs.d
-#+END_SRC
+  Next, [[http://cask.readthedocs.org/en/latest/guide/installation.html][install cask]] and use it to bootstrap the config with
+  dependencies.
 
-Next, [[http://cask.readthedocs.org/en/latest/guide/installation.html][install cask]] and use it to bootstrap the config with dependencies
+  #+BEGIN_SRC sh
+    cd ~/.emacs.d
+    ~/.cask/bin/cask install
+  #+END_SRC
 
-#+BEGIN_SRC shell
-  $ cd ~/.emacs.d
-  $ ~/.cask/bin/cask install
-#+END_SRC
+  Next, install the python development packages to your global
+  environment.
 
-Install the python dependencies listed in ~requirements.txt~
+  #+BEGIN_SRC sh
+      sudo pip install -r requirements.txt
+  #+END_SRC
 
-#+BEGIN_SRC shell
-  $ sudo pip install ~/.emacs.d/requirements.txt
-#+END_SRC
+  Finally, install the [[https://www.npmjs.com/package/tern][tern]] package globally via ~npm~.
 
-Finally, install ~tern~ globally.
+  #+BEGIN_SRC sh
+      sudo npm install -g tern
+  #+END_SRC
 
-#+BEGIN_SRC shell
-  sudo npm install -g tern
-#+END_SRC
+* User Details
 
-Then load up emacs.  Everything should pretty much just work from there.
-
-* Configuration
-
-** User Details
-
-#+BEGIN_SRC emacs-lisp
-   (setq user-full-name "Alex Recker")
-   (setq user-mail-address "alex@reckerfamily.com")
-#+END_SRC
-
-** Miscellaneous Tweaks
-
-First, we disable the splash screen, auto save, auto backups, and other noisy things.
+Tell emacs who you are
 
 #+BEGIN_SRC emacs-lisp
-   (setq backup-inhibited 't
-         auto-save-default 'nil
-         visible-bell 'nil
-         inhibit-startup-message 't
-         inhibit-startup-echo-area-message '"")
-   (menu-bar-mode -1)
-   (tool-bar-mode -1)
-   (toggle-scroll-bar -1)
+  (setq user-full-name "Alex Recker"
+        user-mail-address "alex@reckerfamily.com")
 #+END_SRC
 
-Tabs are evil.
+* Startup
+
+Just show the ~*scratch*~ buffer on startup.
 
 #+BEGIN_SRC emacs-lisp
-   (setq-default indent-tabs-mode nil)
+  (setq inhibit-startup-message 1)
 #+END_SRC
 
-Nicer word wrap
+If the [[https://github.com/arecker/wilfred-say][wilfred-say]] program is intsalled, print the output to the
+~*scratch*~ buffer on startup.
 
 #+BEGIN_SRC emacs-lisp
-   (global-visual-line-mode t)
+  (defun recker/wilfred-say ()
+    (when (executable-find "wilfred-say")
+      (setq initial-scratch-message
+            (concat
+             (mapconcat
+              (lambda (x) (concat ";; " x))
+              (split-string (shell-command-to-string "wilfred-say") "\n"
+                            t) "\n")
+             "\n\n"))))
+  (recker/wilfred-say)
 #+END_SRC
 
-This is a magic function that hides all minor modes from the modeline.
+Start some miscellaneous global settings and plugins.
 
 #+BEGIN_SRC emacs-lisp
-     (define-minor-mode minor-mode-blackout-mode
-       "Hides minor modes from the mode line."
-       t)
-     (catch 'done
-       (mapc (lambda (x)
-               (when (and (consp x)
-                          (equal (cadr x) '("" minor-mode-alist)))
-                 (let ((original (copy-sequence x)))
-                   (setcar x 'minor-mode-blackout-mode)
-                   (setcdr x (list "" original)))
-                 (throw 'done t)))
-             mode-line-modes))
+  (defun recker/after-init-hook ()
+    (elpy-enable)
+    (global-company-mode)
+    (global-git-gutter-mode 1)
+    (global-hl-line-mode 1)
+    (global-whitespace-cleanup-mode 1)
+    (helm-mode 1)
+    (helm-projectile-on)
+    (projectile-global-mode))
+  (add-hook 'after-init-hook 'recker/after-init-hook)
 #+END_SRC
 
-Highlight the current line.
+* UI
+
+I prefer to hide a lot of the default UI components - like the
+toolbar, menu bar, and scrollbar.
 
 #+BEGIN_SRC emacs-lisp
-   (global-hl-line-mode t)
+  (defun recker/hide-ui-elements ()
+    (menu-bar-mode 0)
+    (tool-bar-mode 0)
+    (toggle-scroll-bar 0))
+  (recker/hide-ui-elements)
 #+END_SRC
 
-Use the system PATH
+I also like to hide minor modes from the modeline.  I have a lot of
+plugins, so otherwise that looks cluttered.
 
 #+BEGIN_SRC emacs-lisp
-     (defun set-exec-path-from-shell-PATH ()
-       (let ((path-from-shell (shell-command-to-string "$SHELL -c 'echo $PATH'")))
-         (setenv "PATH" path-from-shell)
-         (setq exec-path (split-string path-from-shell path-separator))))
-     (when window-system (set-exec-path-from-shell-PATH))
-     (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin" ":/Library/TeX/texbin"))
-     (setq exec-path (append exec-path '("/usr/local/bin")))
+  (define-minor-mode minor-mode-blackout-mode
+    "Hides minor modes from the mode line."
+    t)
+  (catch 'done
+    (mapc (lambda (x)
+            (when (and (consp x)
+                       (equal (cadr x) '("" minor-mode-alist)))
+              (let ((original (copy-sequence x)))
+                (setcar x 'minor-mode-blackout-mode)
+                (setcdr x (list "" original)))
+              (throw 'done t)))
+          mode-line-modes))
 #+END_SRC
 
-Indirect buffers for selected region
+Load the theme.  This changes frequently.
 
 #+BEGIN_SRC emacs-lisp
+  (load-theme 'zenburn t)
+#+END_SRC
+
+* Term
+
+Make sure lines aren't hilighted in term mode.
+
+#+BEGIN_SRC emacs-lisp
+  (defun recker/term-mode-hook ()
+    (global-hl-line-mode 0))
+  (add-hook 'term-mode-hook 'recker/term-mode-hook)
+#+END_SRC
+
+Also, close the buffer when the term exits.
+
+#+BEGIN_SRC emacs-lisp
+  (defadvice term-handle-exit
+      (after term-kill-buffer-on-exit activate)
+    (kill-buffer))
+#+END_SRC
+
+Default on the bash shell.
+
+#+BEGIN_SRC emacs-lisp
+  (defun recker/ansi-term ()
+    (interactive)
+    (ansi-term "/bin/bash"))
+#+END_SRC
+
+* Text
+
+Disable auto-save, auto-backup and tabs.  Tabs can be inserted using
+~C-q TAB~
+
+#+BEGIN_SRC emacs-lisp
+  (setq backup-inhibited t
+        auto-save-default 0
+        indent-tabs-mode 0)
+#+END_SRC
+
+By default for any mode, auto fill and enable spell checking.  Also,
+use nicer word wrapping and highlight the current line.
+
+Also enables some global plugins.
+
+#+BEGIN_SRC emacs-lisp
+  (defun recker/text-mode-hook ()
+    (auto-fill-mode 1)
+    (flyspell-mode 1)
+    (global-visual-line-mode 1))
+  (add-hook 'text-mode-hook 'recker/text-mode-hook)
+#+END_SRC
+
+* HTML
+
+Associate web mode and emmet mode
+
+#+BEGIN_SRC emacs-lisp
+  (require 'web-mode)
+
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+
+  (setq web-mode-markup-indent-offset 2
+        web-mode-enable-current-column-highlight t)
+
+  (defun recker/web-mode-hook ()
+    (emmet-mode)
+    (auto-fill-mode 0))
+
+  (add-hook 'web-mode-hook 'recker/web-mode-hook)
+#+END_SRC
+
+* JavaScript
+
+Associate js2-mode and tern
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
+  (add-hook 'js-mode-hook 'js2-minor-mode)
+  (defun recker/js-mode-hook ()
+    (setq company-tern-property-marker "")
+    (add-to-list 'company-backends 'company-tern)
+    (tern-mode t))
+  (add-hook 'js-mode-hook 'recker/js-mode-hook)
+#+END_SRC
+
+* YAML
+
+Add yaml mode and associate it to file extensions.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+  (add-to-list 'auto-mode-alist '("\\.sls$" . yaml-mode))
+#+END_SRC
+
+* Org
+
+Set the org root at ~/org
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-files (quote ("~/org")))
+#+END_SRC
+
+Enable the languages I dabble in.
+
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (ruby . t)
+     (sh . t)
+     (java . t)
+     (js . t)
+     (C . t)))
+#+END_SRC
+
+* Email
+
+I'd like to be able to send an email through gmail if I need to.
+
+#+BEGIN_SRC emacs-lisp
+  (setq message-send-mail-function 'smtpmail-send-it
+        smtpmail-stream-type 'starttls
+        smtpmail-default-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-service 587)
+#+END_SRC
+
+* Helm
+
+Some customizations for the [[https://github.com/emacs-helm/helm][helm]] plugin.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'helm)
+  (setq helm-M-x-fuzzy-match t
+        helm-autoresize-mode t
+        helm-buffers-fuzzy-matching t
+        helm-recentf-fuzzy-match t
+        projectile-completion-system 'helm)
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
+  (define-key helm-map (kbd "C-z")  'helm-select-action)
+#+END_SRC
+
+* Functions
+
+Various interactive functions.
+
+#+BEGIN_SRC emacs-lisp
+  (defun recker/sudo ()
+    "Edit the current file as root"
+    (interactive)
+    (if (buffer-file-name)
+        (let ((file-name (buffer-file-name)))
+          (kill-buffer (current-buffer))
+          (find-file (concat "/sudo::" file-name))
+          (message "now editing %s as root" file-name))))
+
   (defvar indirect-mode-name nil
     "Mode to set for indirect buffers.")
   (make-variable-buffer-local 'indirect-mode-name)
-  (defun indirect-region (start end)
+  (defun recker/indirect-region (start end)
     "Edit the current region in another buffer.
-      If the buffer-local variable `indirect-mode-name' is not set, prompt
-      for mode name to choose for the indirect buffer interactively.
-      Otherwise, use the value of said variable as argument to a funcall."
+        If the buffer-local variable `indirect-mode-name' is not set, prompt
+        for mode name to choose for the indirect buffer interactively.
+        Otherwise, use the value of said variable as argument to a funcall."
     (interactive "r")
     (let ((buffer-name (generate-new-buffer-name "*indirect*"))
           (mode
@@ -134,329 +299,47 @@ Indirect buffers for selected region
       (narrow-to-region start end)
       (goto-char (point-min))
       (shrink-window-if-larger-than-buffer)))
-#+END_SRC
 
-** Style
-
-*** Theme
-
-This changes frequently.
-
-#+BEGIN_SRC emacs-lisp
-  (load-theme 'gruvbox t)
-#+END_SRC
-
-*** Font
-
-Default on inconsolata.  Fall back to Dejavu for Unicode.
-
-#+BEGIN_SRC emacs-lisp
-  (set-face-attribute 'default nil
-                      :family "Inconsolata"
-                      :height 150
-                      :weight 'normal
-                      :width 'normal)
-  (set-face-attribute 'mode-line nil
-                      :family "Inconsolata"
-                      :height 150
-                      :weight 'normal
-                      :width 'normal)
-  (when (functionp 'set-fontset-font)
-    (set-fontset-font "fontset-default"
-                      'unicode
-                      (font-spec :family "Consolas"
-                                 :width 'normal
-                                 :size 15
-                                 :weight 'normal)))
-#+END_SRC
-
-** Terminal
-
-Don't highlight the current line in a terminal.
-
-#+BEGIN_SRC emacs-lisp
-   (add-hook 'term-mode-hook
-             (function
-              (lambda ()
-                (global-hl-line-mode 0))))
-#+END_SRC
-
-Kill the buffer when the term exits.
-
-#+BEGIN_SRC emacs-lisp
-   (defadvice term-handle-exit
-       (after term-kill-buffer-on-exit activate)
-     (kill-buffer))
-#+END_SRC
-
-Set UTF-8
-#+BEGIN_SRC emacs-lisp
-     (add-hook 'term-exec-hook
-               (function
-                (lambda ()
-                  (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))))
-#+END_SRC
-
-** TRAMP
-
-#+BEGIN_SRC emacs-lisp
-  (set-default 'tramp-default-proxies-alist (quote ((".*" "\\`root\\'" "/ssh:%h:"))))
-#+END_SRC
-
-** Helm
-
-#+BEGIN_SRC emacs-lisp
-  (require 'helm)
-  (require 'helm-config)
-  (helm-mode 1)
-  (setq helm-M-x-fuzzy-match t
-        helm-autoresize-mode t
-        helm-buffers-fuzzy-matching t
-        helm-recentf-fuzzy-match t
-        projectile-completion-system 'helm)
-  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
-  (define-key helm-map (kbd "C-z")  'helm-select-action)
-#+END_SRC
-
-** Projectile
-
-#+BEGIN_SRC emacs-lisp
-   (projectile-global-mode)
-   (setq projectile-completion-system 'helm)
-   (helm-projectile-on)
-#+END_SRC
-
-** Completion
-
-#+BEGIN_SRC emacs-lisp
-   (add-hook 'after-init-hook 'global-company-mode)
-#+END_SRC
-
-** Miscellaneous Tools
-
-Git Gutter
-
-#+BEGIN_SRC emacs-lisp
-   (global-git-gutter-mode +1)
-#+END_SRC
-
-Whitespace cleanup
-
-#+BEGIN_SRC emacs-lisp
-   (global-whitespace-cleanup-mode 1)
-#+END_SRC
-
-** Major Modes
-
-*** HTML
-
-#+BEGIN_SRC emacs-lisp
-    (require 'web-mode)
-    (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-    (setq web-mode-markup-indent-offset 2)
-    (setq web-mode-enable-current-column-highlight t)
-    (add-hook 'web-mode-hook 'emmet-mode)
-#+END_SRC
-
-*** JavaScript
-
-#+BEGIN_SRC emacs-lisp
-      (add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
-      (add-hook 'js-mode-hook 'js2-minor-mode)
-      (add-hook 'js-mode-hook (lambda()
-                                (setq company-tern-property-marker "")
-                                (add-to-list 'company-backends 'company-tern)
-                                (tern-mode t)))
-#+END_SRC
-
-*** Markdown
-
-#+BEGIN_SRC emacs-lisp
-      (autoload 'markdown-mode "markdown-mode"
-         "Major mode for editing Markdown files" t)
-      (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
-      (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-      (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-      (add-hook 'markdown-mode-hook 'auto-fill-function)
-      (add-hook 'markdown-mode-hook 'flyspell-mode)
-#+END_SRC
-
-*** Python
-    
-Elpy suite
-
-#+BEGIN_SRC emacs-lisp
-      (elpy-enable)
-      (defalias 'workon 'pyvenv-workon)
-#+END_SRC
-
-*** SQL
-    
-Indent sql
-
-#+BEGIN_SRC emacs-lisp
-  (eval-after-load "sql"
-    (load-library "sql-indent"))
-  (defun sql-add-newline-first (output)
-    "Add newline to beginning of OUTPUT for `comint-preoutput-filter-functions'"
-    (concat "\n" output))
-
-  (defun sqli-add-hooks ()
-    "Add hooks to `sql-interactive-mode-hook'."
+  (defun recker/jump-next-line ()
     (interactive)
-    (add-hook 'comint-preoutput-filter-functions
-              'sql-add-newline-first
-              'toggle-truncate-lines))
+    (next-line 5))
 
-  (add-hook 'sql-interactive-mode-hook 'sqli-add-hooks)
+  (defun recker/jump-previous-line ()
+    (interactive)
+    (previous-line 5))
 #+END_SRC
 
-*** Text
+* Registers
 
-Wrap at 70 characters for note taking modes.
-
-#+BEGIN_SRC emacs-lisp
-      (add-hook 'text-mode-hook 'turn-on-auto-fill)
-      (add-hook 'text-mode-hook 'flyspell-mode)
-#+END_SRC
-
-*** YAML
+These are bookmarked files and folders.
 
 #+BEGIN_SRC emacs-lisp
-    (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-#+END_SRC
-    
-** Mail
-
-Use Gmail for outgoing mail
-
-#+BEGIN_SRC emacs-lisp
-   (setq message-send-mail-function 'smtpmail-send-it
-       smtpmail-stream-type 'starttls
-       smtpmail-default-smtp-server "smtp.gmail.com"
-       smtpmail-smtp-server "smtp.gmail.com"
-       smtpmail-smtp-service 587)
-#+END_SRC
-
-Kill message buffer after sending
-
-#+BEGIN_SRC emacs-lisp
-   (setq message-kill-buffer-on-exit t)
-#+END_SRC
-
-** Services
-
-Start the emacs server
-
-#+BEGIN_SRC emacs-lisp
-   (load "server")
-   (unless (server-running-p) (server-start))
-#+END_SRC
-
-** Fun
-
-Print a wilfred quote in the scratch buffer using the [[https://www.npmjs.com/package/wilfred-say][wilfred-say]] command.
-
-#+BEGIN_SRC emacs-lisp
-     (when (executable-find "/usr/local/bin/wilfred-say")
-       (setq initial-scratch-message
-             (concat
-              (mapconcat
-               (lambda (x) (concat ";; " x))
-               (split-string (shell-command-to-string "/usr/local/bin/wilfred-say") "\n"
-                             t) "\n")
-              "\n\n")))
-#+END_SRC
-
-** Org Mode
-
-#+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files (quote ("~/org")))
-
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((python . t)
-     (ruby . t)
-     (sh . t)
-     (java . t)
-     (js . t)
-     (C . t)))
-#+END_SRC
-
-Org-reveal
-
-#+BEGIN_SRC emacs-lisp
-     (require 'ox-reveal)
-#+END_SRC
-
-** Registers
-
-#+BEGIN_SRC emacs-lisp
+  (set-register ?d '(file . "~/Desktop"))
   (set-register ?e '(file . "~/.emacs.d/README.org"))
   (set-register ?g '(file . "~/git"))
   (set-register ?o '(file . "~/org"))
   (set-register ?p '(file . "~/org/personal.org"))
   (set-register ?w '(file . "~/org/work.org"))
-  (set-register ?d '(file . "~/Desktop"))
 #+END_SRC
 
-** Functions
+* Keybindings
+
+All keybindings go here.
 
 #+BEGIN_SRC emacs-lisp
-  (defun sudo ()
-    "Edit the current file as root"
-    (interactive)
-    (if (buffer-file-name)
-        (let ((file-name (buffer-file-name)))
-          (kill-buffer (current-buffer))
-          (find-file (concat "/sudo::" file-name))
-          (message "now editing %s as root" file-name))))
-
-  (defun org-git-push ()
-    "Commits and pushes changes in org directory"
-    (interactive)
-    (shell-command
-     (expand-file-name "$HOME/bin/git_org.sh" "/")))
-
-  (defun helm-execute-selection-action ()
-    "Hack to fix a helm bug"
-    "Execute current action."
-    (helm-log-run-hook 'helm-before-action-hook)
-    ;; Position can be change when `helm-current-buffer'
-    ;; is split, so jump to this position before executing action.
-    (helm-current-position 'restore)
-    (prog1 (helm-execute-selection-action-1)
-      (helm-log-run-hook 'helm-after-action-hook)))
-#+END_SRC
-
-** Key Bindings
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "M-n") (lambda ()(interactive)(next-line 5))) ;
-  (global-set-key (kbd "M-p") (lambda ()(interactive)(previous-line 5)))
-  (global-set-key (kbd "C-x t") '(lambda () (interactive) (ansi-term "/bin/bash")))
-  (global-set-key (kbd "C-x g") 'magit-status)
-  (global-set-key (kbd "C-s") 'helm-swoop)
-  (global-set-key (kbd "C-x f") 'helm-projectile-find-file)
-  (global-set-key (kbd "C-x a") 'org-agenda)
-  (global-set-key (kbd "C-=") 'er/expand-region)
-  (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
-  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-  (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
-  (global-set-key (kbd "C-x e") 'eval-region)
+  (global-set-key (kbd "C-=") 'er/expand-region)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
   (global-set-key (kbd "C-c M-i") 'helm-imenu)
+  (global-set-key (kbd "C-s") 'helm-swoop)
+  (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "M-x") 'helm-M-x)
+  (global-set-key (kbd "C-x f") 'helm-projectile-find-file)
+  (global-set-key (kbd "C-x g") 'magit-status)
+  (global-set-key (kbd "C-x t") 'recker/ansi-term)
   (global-set-key (kbd "M-;") 'comment-dwim-2)
+  (global-set-key (kbd "M-n") 'recker/jump-next-line)
+  (global-set-key (kbd "M-p") 'recker/jump-previous-line)
+  (global-set-key (kbd "M-x") 'helm-M-x)
+  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
 #+END_SRC

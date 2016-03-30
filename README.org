@@ -216,6 +216,16 @@ Associate js2-mode and tern
   (add-hook 'js-mode-hook 'recker/js-mode-hook)
 #+END_SRC
 
+* XML
+
+XML hook.  Mostly just disable auto-fill-mode.
+
+#+BEGIN_SRC emacs-lisp
+  (defun recker/nxml-mode-hook ()
+    (auto-fill-mode 0))
+  (add-hook 'nxml-mode-hook 'recker/nxml-mode-hook)
+#+END_SRC
+
 * YAML
 
 Add yaml mode and associate it to file extensions.

@@ -84,7 +84,8 @@ Start some miscellaneous global settings and plugins.
     (global-whitespace-cleanup-mode 1)
     (helm-mode 1)
     (helm-projectile-on)
-    (projectile-global-mode))
+    (projectile-global-mode)
+    (server-start))
   (add-hook 'after-init-hook 'recker/after-init-hook)
 #+END_SRC
 

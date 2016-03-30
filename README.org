@@ -118,6 +118,13 @@ Load the theme.  This changes frequently.
   (load-theme 'zenburn t)
 #+END_SRC
 
+Make the font bigger on OS X
+
+#+BEGIN_SRC emacs-lisp
+  (if (eq system-type 'darwin)
+      (set-face-attribute 'default nil :height 150))
+#+END_SRC
+
 * Term
 
 Make sure lines aren't hilighted in term mode.

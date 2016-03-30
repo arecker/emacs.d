@@ -6,6 +6,7 @@
 (depends-on "company-tern")
 (depends-on "elpy")
 (depends-on "emmet-mode")
+(depends-on "exec-path-from-shell")
 (depends-on "expand-region")
 (depends-on "git-gutter")
 (depends-on "helm")

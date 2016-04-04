@@ -16,6 +16,7 @@
 (depends-on "magit")
 (depends-on "multiple-cursors")
 (depends-on "projectile")
+(depends-on "sql-indent")
 (depends-on "web-mode")
 (depends-on "whitespace-cleanup-mode")
 (depends-on "yaml-mode")

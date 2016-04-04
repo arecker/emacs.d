@@ -216,6 +216,15 @@ Associate js2-mode and tern
   (add-hook 'js-mode-hook 'recker/js-mode-hook)
 #+END_SRC
 
+* SQL
+
+Load the sql-indent library for sql buffers.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-after-load "sql"
+    (load-library "sql-indent"))
+#+END_SRC
+
 * XML
 
 XML hook.  Mostly just disable auto-fill-mode.

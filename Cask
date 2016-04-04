@@ -9,6 +9,7 @@
 (depends-on "exec-path-from-shell")
 (depends-on "expand-region")
 (depends-on "git-gutter")
+(depends-on "google-contacts")
 (depends-on "helm")
 (depends-on "helm-projectile")
 (depends-on "helm-swoop")

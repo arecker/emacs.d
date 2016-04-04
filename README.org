@@ -287,13 +287,12 @@ Some lisp I copied from the quickstart
 
 #+BEGIN_SRC emacs-lisp
   (setq gnus-select-method
-        '(nnimap "gmail"
+        '(nnimap "personal"
                  (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
                  (nnimap-server-port "imaps")
                  (nnimap-stream ssl)))
 
-  (setq smtpmail-smtp-service 587
-        gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+  (setq smtpmail-smtp-service 587)
 
 #+END_SRC
 
@@ -301,6 +300,38 @@ Don't archive anything.  Gmail is doing that for us.
 
 #+BEGIN_SRC emacs-lisp
   (setq gnus-message-archive-method nil)
+#+END_SRC
+
+Use contact completion in "big brother mode" from the google-contacts package
+
+#+BEGIN_SRC emacs-lisp
+  (require 'google-contacts-message)
+#+END_SRC
+
+Default on topic mode.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+#+END_SRC
+
+Rename certain folders
+
+#+BEGIN_SRC emacs-lisp
+
+  (setq gnus-group-line-format "%M%S%5y/%-5t: %uG %D\n")
+
+  (defun gnus-user-format-function-G (arg)
+    (let ((mapped-name (assoc gnus-tmp-group group-name-map)))
+      (if (null mapped-name)
+          gnus-tmp-group
+        (cdr mapped-name))))
+
+  (setq group-name-map '(("[Gmail]/Starred" . "starred")
+                         ("[Gmail]/Trash" . "trash")
+                         ("[Gmail]/Drafts" . "drafts" )
+                         ("[Gmail]/All Mail" . "archives")
+                         ("[Gmail]/Sent Mail" . "sent")
+                         ("nndraft:drafts" . "local drafts")))
 #+END_SRC
 
 * Email

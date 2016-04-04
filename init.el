@@ -1,7 +1,7 @@
 (package-initialize)
 
 (if (eq system-type 'darwin)            ;installed with homebrew
-    (require 'cask "/usr/local/share/emacs/site-lisp/cask.el")
+    (require 'cask "/usr/local/share/emacs/site-lisp/cask/cask.el")
   (require 'cask "~/.cask/cask.el"))
 (cask-initialize)
 

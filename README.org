@@ -265,13 +265,51 @@ Enable the languages I dabble in.
      (C . t)))
 #+END_SRC
 
+* GNUS
+
+Make sure you have this in your ~.authinfo~
+
+#+BEGIN_EXAMPLE
+  machine imap.gmail.com login myemail@gmail.com password SECRETPASS port imaps
+  machine smtp.gmail.com login myemail@gmail.com password SECRETPASS port 587
+#+END_EXAMPLE
+
+Hide the annoying folders that gnus likes to make.  If I'm reading it
+in emacs, I don't need it visible on the file system.
+
+#+BEGIN_SRC emacs-lisp
+  (setq message-directory "~/.mail/")
+  (setq gnus-directory "~/.news/")
+  (setq nnfolder-directory "~/.mail/archive")
+#+END_SRC
+
+Some lisp I copied from the quickstart
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-select-method
+        '(nnimap "gmail"
+                 (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
+                 (nnimap-server-port "imaps")
+                 (nnimap-stream ssl)))
+
+  (setq smtpmail-smtp-service 587
+        gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+
+#+END_SRC
+
+Don't archive anything.  Gmail is doing that for us.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-message-archive-method nil)
+#+END_SRC
+
 * Email
 
 I'd like to be able to send an email through gmail if I need to.
+These settings also work for gnus.
 
 #+BEGIN_SRC emacs-lisp
   (setq message-send-mail-function 'smtpmail-send-it
-        smtpmail-stream-type 'starttls
         smtpmail-default-smtp-server "smtp.gmail.com"
         smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 587)
@@ -341,6 +379,11 @@ Various interactive functions.
   (defun recker/jump-previous-line ()
     (interactive)
     (previous-line 5))
+
+  (defun recker/download-from-url (url name)
+    (interactive "sURL: \nsFile: ")
+    (url-copy-file url (expand-file-name name "~/Downloads/"))
+    (message (concat name " downloaded")))
 #+END_SRC
 
 * Registers

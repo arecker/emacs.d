@@ -287,10 +287,16 @@ Some lisp I copied from the quickstart
 
 #+BEGIN_SRC emacs-lisp
   (setq gnus-select-method
-        '(nnimap "personal"
-                 (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
+        '(nnimap "personal mail"
+                 (nnimap-address "imap.gmail.com")
                  (nnimap-server-port "imaps")
                  (nnimap-stream ssl)))
+
+  (setq gnus-secondary-select-methods
+        '((nnimap "work mail"
+                  (nnimap-address "outlook.office365.com")
+                  (nnimap-server-port 993)
+                  (nnimap-stream ssl))))
 
   (setq smtpmail-smtp-service 587)
 
@@ -329,19 +335,85 @@ Custom topics
                                  "[Gmail]/All Mail"
                                  "[Gmail]/Drafts"
                                  "[Gmail]/Starred")
+                                ("work mail" ;TODO: figure out pattern matching?
+                                 "nnimap+work mail:Calendar"
+                                 "nnimap+work mail:Contacts"
+                                 "nnimap+work mail:Contacts/Skype for Business Contacts"
+                                 "nnimap+work mail:Conversation History"
+                                 "nnimap+work mail:Deleted Items"
+                                 "nnimap+work mail:Junk Email"
+                                 "nnimap+work mail:Notes"
+                                 "nnimap+work mail:Outbox"
+                                 "nnimap+work mail:Outbox/VoiceOutbox"
+                                 "nnimap+work mail:RSS Subscriptions"
+                                 "nnimap+work mail:Sync Issues"
+                                 "nnimap+work mail:Sync Issues/Conflicts"
+                                 "nnimap+work mail:Sync Issues/Local Failures"
+                                 "nnimap+work mail:Sync Issues/Server Failures"
+                                 "nnimap+work mail:Tasks"
+                                 "nnimap+work mail:Journal"
+                                 "nnimap+work mail:Suggested Contacts"
+                                 "nnimap+work mail:Calendar/United States holidays"
+                                 "nnimap+work mail:INBOX"
+                                 "nnimap+work mail:Sent Items"
+                                 "nnimap+work mail:Drafts"
+                                 "nnimap+work mail:Calendar/Birthdays"
+                                 "nnimap+work mail:Clutter"
+                                 "nnimap+work mail:Archive")
                                 ("Gnus")))))
 #+END_SRC
 
-* Email
+For sending email, [[http://msmtp.sourceforge.net/][msmtp]] has the best support for multiple SMTP
+servers.  Install it, then include something resembling this in your
+~.msmtprc~
 
-I'd like to be able to send an email through gmail if I need to.
-These settings also work for gnus.
+#+BEGIN_EXAMPLE
+  defaults
+  tls on
+  auto_from on
+  logfile ~/.msmtp.log
+
+  account personal mail
+  host smtp.gmail.com
+  tls on
+  tls_certcheck off
+  auth on
+  from alex@reckerfamily.com
+  user alex@reckerfamily.com
+  password MYSECRETPASS
+  port 587
+
+  account work mail
+  host smtp.office365.com
+  tls on
+  tls_certcheck off
+  auth on
+  maildomain yourwork.com
+  from you@yourwork.com
+  user you@yourwork.com
+  password YOURSECRETWORKPASS
+  port 587
+#+END_EXAMPLE
+
+~msmtp~ is smart enough to figure out which mail server to use based
+on the "From" header of the email.  Define that, along with other
+folder sensitive over rides here.
 
 #+BEGIN_SRC emacs-lisp
-  (setq message-send-mail-function 'smtpmail-send-it
-        smtpmail-default-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-service 587)
+  (setq gnus-posting-styles
+        '((".*"             ; For all groups
+           )
+          ("work.*"
+           (signature-file "~/.emacs.d/signatures/work.txt")
+           (address "arecker@healthgrades.com")
+           )))
+#+END_SRC
+
+Then set ~msmtp~ as the default mail send function.
+
+#+BEGIN_SRC emacs-lisp
+  (setq message-send-mail-function 'message-send-mail-with-sendmail)
+  (setq sendmail-program "msmtp")
 #+END_SRC
 
 * Helm

@@ -314,24 +314,22 @@ Default on topic mode.
   (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 #+END_SRC
 
-Rename certain folders
+Custom topics
 
 #+BEGIN_SRC emacs-lisp
+  (eval-after-load 'gnus-topic
+    '(progn
+       (setq gnus-topic-topology '(("Gnus" visible)
+                                   (("personal mail" visible nil nil))))
 
-  (setq gnus-group-line-format "%M%S%5y/%-5t: %uG %D\n")
-
-  (defun gnus-user-format-function-G (arg)
-    (let ((mapped-name (assoc gnus-tmp-group group-name-map)))
-      (if (null mapped-name)
-          gnus-tmp-group
-        (cdr mapped-name))))
-
-  (setq group-name-map '(("[Gmail]/Starred" . "starred")
-                         ("[Gmail]/Trash" . "trash")
-                         ("[Gmail]/Drafts" . "drafts" )
-                         ("[Gmail]/All Mail" . "archives")
-                         ("[Gmail]/Sent Mail" . "sent")
-                         ("nndraft:drafts" . "local drafts")))
+       (setq gnus-topic-alist '(("personal mail"
+                                 "INBOX"
+                                 "[Gmail]/Sent Mail"
+                                 "[Gmail]/Trash"
+                                 "[Gmail]/All Mail"
+                                 "[Gmail]/Drafts"
+                                 "[Gmail]/Starred")
+                                ("Gnus")))))
 #+END_SRC
 
 * Email

@@ -1,6 +1,7 @@
 (source gnu)
 (source melpa)
 
+(depends-on "ace-jump-mode")
 (depends-on "comment-dwim-2")
 (depends-on "company")
 (depends-on "company-tern")
@@ -18,6 +19,8 @@
 (depends-on "multiple-cursors")
 (depends-on "projectile")
 (depends-on "sql-indent")
+(depends-on "syslog-mode")
+(depends-on "undo-tree")
 (depends-on "web-mode")
 (depends-on "whitespace-cleanup-mode")
 (depends-on "yaml-mode")

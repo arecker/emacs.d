@@ -9,7 +9,7 @@
   environment, first clone this repository.
 
   #+BEGIN_SRC sh
-      git clone https://github.com/arecker/emacs.d ~/.emacs.d[
+      git clone https://github.com/arecker/emacs.d ~/.emacs.d
   #+END_SRC
 
   Next, [[http://cask.readthedocs.org/en/latest/guide/installation.html][install cask]] and use it to bootstrap the config with
@@ -82,6 +82,7 @@ Start some miscellaneous global settings and plugins.
     (global-git-gutter-mode 1)
     (global-hl-line-mode 1)
     (global-whitespace-cleanup-mode 1)
+    (global-undo-tree-mode 1)
     (helm-mode 1)
     (helm-projectile-on)
     (projectile-global-mode)
@@ -244,6 +245,24 @@ Add yaml mode and associate it to file extensions.
   (add-to-list 'auto-mode-alist '("\\.sls$" . yaml-mode))
 #+END_SRC
 
+* Logs
+
+Add log files to syslog-mode
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.log$\\'" . syslog-mode))
+#+END_SRC
+
+* Dired
+
+Hide file details by default.
+
+#+BEGIN_SRC emacs-lisp
+  (defun recker/dired-mode-hook ()
+    (dired-hide-details-mode))
+  (add-hook 'dired-mode-hook 'recker/dired-mode-hook)
+#+END_SRC
+
 * Org
 
 Set the org root at ~/org
@@ -263,6 +282,14 @@ Enable the languages I dabble in.
      (java . t)
      (js . t)
      (C . t)))
+#+END_SRC
+
+Org mode clobbers my keybinding for ace-jump-mode.  Redefine it here
+
+#+BEGIN_SRC emacs-lisp
+  (defun recker/org-mode-hook ()
+    (local-set-key (kbd "\C-c SPC") 'ace-jump-mode))
+  (add-hook 'org-mode-hook 'recker/org-mode-hook)
 #+END_SRC
 
 * GNUS
@@ -335,7 +362,7 @@ Custom topics
                                  "[Gmail]/All Mail"
                                  "[Gmail]/Drafts"
                                  "[Gmail]/Starred")
-                                ("work mail" ;TODO: figure out pattern matching?
+                                ("work mail"
                                  "nnimap+work mail:Calendar"
                                  "nnimap+work mail:Contacts"
                                  "nnimap+work mail:Contacts/Skype for Business Contacts"
@@ -509,6 +536,7 @@ All keybindings go here.
   (global-set-key (kbd "C-=") 'er/expand-region)
   (global-set-key (kbd "C->") 'mc/mark-next-like-this)
   (global-set-key (kbd "C-c M-i") 'helm-imenu)
+  (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
   (global-set-key (kbd "C-s") 'helm-swoop)
   (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)

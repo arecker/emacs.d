@@ -226,6 +226,37 @@ Load the sql-indent library for sql buffers.
     (load-library "sql-indent"))
 #+END_SRC
 
+* GO
+
+Custom "go" settings
+
+First, install the some packages
+
+#+BEGIN_SRC sh
+  sudo apt-get install gocode golang-doc
+#+END_SRC
+
+If linux, add the go path.  Associate .go files.
+
+#+BEGIN_SRC emacs-lisp
+  (if (eq system-type 'gnu/linux)
+      (setq exec-path (cons "/usr/local/go/bin" exec-path)))
+  (add-to-list 'auto-mode-alist '("\\.go$" . go-mode))
+
+#+END_SRC
+
+Define a custom hook
+
+#+BEGIN_SRC emacs-lisp
+  (defun recker/go-mode-hook ()
+    (add-to-list 'company-backends 'company-go)
+    (add-hook 'before-save-hook 'gofmt-before-save)
+    (if (not (string-match "go" compile-command))
+        (set (make-local-variable 'compile-command)
+             "go build -v && go test -v")))
+  (add-hook 'go-mode-hook 'recker/go-mode-hook)
+#+END_SRC
+
 * XML
 
 XML hook.  Mostly just disable auto-fill-mode.
@@ -251,6 +282,14 @@ Add log files to syslog-mode
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'auto-mode-alist '("\\.log$\\'" . syslog-mode))
+#+END_SRC
+
+* Dockerfile
+
+Add Dockerfiles to dockerfile mode
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-mode))
 #+END_SRC
 
 * Dired

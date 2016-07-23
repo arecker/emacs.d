@@ -231,15 +231,16 @@
     login youremail@gmail.com
     password yourpassword
 
-    remotehost outlook.office365.com
-    remoteuser yourwork@email.com
-    remotepass yourworkpass
+    machine outlook.office365.com
+    login yourwork@email.com
+    password yourworkpass
   #+END_EXAMPLE
 
   You might also need some things in your ~.authinfo~, but mu4e very
   kindly offers to do that for you.
 
   #+BEGIN_SRC emacs-lisp
+    (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
     (require 'mu4e)
     (setq mu4e-sent-messages-behavior 'delete)
     (setq mu4e-contexts

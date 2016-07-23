@@ -1,5 +1,5 @@
 [general]
-accounts = personal, work
+accounts = personal,work
 pythonfile = ~/.emacs.d/mail/helper.py
 
 [Account personal]

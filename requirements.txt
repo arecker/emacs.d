@@ -1,9 +1,11 @@
-# Python Requirements
+autopep8
+flake8
+importmagic
+ipdb
+ipython
+jedi
+pyflakes
+rope
 virtualenv
 virtualenvwrapper
-jedi
-rope
-importmagic
-autopep8
-pyflakes
-ipython
+yapf

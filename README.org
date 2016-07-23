@@ -1,590 +1,324 @@
-#+TITLE: Emacs Config
+#+TITLE: Emacs Configuration
+#+SUBTITLE: I'm just a dude with a text editor
 #+AUTHOR: Alex Recker
-#+EMAIL: alex@reckerfamily.com
-#+STARTUP: indent hidestars
-
-* About
-
-  This is my literate emacs configuration.  To use my emacs
-  environment, first clone this repository.
-
-  #+BEGIN_SRC sh
-      git clone https://github.com/arecker/emacs.d ~/.emacs.d
-  #+END_SRC
-
-  Next, [[http://cask.readthedocs.org/en/latest/guide/installation.html][install cask]] and use it to bootstrap the config with
-  dependencies.
-
-  #+BEGIN_SRC sh
-    cd ~/.emacs.d
-    ~/.cask/bin/cask install
-  #+END_SRC
-
-  Next, install the python development packages to your global
-  environment.
-
-  #+BEGIN_SRC sh
-      sudo pip install -r requirements.txt
-  #+END_SRC
-
-  Finally, install the [[https://www.npmjs.com/package/tern][tern]] package globally via ~npm~.
-
-  #+BEGIN_SRC sh
-      sudo npm install -g tern
-  #+END_SRC
-
-* User Details
-
-Tell emacs who you are
+#+STARTUP: showeverything
+#+OPTIONS: num:nil
 
 #+BEGIN_SRC emacs-lisp
   (setq user-full-name "Alex Recker"
-        user-mail-address "alex@reckerfamily.com")
+	user-mail-address "alex@reckerfamily.com")
 #+END_SRC
 
 * Startup
 
-Fix PATH in OSX
-
-#+BEGIN_SRC emacs-lisp
-  (when (memq window-system '(mac ns))
-    (exec-path-from-shell-initialize))
-#+END_SRC
-
-Just show the ~*scratch*~ buffer on startup.
-
-#+BEGIN_SRC emacs-lisp
-  (setq inhibit-startup-message 1)
-#+END_SRC
-
-If the [[https://github.com/arecker/wilfred-say][wilfred-say]] program is intsalled, print the output to the
-~*scratch*~ buffer on startup.
-
-#+BEGIN_SRC emacs-lisp
-  (defun recker/wilfred-say ()
-    (when (executable-find "wilfred-say")
-      (setq initial-scratch-message
-            (concat
-             (mapconcat
-              (lambda (x) (concat ";; " x))
-              (split-string (shell-command-to-string "wilfred-say") "\n"
-                            t) "\n")
-             "\n\n"))))
-  (recker/wilfred-say)
-#+END_SRC
-
-Start some miscellaneous global settings and plugins.
-
-#+BEGIN_SRC emacs-lisp
-  (defun recker/after-init-hook ()
-    (elpy-enable)
-    (global-company-mode)
-    (global-git-gutter-mode 1)
-    (global-hl-line-mode 1)
-    (global-whitespace-cleanup-mode 1)
-    (global-undo-tree-mode 1)
-    (helm-mode 1)
-    (helm-projectile-on)
-    (projectile-global-mode)
-    (server-start))
-  (add-hook 'after-init-hook 'recker/after-init-hook)
-#+END_SRC
-
-* UI
-
-I prefer to hide a lot of the default UI components - like the
-toolbar, menu bar, and scrollbar.
-
-#+BEGIN_SRC emacs-lisp
-  (defun recker/hide-ui-elements ()
-    (menu-bar-mode 0)
-    (tool-bar-mode 0)
-    (toggle-scroll-bar 0))
-  (recker/hide-ui-elements)
-#+END_SRC
-
-I also like to hide minor modes from the modeline.  I have a lot of
-plugins, so otherwise that looks cluttered.
-
-#+BEGIN_SRC emacs-lisp
-  (define-minor-mode minor-mode-blackout-mode
-    "Hides minor modes from the mode line."
-    t)
-  (catch 'done
-    (mapc (lambda (x)
-            (when (and (consp x)
-                       (equal (cadr x) '("" minor-mode-alist)))
-              (let ((original (copy-sequence x)))
-                (setcar x 'minor-mode-blackout-mode)
-                (setcdr x (list "" original)))
-              (throw 'done t)))
-          mode-line-modes))
-#+END_SRC
-
-Load the theme.  This changes frequently.
-
-#+BEGIN_SRC emacs-lisp
-  (load-theme 'zenburn t)
-#+END_SRC
-
-Make the font bigger on OS X
-
-#+BEGIN_SRC emacs-lisp
-  (if (eq system-type 'darwin)
-      (set-face-attribute 'default nil :height 150))
-#+END_SRC
-
-* Term
-
-Make sure lines aren't hilighted in term mode.
-
-#+BEGIN_SRC emacs-lisp
-  (defun recker/term-mode-hook ()
-    (global-hl-line-mode 0))
-  (add-hook 'term-mode-hook 'recker/term-mode-hook)
-#+END_SRC
-
-Also, close the buffer when the term exits.
-
-#+BEGIN_SRC emacs-lisp
-  (defadvice term-handle-exit
-      (after term-kill-buffer-on-exit activate)
-    (kill-buffer))
-#+END_SRC
-
-Default on the bash shell.
-
-#+BEGIN_SRC emacs-lisp
-  (defun recker/ansi-term ()
-    (interactive)
-    (ansi-term "/bin/bash"))
-#+END_SRC
-
-* Text
-
-Disable auto-save, auto-backup and tabs.  Tabs can be inserted using
-~C-q TAB~
-
-#+BEGIN_SRC emacs-lisp
-  (setq backup-inhibited t
-        auto-save-default 0
-        indent-tabs-mode 0)
-#+END_SRC
-
-By default for any mode, auto fill and enable spell checking.  Also,
-use nicer word wrapping and highlight the current line.
-
-Also enables some global plugins.
-
-#+BEGIN_SRC emacs-lisp
-  (defun recker/text-mode-hook ()
-    (auto-fill-mode 1)
-    (flyspell-mode 1)
-    (global-visual-line-mode 1))
-  (add-hook 'text-mode-hook 'recker/text-mode-hook)
-#+END_SRC
-
-* HTML
-
-Associate web mode and emmet mode
-
-#+BEGIN_SRC emacs-lisp
-  (require 'web-mode)
-
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-
-  (setq web-mode-markup-indent-offset 2
-        web-mode-enable-current-column-highlight t)
-
-  (defun recker/web-mode-hook ()
-    (emmet-mode)
-    (auto-fill-mode 0))
-
-  (add-hook 'web-mode-hook 'recker/web-mode-hook)
-#+END_SRC
-
-* JavaScript
-
-Associate js2-mode and tern
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
-  (add-hook 'js-mode-hook 'js2-minor-mode)
-  (defun recker/js-mode-hook ()
-    (setq company-tern-property-marker "")
-    (add-to-list 'company-backends 'company-tern)
-    (tern-mode t))
-  (add-hook 'js-mode-hook 'recker/js-mode-hook)
-#+END_SRC
-
-* SQL
-
-Load the sql-indent library for sql buffers.
-
-#+BEGIN_SRC emacs-lisp
-  (eval-after-load "sql"
-    (load-library "sql-indent"))
-#+END_SRC
-
-* GO
-
-Custom "go" settings
-
-First, install the some packages
-
-#+BEGIN_SRC sh
-  sudo apt-get install gocode golang-doc
-#+END_SRC
-
-If linux, add the go path.  Associate .go files.
-
-#+BEGIN_SRC emacs-lisp
-  (if (eq system-type 'gnu/linux)
-      (setq exec-path (cons "/usr/local/go/bin" exec-path)))
-  (add-to-list 'auto-mode-alist '("\\.go$" . go-mode))
-
-#+END_SRC
-
-Define a custom hook
-
-#+BEGIN_SRC emacs-lisp
-  (defun recker/go-mode-hook ()
-    (add-to-list 'company-backends 'company-go)
-    (add-hook 'before-save-hook 'gofmt-before-save)
-    (if (not (string-match "go" compile-command))
-        (set (make-local-variable 'compile-command)
-             "go build -v && go test -v")))
-  (add-hook 'go-mode-hook 'recker/go-mode-hook)
-#+END_SRC
-
-* XML
-
-XML hook.  Mostly just disable auto-fill-mode.
-
-#+BEGIN_SRC emacs-lisp
-  (defun recker/nxml-mode-hook ()
-    (auto-fill-mode 0))
-  (add-hook 'nxml-mode-hook 'recker/nxml-mode-hook)
-#+END_SRC
-
-* YAML
-
-Add yaml mode and associate it to file extensions.
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-  (add-to-list 'auto-mode-alist '("\\.sls$" . yaml-mode))
-#+END_SRC
-
-* Logs
-
-Add log files to syslog-mode
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'auto-mode-alist '("\\.log$\\'" . syslog-mode))
-#+END_SRC
-
-* Dockerfile
-
-Add Dockerfiles to dockerfile mode
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-mode))
-#+END_SRC
-
-* Dired
-
-Hide file details by default.
-
-#+BEGIN_SRC emacs-lisp
-  (defun recker/dired-mode-hook ()
-    (dired-hide-details-mode))
-  (add-hook 'dired-mode-hook 'recker/dired-mode-hook)
-#+END_SRC
+  Setup file registers, start the server, and if [[https://pypi.python.org/pypi/wilfred-say][wilfred-say]] or
+  fortune is installed, display it in the ~*scratch*~ buffer.
+
+  #+BEGIN_SRC emacs-lisp
+    (defun recker/startup-registers ()
+      (set-register ?d '(file . "~/Desktop"))
+      (set-register ?e '(file . "~/.emacs.d/README.org"))
+      (set-register ?g '(file . "~/git"))
+      (set-register ?o '(file . "~/org"))
+      (set-register ?p '(file . "~/org/personal.org"))
+      (set-register ?w '(file . "~/org/work.org")))
+
+    (defun recker/startup-scratch-buffer ()
+      (setq inhibit-startup-message 't)
+      (let ((wilfred-installed (executable-find "wilfred-say"))
+	    (fortune-installed (executable-find "fortune"))
+	    (comment-command-output (lambda (c)
+				      (concat
+				       (mapconcat
+					(lambda (x) (concat ";; " x))
+					(split-string (shell-command-to-string c) "\n" t) "\n")
+				       "\n" "\n"))))
+	(if wilfred-installed
+	    (setq initial-scratch-message
+		  (funcall comment-command-output "wilfred-say"))
+	  (if fortune-installed
+	      (setq initial-scratch-message
+		    (funcall comment-command-output "fortune"))))))
+
+    (exec-path-from-shell-initialize)
+    (recker/startup-registers)
+    (recker/startup-scratch-buffer)
+
+    (defun recker/startup-hook ()
+      (elpy-enable)
+      (global-company-mode)
+      (global-whitespace-cleanup-mode)
+      (global-git-gutter-mode 1)
+      (server-force-delete)
+      (server-start))
+    (add-hook 'after-init-hook 'recker/startup-hook)
+  #+END_SRC
+
+* Interface
+
+  Hide default elements in the UI, default Dired mode to hide details,
+  and disable some obnoxious behavior.  Also hide minor modes from the
+  modeline.
+
+  #+BEGIN_SRC emacs-lisp
+    (defun recker/interface ()
+      (menu-bar-mode 0)
+      (tool-bar-mode 0)
+      (toggle-scroll-bar 0)
+      (if (eq system-type 'darwin)
+	  (set-face-attribute 'default nil :height 150)))
+
+    (defun recker/helm-init ()
+      (require 'helm-config)
+      (helm-mode 1)
+      (projectile-global-mode)
+      (setq projectile-completion-system 'helm)
+      (helm-projectile-on)
+      (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+      (setq helm-semantic-fuzzy-match t
+	    helm-imenu-fuzzy-match t))
+
+    (setq backup-inhibited t
+	  auto-save-default 0
+	  indent-tabs-mode 0)
+
+    (define-minor-mode minor-mode-blackout-mode
+      "Hides minor modes from the mode line."
+      t)
+    (catch 'done
+      (mapc (lambda (x)
+	      (when (and (consp x)
+			 (equal (cadr x) '("" minor-mode-alist)))
+		(let ((original (copy-sequence x)))
+		  (setcar x 'minor-mode-blackout-mode)
+		  (setcdr x (list "" original)))
+		(throw 'done t)))
+	    mode-line-modes))
+
+    (defun recker/dired-mode-hook ()
+      (setq-default dired-omit-files-p t)
+      (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
+      (dired-hide-details-mode))
+
+    (recker/interface)
+    (recker/helm-init)
+    (add-hook 'dired-mode-hook 'recker/dired-mode-hook)
+  #+END_SRC
+
+* Modes
+
+  This hook applies to ~text-mode~, which is "for editing text written
+  for humans to read."  It is up to more specific modes to disable
+  these options if desired.
+
+  #+BEGIN_SRC emacs-lisp
+    (defun recker/text-mode-hook ()
+      (auto-fill-mode 1)
+      (flyspell-mode 1))
+    (add-hook 'text-mode-hook 'recker/text-mode-hook)
+  #+END_SRC
+
+** HTML
+
+   #+BEGIN_SRC emacs-lisp
+     (require 'web-mode)
+     (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+     (setq web-mode-markup-indent-offset 2)
+     (defun recker/web-mode-hook ()
+       (emmet-mode)
+       (auto-fill-mode 0))
+     (add-hook 'web-mode-hook 'recker/web-mode-hook)
+   #+END_SRC
+
+** JavaScript
+
+   Auto-completion is done through [[https://www.npmjs.com/package/tern][tern]].  Install it globally with
+   ~npm install -g tern~ for it to work.
+
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
+     (add-hook 'js-mode-hook 'js2-minor-mode)
+     (defun recker/js-mode-hook ()
+       (setq company-tern-property-marker "")
+       (add-to-list 'company-backends 'company-tern)
+       (tern-mode t))
+     (add-hook 'js-mode-hook 'recker/js-mode-hook)
+   #+END_SRC
+
+** Python
+
+   Elpy's global mode should take care of everything, but just make
+   sure to install the [[file:requirements.txt][pip packages]] needed for it to work.
+
+** Term
+
+   #+BEGIN_SRC emacs-lisp
+     (defadvice term-handle-exit
+	 (after term-kill-buffer-on-exit activate)
+       (kill-buffer))
+
+     (defun recker/ansi-term ()
+       (interactive)
+       (ansi-term "/bin/bash"))
+
+     (defun recker/term-mode-hook ()
+       (global-hl-line-mode 0))
+     (add-hook 'term-mode-hook 'recker/term-mode-hook)
+   #+END_SRC
+
+** YAML
+
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+     (add-to-list 'auto-mode-alist '("\\.sls$" . yaml-mode))
+     (defun recker/yaml-mode-hook ()
+       (auto-fill-mode 0))
+     (add-hook 'yaml-mode-hook 'recker/yaml-mode-hook)
+   #+END_SRC
+
+** XML
+
+   #+BEGIN_SRC emacs-lisp
+     (defun recker/nxml-mode-hook ()
+       (auto-fill-mode 0))
+     (add-hook 'nxml-mode-hook 'recker/nxml-mode-hook)
+   #+END_SRC
 
 * Org
 
-Set the org root at ~/org
+  #+BEGIN_SRC emacs-lisp
+    (setq org-agenda-files (quote ("~/org")))
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((python . t)
+       (ruby . t)
+       (sh . t)
+       (java . t)
+       (js . t)
+       (C . t)))
 
-#+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files (quote ("~/org")))
-#+END_SRC
+    (setq org-capture-templates
+	  '(
+	    ("t" "task" entry (file+headline "~/org/work.org" "Tasks")
+	     "* TODO %?"
+	     :empty-lines 1)
+	    ("m" "meeting" entry (file+headline "~/org/work.org" "Meetings")
+	     "* %?\nSCHEDULED: %^t"
+	     :empty-lines 1)
+	    ("p" "personal task" entry (file+headline "~/org/personal.org" "Tasks")
+	     "* TODO %?"
+	     :empty-lines 1)
+	    ))
 
-Enable the languages I dabble in.
+    (defun recker/org-projects ()
+      (let ((blog-file "~/git/blog/blog.el"))
+	(if (file-exists-p blog-file)
+	    (load-file blog-file))))
+    (recker/org-projects)
+  #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((python . t)
-     (ruby . t)
-     (sh . t)
-     (java . t)
-     (js . t)
-     (C . t)))
-#+END_SRC
+* Mail
 
-Org mode clobbers my keybinding for ace-jump-mode.  Redefine it here
+  My client of choice is [[https://www.djcbsoftware.nl/code/mu/mu4e.html][mu4e]] along with [[http://www.offlineimap.org/][offlineimap]].  When it comes
+  to reading mail, offlineimap depends on the credentials being
+  externally handled.
 
-#+BEGIN_SRC emacs-lisp
-  (defun recker/org-mode-hook ()
-    (local-set-key (kbd "\C-c SPC") 'ace-jump-mode))
-  (add-hook 'org-mode-hook 'recker/org-mode-hook)
-#+END_SRC
+  For instance you could put this in your ~.netrc~ file.
 
-* GNUS
+  #+BEGIN_EXAMPLE
+    machine imap.gmail.com
+    login youremail@gmail.com
+    password yourpassword
 
-Make sure you have this in your ~.authinfo~
+    remotehost outlook.office365.com
+    remoteuser yourwork@email.com
+    remotepass yourworkpass
+  #+END_EXAMPLE
 
-#+BEGIN_EXAMPLE
-  machine imap.gmail.com login myemail@gmail.com password SECRETPASS port imaps
-  machine smtp.gmail.com login myemail@gmail.com password SECRETPASS port 587
-#+END_EXAMPLE
+  You might also need some things in your ~.authinfo~, but mu4e very
+  kindly offers to do that for you.
 
-Hide the annoying folders that gnus likes to make.  If I'm reading it
-in emacs, I don't need it visible on the file system.
+  #+BEGIN_SRC emacs-lisp
+    (require 'mu4e)
+    (setq mu4e-sent-messages-behavior 'delete)
+    (setq mu4e-contexts
+	  `( ,(make-mu4e-context
+	       :name "personal"
+	       :enter-func (lambda () (mu4e-message "Switch to the private context"))
+	       :match-func (lambda (msg)
+			     (when msg
+			       (mu4e-message-contact-field-matches msg :to "alex@reckerfamily.com")))
+	       :vars '((user-mail-address . "alex@reckerfamily.com")
+		       (user-full-name . "Alex Recker")
+		       (mu4e-maildir . "~/Mail/personal")
+		       (mu4e-sent-folder . "/personal-sent")
+		       (mu4e-trash-folder . "/personal-trash")
+		       (mu4e-drafts-folder . "/personal-drafts")
+		       (smtpmail-default-smtp-server . "smtp.gmail.com")
+		       (smtpmail-smtp-server . "smtp.gmail.com")
+		       (smtpmail-stream-type . starttls)
+		       (smtpmail-smtp-service . 587)
+		       (mu4e-get-mail-command . "offlineimap -c ~/.emacs.d/mail/config -a personal")
+		       (mu4e-compose-signature . (with-temp-buffer
+						   (insert-file-contents "~/.emacs.d/mail/personal-signature.txt")))
 
-#+BEGIN_SRC emacs-lisp
-  (setq message-directory "~/.mail/")
-  (setq gnus-directory "~/.news/")
-  (setq nnfolder-directory "~/.mail/archive")
-#+END_SRC
+		       ))
 
-Some lisp I copied from the quickstart
+	     ,(make-mu4e-context
+	       :name "work"
+	       :enter-func (lambda () (mu4e-message "Switch to the work context"))
+	       :match-func (lambda (msg)
+			     (when msg
+			       (mu4e-message-contact-field-matches msg :to "arecker@healthgrades.com")))
+	       :vars '((user-mail-address . "arecker@healthgrades.com")
+		       (user-full-name . "Alex Recker")
+		       (mu4e-maildir . "~/Mail/work")
+		       (mu4e-trash-folder . "/work-trash")
+		       (mu4e-sent-folder . "/work-sent")
+		       (mu4e-drafts-folder . "/work-drafts")
+		       (smtpmail-default-smtp-server . "smtp.office365.com")
+		       (smtpmail-smtp-server . "smtp.office365.com")
+		       (smtpmail-stream-type . starttls)
+		       (smtpmail-smtp-service . 587)
+		       (mu4e-get-mail-command . "offlineimap -c ~/.emacs.d/mail/config -a work")
+		       (mu4e-compose-signature . (with-temp-buffer
+						   (insert-file-contents "~/.emacs.d/mail/work-signature.txt")
+						   (buffer-string)))
+		       ))
+	     ))
+  #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-  (setq gnus-select-method
-        '(nnimap "personal mail"
-                 (nnimap-address "imap.gmail.com")
-                 (nnimap-server-port "imaps")
-                 (nnimap-stream ssl)))
+* Key-bindings
 
-  (setq gnus-secondary-select-methods
-        '((nnimap "work mail"
-                  (nnimap-address "outlook.office365.com")
-                  (nnimap-server-port 993)
-                  (nnimap-stream ssl))))
+  #+BEGIN_SRC emacs-lisp
+    (global-set-key (kbd "C-=") 'er/expand-region)
+    (global-set-key (kbd "C-c c") 'org-capture)
+    (global-set-key (kbd "C-c e") 'eshell)
+    (global-set-key (kbd "C-c h o") 'helm-occur)
+    (global-set-key (kbd "C-c i") 'imenu)
+    (global-set-key (kbd "C-c l") 'sort-lines)
+    (global-set-key (kbd "C-c m") 'mu4e)
+    (global-set-key (kbd "C-c r") 'eval-region)
+    (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
+    (global-set-key (kbd "C-x C-f") 'helm-find-files)
+    (global-set-key (kbd "C-x g") 'magit-status)
+    (global-set-key (kbd "C-x r b") 'helm-filtered-bookmarks)
+    (global-set-key (kbd "C-x t") 'recker/ansi-term)
+    (global-set-key (kbd "M-;") 'comment-dwim-2)
+    (global-set-key (kbd "M-x") 'helm-M-x)
+    (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+  #+END_SRC
 
-  (setq smtpmail-smtp-service 587)
+* Local
 
-#+END_SRC
+  Miscellaneous local changes can be kept [[file:lisp][here]].  This function loads
+  all ~.el~ files there.
 
-Don't archive anything.  Gmail is doing that for us.
-
-#+BEGIN_SRC emacs-lisp
-  (setq gnus-message-archive-method nil)
-#+END_SRC
-
-Use contact completion in "big brother mode" from the google-contacts package
-
-#+BEGIN_SRC emacs-lisp
-  (require 'google-contacts-message)
-#+END_SRC
-
-Default on topic mode.
-
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
-#+END_SRC
-
-Custom topics
-
-#+BEGIN_SRC emacs-lisp
-  (eval-after-load 'gnus-topic
-    '(progn
-       (setq gnus-topic-topology '(("Gnus" visible)
-                                   (("personal mail" visible nil nil))))
-
-       (setq gnus-topic-alist '(("personal mail"
-                                 "INBOX"
-                                 "[Gmail]/Sent Mail"
-                                 "[Gmail]/Trash"
-                                 "[Gmail]/All Mail"
-                                 "[Gmail]/Drafts"
-                                 "[Gmail]/Starred")
-                                ("work mail"
-                                 "nnimap+work mail:Calendar"
-                                 "nnimap+work mail:Contacts"
-                                 "nnimap+work mail:Contacts/Skype for Business Contacts"
-                                 "nnimap+work mail:Conversation History"
-                                 "nnimap+work mail:Deleted Items"
-                                 "nnimap+work mail:Junk Email"
-                                 "nnimap+work mail:Notes"
-                                 "nnimap+work mail:Outbox"
-                                 "nnimap+work mail:Outbox/VoiceOutbox"
-                                 "nnimap+work mail:RSS Subscriptions"
-                                 "nnimap+work mail:Sync Issues"
-                                 "nnimap+work mail:Sync Issues/Conflicts"
-                                 "nnimap+work mail:Sync Issues/Local Failures"
-                                 "nnimap+work mail:Sync Issues/Server Failures"
-                                 "nnimap+work mail:Tasks"
-                                 "nnimap+work mail:Journal"
-                                 "nnimap+work mail:Suggested Contacts"
-                                 "nnimap+work mail:Calendar/United States holidays"
-                                 "nnimap+work mail:INBOX"
-                                 "nnimap+work mail:Sent Items"
-                                 "nnimap+work mail:Drafts"
-                                 "nnimap+work mail:Calendar/Birthdays"
-                                 "nnimap+work mail:Clutter"
-                                 "nnimap+work mail:Archive")
-                                ("Gnus")))))
-#+END_SRC
-
-For sending email, [[http://msmtp.sourceforge.net/][msmtp]] has the best support for multiple SMTP
-servers.  Install it, then include something resembling this in your
-~.msmtprc~
-
-#+BEGIN_EXAMPLE
-  defaults
-  tls on
-  auto_from on
-  logfile ~/.msmtp.log
-
-  account personal mail
-  host smtp.gmail.com
-  tls on
-  tls_certcheck off
-  auth on
-  from alex@reckerfamily.com
-  user alex@reckerfamily.com
-  password MYSECRETPASS
-  port 587
-
-  account work mail
-  host smtp.office365.com
-  tls on
-  tls_certcheck off
-  auth on
-  maildomain yourwork.com
-  from you@yourwork.com
-  user you@yourwork.com
-  password YOURSECRETWORKPASS
-  port 587
-#+END_EXAMPLE
-
-~msmtp~ is smart enough to figure out which mail server to use based
-on the "From" header of the email.  Define that, along with other
-folder sensitive over rides here.
-
-#+BEGIN_SRC emacs-lisp
-  (setq gnus-posting-styles
-        '((".*"             ; For all groups
-           )
-          ("work.*"
-           (signature-file "~/.emacs.d/signatures/work.txt")
-           (address "arecker@healthgrades.com")
-           )))
-#+END_SRC
-
-Then set ~msmtp~ as the default mail send function.
-
-#+BEGIN_SRC emacs-lisp
-  (setq message-send-mail-function 'message-send-mail-with-sendmail)
-  (setq sendmail-program "msmtp")
-#+END_SRC
-
-* Helm
-
-Some customizations for the [[https://github.com/emacs-helm/helm][helm]] plugin.
-
-#+BEGIN_SRC emacs-lisp
-  (require 'helm)
-  (setq helm-M-x-fuzzy-match t
-        helm-autoresize-mode t
-        helm-buffers-fuzzy-matching t
-        helm-recentf-fuzzy-match t
-        projectile-completion-system 'helm)
-  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
-  (define-key helm-map (kbd "C-z")  'helm-select-action)
-#+END_SRC
-
-* Functions
-
-Various interactive functions.
-
-#+BEGIN_SRC emacs-lisp
-  (defun recker/sudo ()
-    "Edit the current file as root"
-    (interactive)
-    (if (buffer-file-name)
-        (let ((file-name (buffer-file-name)))
-          (kill-buffer (current-buffer))
-          (find-file (concat "/sudo::" file-name))
-          (message "now editing %s as root" file-name))))
-
-  (defvar indirect-mode-name nil
-    "Mode to set for indirect buffers.")
-  (make-variable-buffer-local 'indirect-mode-name)
-  (defun recker/indirect-region (start end)
-    "Edit the current region in another buffer.
-        If the buffer-local variable `indirect-mode-name' is not set, prompt
-        for mode name to choose for the indirect buffer interactively.
-        Otherwise, use the value of said variable as argument to a funcall."
-    (interactive "r")
-    (let ((buffer-name (generate-new-buffer-name "*indirect*"))
-          (mode
-           (if (not indirect-mode-name)
-               (setq indirect-mode-name
-                     (intern
-                      (completing-read
-                       "Mode: "
-                       (mapcar (lambda (e)
-                                 (list (symbol-name e)))
-                               (apropos-internal "-mode$" 'commandp))
-                       nil t)))
-             indirect-mode-name)))
-      (pop-to-buffer (make-indirect-buffer (current-buffer) buffer-name))
-      (funcall mode)
-      (narrow-to-region start end)
-      (goto-char (point-min))
-      (shrink-window-if-larger-than-buffer)))
-
-  (defun recker/jump-next-line ()
-    (interactive)
-    (next-line 5))
-
-  (defun recker/jump-previous-line ()
-    (interactive)
-    (previous-line 5))
-
-  (defun recker/download-from-url (url name)
-    (interactive "sURL: \nsFile: ")
-    (url-copy-file url (expand-file-name name "~/Downloads/"))
-    (message (concat name " downloaded")))
-#+END_SRC
-
-* Registers
-
-These are bookmarked files and folders.
-
-#+BEGIN_SRC emacs-lisp
-  (set-register ?d '(file . "~/Desktop"))
-  (set-register ?e '(file . "~/.emacs.d/README.org"))
-  (set-register ?g '(file . "~/git"))
-  (set-register ?o '(file . "~/org"))
-  (set-register ?p '(file . "~/org/personal.org"))
-  (set-register ?w '(file . "~/org/work.org"))
-#+END_SRC
-
-* Keybindings
-
-All keybindings go here.
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-  (global-set-key (kbd "C-=") 'er/expand-region)
-  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C-c M-i") 'helm-imenu)
-  (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
-  (global-set-key (kbd "C-s") 'helm-swoop)
-  (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
-  (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "C-x f") 'helm-projectile-find-file)
-  (global-set-key (kbd "C-x g") 'magit-status)
-  (global-set-key (kbd "C-x t") 'recker/ansi-term)
-  (global-set-key (kbd "M-;") 'comment-dwim-2)
-  (global-set-key (kbd "M-n") 'recker/jump-next-line)
-  (global-set-key (kbd "M-p") 'recker/jump-previous-line)
-  (global-set-key (kbd "M-x") 'helm-M-x)
-  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-#+END_SRC
+  #+BEGIN_SRC emacs-lisp
+    (defun recker/load-directory (dir)
+      (let ((load-it (lambda (f)
+		       (load-file (concat (file-name-as-directory dir) f)))
+		     ))
+	(mapc load-it (directory-files dir nil "\\.el$"))))
+    (recker/load-directory "~/.emacs.d/lisp/")
+  #+END_SRC

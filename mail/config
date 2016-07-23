@@ -1,0 +1,39 @@
+[general]
+accounts = personal, work
+pythonfile = ~/.emacs.d/mail/helper.py
+
+[Account personal]
+localrepository = personal-local
+remoterepository = personal-remote
+
+[Repository personal-local]
+type = Maildir
+localfolders = ~/Mail/personal
+nametrans: trans_local_to_remote
+
+[Repository personal-remote]
+type = Gmail
+ssl=true
+# sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+sslcacertfile = /usr/local/etc/openssl/cert.pem
+realdelete = no
+nametrans: trans_remote_to_local
+folderfilter: filter_folders
+
+[Account work]
+localrepository = work-local
+remoterepository = work-remote
+
+[Repository work-local]
+type = Maildir
+localfolders = ~/Mail/work
+nametrans: trans_local_to_remote_work
+
+[Repository work-remote]
+type = IMAP
+ssl=true
+realdelete = no
+# sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+sslcacertfile = /usr/local/etc/openssl/cert.pem
+nametrans: trans_remote_to_local_work
+folderfilter: filter_folders_work

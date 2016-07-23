@@ -30,10 +30,11 @@ localfolders = ~/Mail/work
 nametrans: trans_local_to_remote_work
 
 [Repository work-remote]
+remotehost = outlook.office365.com
 type = IMAP
 ssl=true
 realdelete = no
-# sslcacertfile = /etc/ssl/certs/ca-certificates.crt
-sslcacertfile = /usr/local/etc/openssl/cert.pem
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+# sslcacertfile = /usr/local/etc/openssl/cert.pem
 nametrans: trans_remote_to_local_work
 folderfilter: filter_folders_work

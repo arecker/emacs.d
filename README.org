@@ -293,6 +293,7 @@
 
   #+BEGIN_SRC emacs-lisp
     (global-set-key (kbd "C-=") 'er/expand-region)
+    (global-set-key (kbd "C-c a") 'org-agenda)
     (global-set-key (kbd "C-c c") 'org-capture)
     (global-set-key (kbd "C-c e") 'eshell)
     (global-set-key (kbd "C-c h o") 'helm-occur)

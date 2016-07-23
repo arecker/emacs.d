@@ -65,6 +65,7 @@
       (menu-bar-mode 0)
       (tool-bar-mode 0)
       (toggle-scroll-bar 0)
+      (load-theme 'zenburn t)
       (if (eq system-type 'darwin)
 	  (set-face-attribute 'default nil :height 150)))
 

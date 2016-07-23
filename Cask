@@ -19,3 +19,4 @@
 (depends-on "web-mode")
 (depends-on "whitespace-cleanup-mode")
 (depends-on "yaml-mode")
+(depends-on "zenburn-theme")

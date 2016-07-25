@@ -244,7 +244,8 @@
   #+BEGIN_SRC emacs-lisp
     (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
     (require 'mu4e)
-    (setq send-mail-function 'smtpmail-send-it)
+    (setq send-mail-function 'smtpmail-send-it
+	  mu4e-update-interval 60)
     (setq mu4e-contexts
 	  `( ,(make-mu4e-context
 	       :name "personal"
@@ -294,14 +295,7 @@
 						   (buffer-string)))
 		       ))
 	     ))
-  #+END_SRC
-
-  If using OSX, install the ~terminal-notifier~ package via homebrew.
-  Otherwise, just use the native system API.
-
-  #+BEGIN_SRC emacs-lisp
-    (mu4e-alert-set-default-style 'notifier)
-    (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+    (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
   #+END_SRC
 
 * Key-bindings

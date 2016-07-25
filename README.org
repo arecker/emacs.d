@@ -208,6 +208,9 @@
 	    ("p" "personal task" entry (file+headline "~/org/personal.org" "Tasks")
 	     "* TODO %?"
 	     :empty-lines 1)
+	    ("i" "idea" entry (file+headline "~/org/personal.org" "Ideas")
+	     "* %?"
+	     :empty-lines 1)
 	    ))
 
     (defun recker/org-projects ()

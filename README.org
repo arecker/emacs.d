@@ -150,6 +150,10 @@
    Elpy's global mode should take care of everything, but just make
    sure to install the [[file:requirements.txt][pip packages]] needed for it to work.
 
+   #+BEGIN_SRC emacs-lisp
+     (setq elpy-rpc-timeout 10)
+   #+END_SRC
+
 ** Term
 
    #+BEGIN_SRC emacs-lisp

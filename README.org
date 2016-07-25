@@ -296,6 +296,14 @@
 	     ))
   #+END_SRC
 
+  If using OSX, install the ~terminal-notifier~ package via homebrew.
+  Otherwise, just use the native system API.
+
+  #+BEGIN_SRC emacs-lisp
+    (mu4e-alert-set-default-style 'notifier)
+    (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+  #+END_SRC
+
 * Key-bindings
 
   #+BEGIN_SRC emacs-lisp

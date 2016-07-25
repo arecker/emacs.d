@@ -14,6 +14,7 @@
 (depends-on "helm-projectile")
 (depends-on "js2-mode")
 (depends-on "magit")
+(depends-on "mu4e-alert")
 (depends-on "org-plus-contrib")
 (depends-on "virtualenv")
 (depends-on "web-mode")

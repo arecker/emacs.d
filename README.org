@@ -244,8 +244,7 @@
   #+BEGIN_SRC emacs-lisp
     (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
     (require 'mu4e)
-    (setq mu4e-sent-messages-behavior 'delete
-	  send-mail-function 'smtpmail-send-it)
+    (setq send-mail-function 'smtpmail-send-it)
     (setq mu4e-contexts
 	  `( ,(make-mu4e-context
 	       :name "personal"
@@ -256,6 +255,7 @@
 	       :vars '((user-mail-address . "alex@reckerfamily.com")
 		       (user-full-name . "Alex Recker")
 		       (mu4e-maildir . "~/Mail/personal")
+		       (mu4e-sent-messages-behavior . delete)
 		       (mu4e-sent-folder . "/personal-sent")
 		       (mu4e-trash-folder . "/personal-trash")
 		       (mu4e-drafts-folder . "/personal-drafts")
@@ -280,6 +280,7 @@
 		       (user-full-name . "Alex Recker")
 		       (mu4e-maildir . "~/Mail/work")
 		       (mu4e-trash-folder . "/work-trash")
+		       (mu4e-sent-messages-behavior . sent)
 		       (mu4e-sent-folder . "/work-sent")
 		       (mu4e-drafts-folder . "/work-drafts")
 		       (mu4e-refile-folder . "/work-archive")

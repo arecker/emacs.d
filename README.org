@@ -236,6 +236,7 @@
     (global-set-key (kbd "C-c i") 'imenu)
     (global-set-key (kbd "C-c l") 'sort-lines)
     (global-set-key (kbd "C-c r") 'eval-region)
+    (global-set-key (kbd "C-c s") 'org-store-link)
     (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
     (global-set-key (kbd "C-x C-f") 'helm-find-files)
     (global-set-key (kbd "C-x g") 'magit-status)

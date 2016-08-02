@@ -231,6 +231,7 @@
     (global-set-key (kbd "C-c a") 'org-agenda)
     (global-set-key (kbd "C-c c") 'org-capture)
     (global-set-key (kbd "C-c e") 'eshell)
+    (global-set-key (kbd "C-c f") 'helm-projectile)
     (global-set-key (kbd "C-c h o") 'helm-occur)
     (global-set-key (kbd "C-c i") 'imenu)
     (global-set-key (kbd "C-c l") 'sort-lines)

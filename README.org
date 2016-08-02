@@ -224,84 +224,6 @@
     (recker/org-projects)
   #+END_SRC
 
-* Mail
-
-  My client of choice is [[https://www.djcbsoftware.nl/code/mu/mu4e.html][mu4e]] along with [[http://www.offlineimap.org/][offlineimap]].  When it comes
-  to reading mail, offlineimap depends on the credentials being
-  externally handled.
-
-  For instance you could put this in your ~.netrc~ file.
-
-  #+BEGIN_EXAMPLE
-    machine imap.gmail.com
-    login youremail@gmail.com
-    password yourpassword
-
-    machine outlook.office365.com
-    login yourwork@email.com
-    password yourworkpass
-  #+END_EXAMPLE
-
-  You might also need some things in your ~.authinfo~, but mu4e very
-  kindly offers to do that for you.
-
-  #+BEGIN_SRC emacs-lisp
-    (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-    (require 'mu4e)
-    (setq send-mail-function 'smtpmail-send-it
-	  mu4e-update-interval 60)
-    (setq mu4e-contexts
-	  `( ,(make-mu4e-context
-	       :name "personal"
-	       :enter-func (lambda () (mu4e-message "Switch to the private context"))
-	       :match-func (lambda (msg)
-			     (when msg
-			       (mu4e-message-contact-field-matches msg :to "alex@reckerfamily.com")))
-	       :vars '((user-mail-address . "alex@reckerfamily.com")
-		       (user-full-name . "Alex Recker")
-		       (mu4e-maildir . "~/Mail/personal")
-		       (mu4e-sent-messages-behavior . delete)
-		       (mu4e-sent-folder . "/personal-sent")
-		       (mu4e-trash-folder . "/personal-trash")
-		       (mu4e-drafts-folder . "/personal-drafts")
-		       (mu4e-refile-folder . "/personal-archives")
-		       (smtpmail-default-smtp-server . "smtp.gmail.com")
-		       (smtpmail-smtp-server . "smtp.gmail.com")
-		       (smtpmail-stream-type . starttls)
-		       (smtpmail-smtp-service . 587)
-		       (mu4e-get-mail-command . "offlineimap -c ~/.emacs.d/mail/config -a personal")
-		       (mu4e-compose-signature . (with-temp-buffer
-						   (insert-file-contents "~/.emacs.d/mail/personal-signature.txt")))
-
-		       ))
-
-	     ,(make-mu4e-context
-	       :name "work"
-	       :enter-func (lambda () (mu4e-message "Switch to the work context"))
-	       :match-func (lambda (msg)
-			     (when msg
-			       (mu4e-message-contact-field-matches msg :to "arecker@healthgrades.com")))
-	       :vars '((user-mail-address . "arecker@healthgrades.com")
-		       (user-full-name . "Alex Recker")
-		       (mu4e-maildir . "~/Mail/work")
-		       (mu4e-trash-folder . "/work-trash")
-		       (mu4e-sent-messages-behavior . sent)
-		       (mu4e-sent-folder . "/work-sent")
-		       (mu4e-drafts-folder . "/work-drafts")
-		       (mu4e-refile-folder . "/work-archive")
-		       (smtpmail-default-smtp-server . "smtp.office365.com")
-		       (smtpmail-smtp-server . "smtp.office365.com")
-		       (smtpmail-stream-type . starttls)
-		       (smtpmail-smtp-service . 587)
-		       (mu4e-get-mail-command . "offlineimap -c ~/.emacs.d/mail/config -a work")
-		       (mu4e-compose-signature . (with-temp-buffer
-						   (insert-file-contents "~/.emacs.d/mail/work-signature.txt")
-						   (buffer-string)))
-		       ))
-	     ))
-    (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
-  #+END_SRC
-
 * Key-bindings
 
   #+BEGIN_SRC emacs-lisp
@@ -312,7 +234,6 @@
     (global-set-key (kbd "C-c h o") 'helm-occur)
     (global-set-key (kbd "C-c i") 'imenu)
     (global-set-key (kbd "C-c l") 'sort-lines)
-    (global-set-key (kbd "C-c m") 'mu4e)
     (global-set-key (kbd "C-c r") 'eval-region)
     (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
     (global-set-key (kbd "C-x C-f") 'helm-find-files)

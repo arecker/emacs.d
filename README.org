@@ -224,6 +224,15 @@
     (recker/org-projects)
   #+END_SRC
 
+* GNUS
+
+  These are experimental.
+
+  #+BEGIN_SRC emacs-lisp
+    (setq gnus-select-method '(nnml ""))
+    (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+  #+END_SRC
+
 * Key-bindings
 
   #+BEGIN_SRC emacs-lisp

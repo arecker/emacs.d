@@ -202,25 +202,28 @@
        (C . t)))
 
     (setq org-capture-templates
-	  '(
-	    ("t" "task" entry (file+headline "~/org/work.org" "Tasks")
-	     "* TODO %?"
-	     :empty-lines 1)
-	    ("m" "meeting" entry (file+headline "~/org/work.org" "Meetings")
-	     "* %?\nSCHEDULED: %^t"
-	     :empty-lines 1)
-	    ("p" "personal task" entry (file+headline "~/org/personal.org" "Tasks")
-	     "* TODO %?"
-	     :empty-lines 1)
-	    ("i" "idea" entry (file+headline "~/org/personal.org" "Ideas")
-	     "* %?"
-	     :empty-lines 1)
-	    ))
+          '(
+            ("t" "task" entry (file+headline "~/org/work.org" "Tasks")
+             "* TODO %?"
+             :empty-lines 1)
+            ("b" "bug" entry (file+headline "~/org/work.org" "Bugs")
+             "* TODO %?%^{LINK}p"
+             :empty-lines 1)
+            ("m" "meeting" entry (file+headline "~/org/work.org" "Meetings")
+             "* %?\nSCHEDULED: %^t"
+             :empty-lines 1)
+            ("p" "personal task" entry (file+headline "~/org/personal.org" "Tasks")
+             "* TODO %?"
+             :empty-lines 1)
+            ("i" "idea" entry (file+headline "~/org/personal.org" "Ideas")
+             "* %?"
+             :empty-lines 1)
+            ))
 
     (defun recker/org-projects ()
       (let ((blog-file "~/git/blog/blog.el"))
-	(if (file-exists-p blog-file)
-	    (load-file blog-file))))
+        (if (file-exists-p blog-file)
+            (load-file blog-file))))
     (recker/org-projects)
   #+END_SRC
 

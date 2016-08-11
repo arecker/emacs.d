@@ -82,7 +82,10 @@
 
     (use-package leuven-theme
       :ensure t
-      :config (load-theme 'leuven t))
+      :config
+      (load-theme 'leuven t)
+      (custom-set-faces
+       '(org-document-title ((t (:background "#EAEAFF" :foreground "#008ED1" :weight normal :height 1.0 :width normal))))))
 
     (use-package org
       :init

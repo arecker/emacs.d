@@ -305,6 +305,21 @@
     (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
   #+END_SRC
 
+* Functions
+
+  Some helpful functions
+
+  #+BEGIN_SRC emacs-lisp
+    (defun recker/purge-buffers ()
+      "Deletes all buffers except for *scratch*"
+      (interactive)
+      (let ((kill-if-not-scratch
+             (lambda (b)
+               (unless (string= (buffer-name b) "*scratch*")
+                 (kill-buffer b)))))
+        (mapc kill-if-not-scratch (buffer-list))))
+  #+END_SRC
+
 * Local Changes
 
   Miscellaneous local changes can be kept [[file:lisp][here]].  This function loads

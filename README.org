@@ -80,11 +80,6 @@
       :ensure t
       :config (add-hook 'js-mode-hook 'js2-minor-mode))
 
-    (use-package leuven-theme
-      :ensure t
-      :config
-      (load-theme 'leuven t))
-
     (use-package org
       :init
       (setq org-agenda-files '("~/org")
@@ -139,6 +134,11 @@
     (use-package yasnippet
       :ensure t
       :config (yas-global-mode))
+
+    (use-package zenburn-theme
+      :ensure t
+      :config
+      (load-theme 'zenburn t))
   #+END_SRC
 
 * Startup

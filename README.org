@@ -219,7 +219,7 @@
 
     (defun recker/dired-mode-hook ()
       (setq-default dired-omit-files-p t)
-      (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
+      (setq dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..+$")
       (dired-hide-details-mode))
 
     (add-hook 'dired-mode-hook 'recker/dired-mode-hook)

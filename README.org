@@ -326,6 +326,12 @@
       (interactive "*r")
       (let ((fill-column (point-max)))
         (fill-region beg end)))
+
+    (defun recker/open-hg-jira-ticket (team id)
+      "Interactively opens a JIRA case by team/id in the browser"
+      (interactive "sTEAM: \nsID: ")
+      (browse-url
+       (concat "https://healthgrades.atlassian.net/browse/" team "-" id)))
   #+END_SRC
 
 * Local Changes

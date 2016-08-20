@@ -76,6 +76,13 @@
       (helm-projectile-on)
       :bind ("C-c f" . helm-projectile))
 
+    (use-package irony
+      :ensure t
+      :config
+      (add-hook 'c-mode-hook 'irony-mode)
+      (eval-after-load 'company
+        '(add-to-list 'company-backends 'company-irony)))
+
     (use-package js2-mode
       :ensure t
       :config (add-hook 'js-mode-hook 'js2-minor-mode))

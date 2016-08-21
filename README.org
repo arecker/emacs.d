@@ -322,11 +322,16 @@
            gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]"
            gnus-agent nil
            gnus-message-archive-group nil
-           mml2015-encrypt-to-self t)
+           gnus-asynchronous t
+           gnus-always-read-dribble-file t
+           mml2015-encrypt-to-self t
+           message-directory "~/.mail"
+           gnus-directory "~/.news"
+           nnfolder-directory "~/.mail/archive")
 
     (add-hook 'message-setup-hook 'mml-secure-message-encrypt)
-
     (add-hook 'gnus-summary-mode-hook 'recker/gnus-summary-keys)
+    (add-to-list 'gnus-secondary-select-methods '(nntp "news.gnus.org"))
 
     (defun recker/gnus-summary-keys ()
       (local-set-key "y" 'gmail-archive)

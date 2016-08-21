@@ -329,8 +329,16 @@
            gnus-directory "~/.news"
            nnfolder-directory "~/.mail/archive")
 
+    (setq gnus-sync-backend "/ebonhawk:.gnus-sync.el"
+          gnus-sync-global-vars '(gnus-newsrc-last-checked-date)
+          gnus-sync-newsrc-groups '("nnrss")
+          gnus-sync-newsrc-offsets '(2 3))
+
+    (gnus-sync-initialize)
+
     (add-hook 'message-setup-hook 'mml-secure-message-encrypt)
     (add-hook 'gnus-summary-mode-hook 'recker/gnus-summary-keys)
+    (add-hook 'gnus-started-hook '(lambda() (gnus-sync-read)))
 
     (defun recker/gnus-summary-keys ()
       (local-set-key "y" 'gmail-archive)

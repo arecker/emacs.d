@@ -377,6 +377,14 @@
       (interactive "sTEAM: \nsID: ")
       (browse-url
        (concat "https://healthgrades.atlassian.net/browse/" team "-" id)))
+
+    (defun recker/bookmark-open (link)
+      "Opens a browser bookmark"
+      (interactive
+       (helm-comp-read "Select Bookmark: " recker/bookmark-list))
+      (browse-url link))
+
+    (global-set-key (kbd "C-c b") 'recker/bookmark-open)
   #+END_SRC
 
 * Local Changes

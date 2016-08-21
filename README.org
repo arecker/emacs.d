@@ -35,6 +35,9 @@
       :config (elpy-enable)
       :init (setq elpy-rpc-timeout 10))
 
+    (use-package erc
+      :config (setq erc-prompt-for-password nil))
+
     (use-package exec-path-from-shell
       :ensure t
       :config (exec-path-from-shell-initialize))

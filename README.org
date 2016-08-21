@@ -331,7 +331,6 @@
 
     (add-hook 'message-setup-hook 'mml-secure-message-encrypt)
     (add-hook 'gnus-summary-mode-hook 'recker/gnus-summary-keys)
-    (add-to-list 'gnus-secondary-select-methods '(nntp "news.gnus.org"))
 
     (defun recker/gnus-summary-keys ()
       (local-set-key "y" 'gmail-archive)

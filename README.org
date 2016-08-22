@@ -326,7 +326,8 @@
             (nnimap "outlook"
                     (nnimap-address "outlook.office365.com")
                     (nnimap-server-port 993)
-                    (nnimap-stream ssl))))
+                    (nnimap-stream ssl))
+            (nntp "news.gnus.org")))
 
     ;; TODO: only personal sending/pgp is hooked up right now
     (setq smtpmail-smtp-server "smtp.gmail.com"

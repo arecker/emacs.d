@@ -334,7 +334,7 @@
 
     (setq gnus-sync-backend "/ebonhawk:.gnus-sync.el"
           gnus-sync-global-vars '(gnus-newsrc-last-checked-date)
-          gnus-sync-newsrc-groups '("nnrss")
+          gnus-sync-newsrc-groups '("nnrss" "nntp")
           gnus-sync-newsrc-offsets '(2 3))
 
     (gnus-sync-initialize)

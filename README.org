@@ -316,7 +316,8 @@
     (setq gnus-select-method '(nnml "")
           message-directory "~/.mail"
           gnus-directory "~/.news"
-          nnfolder-directory "~/.mail/archive")
+          nnfolder-directory "~/.mail/archive"
+          gnus-always-read-dribble-file 't)
 
     (setq gnus-secondary-select-methods
           '((nnimap "gmail"

@@ -327,7 +327,6 @@
                     (nnimap-address "outlook.office365.com")
                     (nnimap-server-port 993)
                     (nnimap-stream ssl))
-            (nntp "news.gnus.org")
             (nntp "news.gmane.org")))
 
     ;; TODO: only personal sending/pgp is hooked up right now

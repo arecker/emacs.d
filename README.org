@@ -202,7 +202,7 @@
   #+BEGIN_SRC emacs-lisp
     (setq backup-inhibited t
           auto-save-default 0
-          indent-tabs-mode 0)
+          indent-tabs-mode nil)
 
     (menu-bar-mode 0)
     (tool-bar-mode 0)

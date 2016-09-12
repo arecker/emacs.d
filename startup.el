@@ -1,4 +1,8 @@
-(defun recker/startup-scratch-buffer ()
+(use-package exec-path-from-shell
+  :ensure t
+  :config (exec-path-from-shell-initialize))
+
+(defun recker/startup-scratch ()
   (setq inhibit-startup-message 't)
   (let ((wilfred-installed (executable-find "wilfred-say"))
 	(fortune-installed (executable-find "fortune"))
@@ -15,7 +19,7 @@
 	  (setq initial-scratch-message
 		(funcall comment-command-output "fortune"))))))
 
-(recker/startup-scratch-buffer)
+(recker/startup-scratch)
 
 (defun recker/startup-registers ()
   (set-register ?b '(file . "~/git/blog"))
@@ -28,7 +32,3 @@
   (set-register ?w '(file . "~/org/work.org")))
 
 (recker/startup-registers)
-
-(use-package exec-path-from-shell
-  :ensure t
-  :config (exec-path-from-shell-initialize))

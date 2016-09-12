@@ -17,11 +17,12 @@
 (defun recker/load-init ()
   (let ((startup-files
          '(
-           "interface.el"
            "startup.el"
+           "interface.el"
            "git.el"
            "modes.el"
            "org.el"
+	   "gnus.el"
            "functions.el"
            ))
         (load-it

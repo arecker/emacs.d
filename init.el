@@ -1,7 +1,10 @@
-(defun recker/package-init()
+(setq user-full-name "Alex Recker"
+      user-mail-address "alex@reckerfamily.com")
+
+(defun recker/package-init ()
   (setq package-archives
-	'(("melpa" . "https://melpa.org/packages/")
-	  ("org" . "http://orgmode.org/elpa/")))
+        '(("melpa" . "https://melpa.org/packages/")
+          ("org" . "http://orgmode.org/elpa/")))
 
   (package-initialize)
 
@@ -11,4 +14,21 @@
 
 (recker/package-init)
 
-(org-babel-load-file "~/.emacs.d/README.org")
+(defun recker/load-init ()
+  (let ((startup-files
+         '(
+           "interface.el"
+           "startup.el"
+           "git.el"
+           "modes.el"
+           "org.el"
+           "functions.el"
+           ))
+        (load-it
+         (lambda (f)
+           (load-file
+            (concat "~/.emacs.d/" f)))))
+    (mapc load-it startup-files))
+  (message "Configuration Loaded"))
+
+(recker/load-init)

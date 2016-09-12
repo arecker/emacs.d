@@ -201,6 +201,14 @@
       :ensure t
       :config (global-whitespace-cleanup-mode))
   #+END_SRC
+
+** JavaScript
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package js2-mode
+       :ensure t
+       :config (add-hook 'js-mode-hook 'js2-minor-mode))
+   #+END_SRC
   
 ** Term
 

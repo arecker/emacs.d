@@ -51,3 +51,8 @@
   (setq projectile-completion-system 'helm)
   (helm-projectile-on)
   :bind ("C-c f" . helm-projectile))
+
+(use-package gruvbox-theme
+  :ensure t
+  :config
+  (load-theme 'gruvbox t))

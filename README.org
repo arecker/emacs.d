@@ -78,6 +78,35 @@
       :bind ("C-=" . er/expand-region))
   #+END_SRC
 
+  Helm.  /Sigh/.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package helm
+      :ensure t
+      :config
+      (setq helm-semantic-fuzzy-match t
+            helm-imenu-fuzzy-match t)
+      (helm-mode 1)
+      :bind (("C-x C-b" . helm-buffers-list)
+             ("C-x b" . helm-mini)
+             ("C-x C-f" . helm-find-files)
+             ("C-c h o" . helm-occur)
+             ("C-c i" . helm-imenu)
+             ("C-x r b" . helm-filtered-bookmarks)
+             ("M-x" . helm-M-x)
+             ("M-y" . helm-show-kill-ring)
+             :map helm-map
+             ("<tab>" . helm-execute-persistent-action)))
+
+    (use-package helm-projectile
+      :ensure t
+      :config
+      (projectile-global-mode)
+      (setq projectile-completion-system 'helm)
+      (helm-projectile-on)
+      :bind ("C-c f" . helm-projectile))
+  #+END_SRC
+
 * Startup
 
   Display a quote from [[https://pypi.python.org/pypi/wilfred-say][wilfred-say]] or fortune in the =*scratch*=
@@ -165,6 +194,13 @@
     (global-set-key (kbd "C-c l") 'sort-lines)
   #+END_SRC
 
+  Globally trim whitespace on save.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package whitespace-cleanup-mode
+      :ensure t
+      :config (global-whitespace-cleanup-mode))
+  #+END_SRC
   
 ** Term
 
@@ -196,6 +232,30 @@
    #+BEGIN_SRC emacs-lisp
      (defun recker/term-mode-hook ()
        (global-hl-line-mode 0))
+   #+END_SRC
+
+** Markdown
+
+   I don't use a lot of markdown, so this mode makes it easier to
+   notice my mistakes.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package markdown-mode
+       :ensure t
+       :commands (markdown-mode gfm-mode)
+       :mode (("README\\.md\\'" . gfm-mode)
+              ("\\.md\\'" . markdown-mode)
+              ("\\.markdown\\'" . markdown-mode)))
+   #+END_SRC
+
+** YAML
+
+   Install =yaml-mode= and enable it for saltstack configs
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package yaml-mode
+       :ensure t
+       :init (add-to-list 'auto-mode-alist '("\\.sls$" . yaml-mode)))
    #+END_SRC
 
 * Org

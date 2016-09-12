@@ -34,10 +34,10 @@ change these variable.  Otherwise, you might confuse my mother.
 * Packages
 
   All extra things are retrieved by this config with the help of
-  [[https://github.com/jwiegley/use-package][=use-package=]].  Sadly, since that code needs to run before anything
+  [[https://github.com/jwiegley/use-package][use-package]].  Sadly, since that code needs to run before anything
   is tangled, it cannot live in this document.
 
-  See [[file:init.el][=init.el=]] for the package initialization portion.
+  See [[file:init.el][init.el]] for the package initialization portion.
 
 * Startup
 
@@ -221,6 +221,19 @@ change these variable.  Otherwise, you might confuse my mother.
       :config (global-whitespace-cleanup-mode))
   #+END_SRC
 
+** HTML
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package web-mode
+       :ensure t
+       :mode ("\\.html\\'" . web-mode)
+       :config (setq web-mode-markup-indent-offset 2))
+
+     (use-package emmet-mode
+       :ensure t
+       :config (add-hook 'web-mode-hook 'emmet-mode))
+   #+END_SRC
+
 ** Markdown
 
    #+BEGIN_SRC emacs-lisp
@@ -258,6 +271,14 @@ change these variable.  Otherwise, you might confuse my mother.
      (defadvice term-handle-exit
          (after term-kill-buffer-on-exit activate)
        (kill-buffer))
+   #+END_SRC
+
+** YAML
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package yaml-mode
+       :ensure t
+       :init (add-to-list 'auto-mode-alist '("\\.sls$" . yaml-mode)))
    #+END_SRC
 
 * Org

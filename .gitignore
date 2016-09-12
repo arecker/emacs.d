@@ -1,13 +1,5 @@
-/.cask
 /README.el
-/auto-save-list
 /bookmarks
-/eshell
-*.pyc
-/projectile-bookmarks.eld
-/tramp
-/tutorial
-/url
-/elpa
-/recentf
-irony
+elpa
+eshell
+auto-save-list

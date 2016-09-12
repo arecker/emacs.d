@@ -1,177 +1,89 @@
 #+TITLE: Emacs Configuration
-#+SUBTITLE: I'm just a dude with a text editor
 #+AUTHOR: Alex Recker
-#+STARTUP: showeverything
-#+OPTIONS: num:nil
 
-#+BEGIN_SRC emacs-lisp
-  (setq user-full-name "Alex Recker"
-	user-mail-address "alex@reckerfamily.com")
-#+END_SRC
+* Personal
+  
+  If you use this config, make sure you change this.  Otherwise, you
+  may confuse my mother.
 
-* Packages
+  #+BEGIN_SRC emacs-lisp
+    (setq user-full-name "Alex Recker"
+          user-mail-address "alex@reckerfamily.com")
+  #+END_SRC
+
+* Building
+
+  This config is crafted around the latest version of emacs, cloned
+  from git and built form source.
+
+  #+BEGIN_EXAMPLE
+    $ mkdir src && cd src
+    $ git clone -b master git://git.sv.gnu.org/emacs.git && cd emacs
+    $ ./autogen.sh
+    $ ./configure
+    $ make
+    $ sudo make install
+  #+END_EXAMPLE
+
+  The same goes for this config, which can simply be cloned in place.
+
+  #+BEGIN_EXAMPLE
+    git clone https://github.com/arecker/emacs.d .emacs.d
+  #+END_EXAMPLE
+
+* Interface
+
+  Disable some obnoxious defaults.
+
+  #+BEGIN_SRC emacs-lisp
+    (setq backup-inhibited t
+          auto-save-default 0
+          indent-tabs-mode nil)
+
+    (menu-bar-mode 0)
+    (tool-bar-mode 0)
+    (toggle-scroll-bar 0)
+  #+END_SRC
+
+  Use this magic snippet to hide minor modes from the modeline.
+
+  #+BEGIN_SRC emacs-lisp
+    (define-minor-mode minor-mode-blackout-mode
+      "Hides minor modes from the mode line."
+      t)
+    (catch 'done
+      (mapc (lambda (x)
+              (when (and (consp x)
+                         (equal (cadr x) '("" minor-mode-alist)))
+                (let ((original (copy-sequence x)))
+                  (setcar x 'minor-mode-blackout-mode)
+                  (setcdr x (list "" original)))
+                (throw 'done t)))
+            mode-line-modes))
+  #+END_SRC
+
+  Add better comment handling and overwrite the built-in one.
 
   #+BEGIN_SRC emacs-lisp
     (use-package comment-dwim-2
       :ensure t
       :bind ("M-;" . comment-dwim-2))
+  #+END_SRC
 
-    (use-package company
-      :ensure t
-      :config (global-company-mode))
+  Use expand region for quickly hilighting incremental blocks of text.
 
-    (use-package company-tern
-      :ensure t
-      :init (setq company-tern-property-marker "")
-      :config
-      (add-hook 'js-mode-hook
-                (lambda ()
-                  (add-to-list 'company-backends 'company-tern)
-                  (tern-mode t)
-                  )))
-
-    (use-package elpy
-      :ensure t
-      :config (elpy-enable)
-      :init (setq elpy-rpc-timeout 10))
-
-    (use-package erc
-      :config (setq erc-prompt-for-password nil))
-
-    (use-package exec-path-from-shell
-      :ensure t
-      :config (exec-path-from-shell-initialize))
-
-    (use-package emmet-mode
-      :ensure t
-      :config (add-hook 'web-mode-hook 'emmet-mode))
-
+  #+BEGIN_SRC emacs-lisp
     (use-package expand-region
       :ensure t
       :bind ("C-=" . er/expand-region))
-
-    (use-package git-gutter
-      :ensure t
-      :config (global-git-gutter-mode 1))
-
-    (use-package helm
-      :ensure t
-      :config
-      (setq helm-semantic-fuzzy-match t
-            helm-imenu-fuzzy-match t)
-      (helm-mode 1)
-      :bind (("C-x C-b" . helm-buffers-list)
-             ("C-x b" . helm-mini)
-             ("C-x C-f" . helm-find-files)
-             ("C-c h o" . helm-occur)
-             ("C-c i" . helm-imenu)
-             ("C-x r b" . helm-filtered-bookmarks)
-             ("M-x" . helm-M-x)
-             ("M-y" . helm-show-kill-ring)
-             :map helm-map
-             ("<tab>" . helm-execute-persistent-action)))
-
-    (use-package helm-projectile
-      :ensure t
-      :config
-      (projectile-global-mode)
-      (setq projectile-completion-system 'helm)
-      (helm-projectile-on)
-      :bind ("C-c f" . helm-projectile))
-
-    (use-package irony
-      :ensure t
-      :config
-      (add-hook 'c-mode-hook 'irony-mode)
-      (eval-after-load 'company
-        '(add-to-list 'company-backends 'company-irony)))
-
-    (use-package js2-mode
-      :ensure t
-      :config (add-hook 'js-mode-hook 'js2-minor-mode))
-
-    (use-package org
-      :init
-      (setq org-agenda-files '("~/org")
-            org-capture-templates
-            '(
-              ("t" "task" entry (file+headline "~/org/work.org" "Tasks")
-               "* TODO %?"
-               :empty-lines 1)
-              ("b" "bug" entry (file+headline "~/org/work.org" "Bugs")
-               "* TODO %?%^{LINK}p"
-               :empty-lines 1)
-              ("m" "meeting" entry (file+headline "~/org/work.org" "Meetings")
-               "* %?\nSCHEDULED: %^t"
-               :empty-lines 1)
-              ("p" "personal task" entry (file+headline "~/org/personal.org" "Tasks")
-               "* TODO %?"
-               :empty-lines 1)
-              ("i" "idea" entry (file+headline "~/org/personal.org" "Ideas")
-               "* %?"
-               :empty-lines 1)
-              ))
-      :config
-      (org-babel-do-load-languages
-       'org-babel-load-languages
-       '((python . t)
-         (ruby . t)
-         (sh . t)
-         (java . t)
-         (js . t)
-         (C . t)))
-      :bind (("C-c a" . org-agenda)
-             ("C-c c" . org-capture)
-             ("C-c s" . org-store-link)))
-
-    (use-package magit
-      :ensure t
-      :bind ("C-x g" . magit-status))
-
-    (use-package markdown-mode
-      :ensure t
-      :commands (markdown-mode gfm-mode)
-      :mode (("README\\.md\\'" . gfm-mode)
-             ("\\.md\\'" . markdown-mode)
-             ("\\.markdown\\'" . markdown-mode)))
-
-    (use-package web-mode
-      :ensure t
-      :mode ("\\.html\\'" . web-mode)
-      :config (setq web-mode-markup-indent-offset 2))
-
-    (use-package whitespace-cleanup-mode
-      :ensure t
-      :config (global-whitespace-cleanup-mode))
-
-    (use-package yaml-mode
-      :ensure t
-      :init (add-to-list 'auto-mode-alist '("\\.sls$" . yaml-mode)))
-
-    (use-package yasnippet
-      :ensure t
-      :config (yas-global-mode))
-
-    (use-package zenburn-theme
-      :ensure t
-      :config
-      (load-theme 'zenburn t))
   #+END_SRC
 
 * Startup
 
-  Setup file registers and if [[https://pypi.python.org/pypi/wilfred-say][wilfred-say]] or fortune is installed,
-  display it in the =*scratch*= buffer.
+  Display a quote from [[https://pypi.python.org/pypi/wilfred-say][wilfred-say]] or fortune in the =*scratch*=
+  buffer.
 
   #+BEGIN_SRC emacs-lisp
-    (defun recker/startup-registers ()
-      (set-register ?d '(file . "~/Desktop"))
-      (set-register ?e '(file . "~/.emacs.d/README.org"))
-      (set-register ?g '(file . "~/git"))
-      (set-register ?o '(file . "~/org"))
-      (set-register ?p '(file . "~/org/personal.org"))
-      (set-register ?w '(file . "~/org/work.org")))
-
     (defun recker/startup-scratch-buffer ()
       (setq inhibit-startup-message 't)
       (let ((wilfred-installed (executable-find "wilfred-say"))
@@ -188,51 +100,55 @@
           (if fortune-installed
               (setq initial-scratch-message
                     (funcall comment-command-output "fortune"))))))
-
-    (recker/startup-registers)
     (recker/startup-scratch-buffer)
   #+END_SRC
 
-* Interface
-
-  Hide default elements in the UI, default Dired mode to hide details,
-  and disable some obnoxious behavior. Also hide minor modes from the
-  modeline.
+  File registers for quick access.
 
   #+BEGIN_SRC emacs-lisp
-    (setq backup-inhibited t
-          auto-save-default 0
-          indent-tabs-mode nil)
+    (defun recker/startup-registers ()
+      (set-register ?b '(file . "~/git/blog"))
+      (set-register ?d '(file . "~/Desktop"))
+      (set-register ?e '(file . "~/.emacs.d/README.org"))
+      (set-register ?g '(file . "~/git"))
+      (set-register ?i '(file . "~/.emacs.d/init.el"))
+      (set-register ?o '(file . "~/org"))
+      (set-register ?p '(file . "~/org/personal.org"))
+      (set-register ?w '(file . "~/org/work.org")))
+    (recker/startup-registers)
+  #+END_SRC
 
-    (menu-bar-mode 0)
-    (tool-bar-mode 0)
-    (toggle-scroll-bar 0)
+  Fix the PATH everywhere.  I'm not sure why this is needed, but this
+  package seems to make OSX behave.
 
-    (define-minor-mode minor-mode-blackout-mode
-      "Hides minor modes from the mode line."
-      t)
-    (catch 'done
-      (mapc (lambda (x)
-              (when (and (consp x)
-                         (equal (cadr x) '("" minor-mode-alist)))
-                (let ((original (copy-sequence x)))
-                  (setcar x 'minor-mode-blackout-mode)
-                  (setcdr x (list "" original)))
-                (throw 'done t)))
-            mode-line-modes))
+  #+BEGIN_SRC emacs-lisp
+    (use-package exec-path-from-shell
+      :ensure t
+      :config (exec-path-from-shell-initialize))
+  #+END_SRC
 
-    (defun recker/dired-mode-hook ()
-      (setq-default dired-omit-files-p t)
-      (setq dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..+$")
-      (dired-hide-details-mode))
+* Git
 
-    (add-hook 'dired-mode-hook 'recker/dired-mode-hook)
+  [[https://magit.vc/][Magit]] might be a good enough reason on its own to switch to emacs.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package magit
+      :ensure t
+      :bind ("C-x g" . magit-status))
+  #+END_SRC
+
+  Display +/- symbols in the margin of a VC'ed file.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package git-gutter
+      :ensure t
+      :config (global-git-gutter-mode 1))
   #+END_SRC
 
 * Modes
 
-  This is the =text-mode= hook, which is /for editing text written for
-  humans to read/.  It is up to more specific modes to disable these
+  This is the =text-mode= hook, which is for editing text written for
+  humans to read. It is up to more specific modes to disable these
   options if desired.
 
   #+BEGIN_SRC emacs-lisp
@@ -242,263 +158,91 @@
     (add-hook 'text-mode-hook 'recker/text-mode-hook)
   #+END_SRC
 
-  Some Miscellaneous Key Bindings
+  For some reason, I end up alphabetizing lists a lot.  Let's bind
+  that function to something.
 
   #+BEGIN_SRC emacs-lisp
     (global-set-key (kbd "C-c l") 'sort-lines)
-    (global-set-key (kbd "C-c r") 'eval-region)
   #+END_SRC
 
-** HTML
+  
+** Term
 
-   #+BEGIN_SRC emacs-lisp
-     (defun recker/web-mode-hook ()
-       (auto-fill-mode 0))
-     (add-hook 'web-mode-hook 'recker/web-mode-hook)
-   #+END_SRC
-
-** JavaScript
-
-   #+BEGIN_SRC emacs-lisp
-     (add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
-   #+END_SRC
-
-** TERM
+   Kill the term buffer on exit.
 
    #+BEGIN_SRC emacs-lisp
      (defadvice term-handle-exit
          (after term-kill-buffer-on-exit activate)
        (kill-buffer))
+   #+END_SRC
 
+   For =ansi-term=, just use a simple bash shell for a simple man.
+
+   #+BEGIN_SRC emacs-lisp
      (defun recker/ansi-term ()
        (interactive)
        (ansi-term "/bin/bash"))
+   #+END_SRC
 
-     (defun recker/term-mode-hook ()
-       (global-hl-line-mode 0)
-       (yas-minor-mode 0))
+   Bind these to something that phonetically makes sense.
 
-     (add-hook 'term-mode-hook 'recker/term-mode-hook)
-
+   #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "C-c e") 'eshell)
      (global-set-key (kbd "C-x t") 'recker/ansi-term)
    #+END_SRC
 
-** XML
+   Disable line hilighting in terminals - it's distracting.
 
    #+BEGIN_SRC emacs-lisp
-     (defun recker/nxml-mode-hook ()
-       (auto-fill-mode 0))
-     (add-hook 'nxml-mode-hook 'recker/nxml-mode-hook)
+     (defun recker/term-mode-hook ()
+       (global-hl-line-mode 0))
    #+END_SRC
 
-** YAML
+* Org
 
-   #+BEGIN_SRC emacs-lisp
-     (defun recker/yaml-mode-hook ()
-       (auto-fill-mode 0))
-     (add-hook 'yaml-mode-hook 'recker/yaml-mode-hook)
-   #+END_SRC
-
-* Blog
+  Install org-mode from the repository.
 
   #+BEGIN_SRC emacs-lisp
-    (require 'ox-rss)
-
-    (setq org-export-date-timestamp-format "%B %e, %Y")
-
-    (defun blog/--read-partial (name)
-      (with-temp-buffer
-        (insert-file-contents (concat "~/git/blog/includes/" name))
-        (buffer-string)))
-
-    (setq blog/partial-disqus (blog/--read-partial "disqus.html")
-          blog/partial-analytics (blog/--read-partial "ga.html")
-          blog/partial-highlight (blog/--read-partial "highlight.html"))
-
-    (defun blog/post-postamble (options)
-      (concat "<hr>"
-              blog/partial-disqus
-              blog/partial-analytics
-              blog/partial-highlight))
-
-    (defun blog/index-postamble (options)
-      (concat blog/partial-analytics))
-
-    (defun blog/post-preamble (options)
-      (let ((slug (file-name-base (buffer-file-name))))
-        (concat "<nav>"
-                "<a href=\"./index.html\">Home</a>"
-                "<div style=\"float: right;\">"
-                "<a href=\"" "./pdfs/" slug ".pdf" "\">PDF</a>"
-                "&nbsp;&nbsp;"
-                "<a href=\"" "./txt/" slug ".txt" "\">TXT</a>"
-                "</div>"
-                "</nav>")
-        )
-      )
-
-    (setq org-publish-project-alist
-          '(
-
-            ("blog-index"
-             :base-directory "~/git/blog"
-             :exclude ".*"
-             :html-doctype "html5"
-             :html-head-extra "<link rel='stylesheet' href='./css/lora.css' />\n<link rel='stylesheet' href='./css/site.css' />"
-             :html-postamble blog/index-postamble
-             :include ["index.org"]
-             :publishing-directory "/var/www/blog"
-             :publishing-function org-html-publish-to-html
-             :section-numbers nil
-             :with-tags nil
-             :with-toc nil
-             )
-
-            ("blog-posts"
-             :base-directory "~/git/blog"
-             :base-extension "org"
-             :exclude "index.org"
-             :html-doctype "html5"
-             :html-head-extra "<link rel='stylesheet' href='./css/lora.css' />\n<link rel='stylesheet' href='./css/site.css' />"
-             :html-preamble blog/post-preamble
-             :html-postamble blog/post-postamble
-             :htmlized-source nil
-             :publishing-directory "/var/www/blog"
-             :publishing-function org-html-publish-to-html
-             :recursive t
-             :section-numbers nil
-             :with-toc nil
-             )
-
-            ("blog-posts-pdf"
-             :base-directory "~/git/blog"
-             :base-extension "org"
-             :completion-function (lambda() (shell-command "rm ~/git/blog/*.pdf && rm ~/git/blog/*.tex"))
-             :exclude "index.org"
-             :publishing-directory "/var/www/blog/pdfs"
-             :publishing-function org-latex-publish-to-pdf
-             :recursive t
-             :section-numbers nil
-             :with-toc nil
-             )
-
-            ("blog-posts-txt"
-             :base-directory "~/git/blog"
-             :base-extension "org"
-             :exclude "index.org"
-             :publishing-directory "/var/www/blog/txt"
-             :publishing-function org-ascii-publish-to-ascii
-             :recursive t
-             :section-numbers nil
-             :with-toc nil
-             )
-
-            ("blog-static"
-             :base-directory "~/git/blog"
-             :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-             :publishing-directory "/var/www/blog"
-             :publishing-function org-publish-attachment
-             :recursive t
-             )
-
-            ("blog-rss"
-             :base-directory "~/git/blog"
-             :base-extension "org"
-             :exclude ".*"
-             :exclude-tags ("noexport" "norss")
-             :include ["index.org"]
-             :html-link-home "http://alexrecker.com"
-             :html-link-use-abs-url t
-             :publishing-directory "/var/www/blog/feed/"
-             :publishing-function (org-rss-publish-to-rss)
-             )
-
-            ))
-
-    (defun blog/push ()
-      (interactive)
-      (shell-command "rsync -razp /var/www/blog/ ebonhawk:/var/www/blog"))
-
+    (use-package "org"
+      :ensure t
+      :pin "org"
+      :init
+      (setq org-agenda-files '("~/org")
+            org-capture-templates
+            '(
+              ("i" "idea" entry (file+headline "~/org/personal.org" "Ideas")
+               "* %?"
+               :empty-lines 1)
+              ))
+      :config
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '((python . t)
+         (ruby . t)
+         (sh . t)
+         (java . t)
+         (js . t)
+         (C . t)))
+      :bind (("C-c a" . org-agenda)
+             ("C-c c" . org-capture)
+             ("C-c s" . org-store-link)))
   #+END_SRC
 
-* GNUS
-
-  These are still kind of experimental.
-
-  #+BEGIN_SRC emacs-lisp
-    (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
-
-    (setq gnus-select-method '(nnml "")
-          message-directory "~/.mail"
-          gnus-directory "~/.news"
-          nnfolder-directory "~/.mail/archive"
-          gnus-always-read-dribble-file 't)
-
-    (setq gnus-secondary-select-methods
-          '((nnimap "gmail"
-                    (nnimap-address "imap.gmail.com")
-                    (nnimap-server-port 993)
-                    (nnimap-stream ssl))
-            (nnimap "outlook"
-                    (nnimap-address "outlook.office365.com")
-                    (nnimap-server-port 993)
-                    (nnimap-stream ssl))
-            (nntp "news.gmane.org")))
-
-    ;; TODO: only personal sending/pgp is hooked up right now
-    (setq smtpmail-smtp-server "smtp.gmail.com"
-          smtpmail-smtp-service 587
-          message-send-mail-function 'smtpmail-send-it
-          mml2015-encrypt-to-self t
-          mml2015-signers '("1BF49F4B")
-          gnus-message-archive-group nil)
-
-    (add-hook 'message-setup-hook 'mml-secure-message-encrypt)
-  #+END_SRC
-
-* Functions
-
-  Some helpful functions
+  I need some extra packages to publish my blog.  They can be found in
+  this package.
 
   #+BEGIN_SRC emacs-lisp
-    (defun recker/purge-buffers ()
-      "Deletes all buffers except for *scratch*"
-      (interactive)
-      (let ((kill-if-not-scratch
-             (lambda (b)
-               (unless (string= (buffer-name b) "*scratch*")
-                 (kill-buffer b)))))
-        (mapc kill-if-not-scratch (buffer-list))))
-
-    (defun recker/unfill-region (beg end)
-      "Unfill the region, joining text paragraphs into a single
-        logical line.  This is useful, e.g., for use with
-        `visual-line-mode'."
-      (interactive "*r")
-      (let ((fill-column (point-max)))
-        (fill-region beg end)))
-
-    (defun recker/open-hg-jira-ticket (team id)
-      "Interactively opens a JIRA case by team/id in the browser"
-      (interactive "sTEAM: \nsID: ")
-      (browse-url
-       (concat "https://healthgrades.atlassian.net/browse/" team "-" id)))
-
-    (defun recker/bookmark-open (link)
-      "Opens a browser bookmark"
-      (interactive
-       (helm-comp-read "Select Bookmark: " recker/bookmark-list))
-      (browse-url link))
-
-    (load-file "~/org/bookmarks.el")
-    (global-set-key (kbd "C-c b") 'recker/bookmark-open)
+    (use-package "org-plus-contrib"
+      :ensure t
+      :pin "org")
   #+END_SRC
 
 * Local Changes
 
-  Miscellaneous local changes can be kept [[file:lisp][here]].  This function loads
-  all =.el= files there.
+  Miscellaneous local changes can be kept [[file:lisp][here]].  This is convenient
+  for secrets, work things, or just testing something out for the day.
+
+  This function loads all =.el= files there.
 
   #+BEGIN_SRC emacs-lisp
     (defun recker/load-directory (dir)

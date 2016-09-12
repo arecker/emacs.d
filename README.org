@@ -1,37 +1,29 @@
 #+TITLE: Emacs Configuration
 #+AUTHOR: Alex Recker
 
-* Personal
-  
-  If you use this config, make sure you change this.  Otherwise, you
-  may confuse my mother.
+Welcome to my emacs config, man.
 
-  #+BEGIN_SRC emacs-lisp
-  #+END_SRC
+This config is crafted around the latest version of emacs, cloned
+from git and built form source.
 
-* Building
+#+BEGIN_EXAMPLE
+  $ mkdir src && cd src
+  $ git clone -b master git://git.sv.gnu.org/emacs.git && cd emacs
+  $ ./autogen.sh
+  $ ./configure
+  $ make
+  $ sudo make install
+#+END_EXAMPLE
 
-  This config is crafted around the latest version of emacs, cloned
-  from git and built form source.
+If working on OSX, make sure you include the right flags to create
+the =.app= wrapper.
 
-  #+BEGIN_EXAMPLE
-    $ mkdir src && cd src
-    $ git clone -b master git://git.sv.gnu.org/emacs.git && cd emacs
-    $ ./autogen.sh
-    $ ./configure
-    $ make
-    $ sudo make install
-  #+END_EXAMPLE
+#+BEGIN_EXAMPLE
+  $ ./configure --with-ns
+#+END_EXAMPLE
 
-  If working on OSX, make sure you include the right flags to create
-  the =.app= wrapper.
+The same goes for this config, which can simply be cloned in place.
 
-  #+BEGIN_EXAMPLE
-    $ ./configure --with-ns
-  #+END_EXAMPLE
-
-  The same goes for this config, which can simply be cloned in place.
-
-  #+BEGIN_EXAMPLE
-    git clone https://github.com/arecker/emacs.d .emacs.d
-  #+END_EXAMPLE
+#+BEGIN_EXAMPLE
+  git clone https://github.com/arecker/emacs.d .emacs.d
+#+END_EXAMPLE

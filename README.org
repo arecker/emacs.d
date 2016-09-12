@@ -1,36 +1,353 @@
 #+TITLE: Emacs Configuration
 #+AUTHOR: Alex Recker
 
-Welcome to my emacs config, man.
+Welcome to my emacs config, man.  If you want to use it, make sure you
+change these variable.  Otherwise, you might confuse my mother.
 
-This config is crafted around the latest version of emacs, cloned
-from git and built form source.
+#+BEGIN_SRC emacs-lisp
+  (setq user-full-name "Alex Recker"
+	user-mail-address "alex@reckerfamily.com")
+#+END_SRC
 
-#+BEGIN_EXAMPLE
-  $ mkdir src && cd src
-  $ git clone -b master git://git.sv.gnu.org/emacs.git && cd emacs
-  $ ./autogen.sh
-  $ ./configure
-  $ make
-  $ sudo make install
-#+END_EXAMPLE
+* Building
 
-If working on OSX, make sure you include the right flags to create
-the =.app= wrapper.
+  This configuration is crafted around emacs 25.1, which you can build
+  from source.
 
-#+BEGIN_EXAMPLE
-  $ ./configure --with-ns
-#+END_EXAMPLE
+  #+BEGIN_EXAMPLE
+    $ mkdir src && cd src
+    $ git clone -b master git://git.sv.gnu.org/emacs.git && cd emacs
+    $ git checkout [tag or commit]
+    $ ./autogen.sh
+    $ ./configure  # supply --with-ns if on OSX
+    $ make
+    $ sudo make install
+  #+END_EXAMPLE
 
-The same goes for this config, which can simply be cloned in place.
+  Before starting emacs for the first time, you can clone this config
+  in place.
 
-#+BEGIN_EXAMPLE
-  git clone https://github.com/arecker/emacs.d .emacs.d
-#+END_EXAMPLE
+  #+BEGIN_EXAMPLE
+    $ git clone https://github.com/arecker/emacs.d.git .emacs.d
+  #+END_EXAMPLE
 
-If you want to take advantage of the python features in this
-configuration, install the provided pip packages.
+* Packages
 
-#+BEGIN_EXAMPLE
-  # pip install -r ~/.emacs.d/requirements.txt
-#+END_EXAMPLE
+  All extra things are retrieved by this config with the help of
+  [[https://github.com/jwiegley/use-package][=use-package=]].  Sadly, since that code needs to run before anything
+  is tangled, it cannot live in this document.
+
+  See [[file:init.el][=init.el=]] for the package initialization portion.
+
+* Startup
+
+  While I loath the need for this, this package synchronized the
+  system's =PATH= with emacs'.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package exec-path-from-shell
+      :ensure t
+      :config (exec-path-from-shell-initialize))
+  #+END_SRC
+
+  This sets the =*scratch*= buffer as the startup view (a much more
+  low-key option).
+
+  If installed, it uses the output of [[https://pypi.python.org/pypi/wilfred-say][wilfred-say]] as a message.
+  Otherwise it will default to [[https://en.wikipedia.org/wiki/Fortune_(Unix)][fortune]].
+
+  #+BEGIN_SRC emacs-lisp
+    (defun recker/startup-scratch ()
+      (setq inhibit-startup-message 't)
+      (let ((wilfred-installed (executable-find "wilfred-say"))
+	    (fortune-installed (executable-find "fortune"))
+	    (comment-command-output
+	     (lambda (c)
+	       (concat
+		(mapconcat
+		 (lambda (x) (concat ";; " x))
+		 (split-string (shell-command-to-string c) "\n" t) "\n")
+		"\n" "\n"))))
+	(if wilfred-installed
+	    (setq initial-scratch-message
+		  (funcall comment-command-output "wilfred-say"))
+	  (if fortune-installed
+	      (setq initial-scratch-message
+		    (funcall comment-command-output "fortune"))))))
+    (recker/startup-scratch)
+  #+END_SRC
+
+  These are my file bookmarks.
+
+  #+BEGIN_SRC emacs-lisp
+    (set-register ?b '(file . "~/git/blog"))
+    (set-register ?d '(file . "~/Desktop"))
+    (set-register ?e '(file . "~/.emacs.d/README.org"))
+    (set-register ?g '(file . "~/git"))
+    (set-register ?i '(file . "~/.emacs.d/init.el"))
+    (set-register ?o '(file . "~/org"))
+    (set-register ?p '(file . "~/org/personal.org"))
+    (set-register ?w '(file . "~/org/work.org"))
+  #+END_SRC
+
+* Interface
+
+  Emacs has some obnoxious defaults, like a scrollbar, button toolbar,
+  and file backups that junk up the working directory.  I disable
+  those.
+
+  #+BEGIN_SRC emacs-lisp
+    (defun recker/init-better-defaults ()
+      (setq backup-inhibited t
+	    auto-save-default 0
+	    indent-tabs-mode nil)
+      (menu-bar-mode 0)
+      (tool-bar-mode 0)
+      (toggle-scroll-bar 0))
+    (recker/init-better-defaults)
+  #+END_SRC
+
+  This snippet is an utter mystery to me, but it hides minor modes
+  from the modeline.
+
+  #+BEGIN_SRC emacs-lisp
+    (define-minor-mode minor-mode-blackout-mode
+      "Minor mode blackout"
+      t)
+    (catch 'done
+      (mapc (lambda (x)
+              (when (and (consp x)
+                         (equal (cadr x) '("" minor-mode-alist)))
+                (let ((original (copy-sequence x)))
+                  (setcar x 'minor-mode-blackout-mode)
+                  (setcdr x (list "" original)))
+                (throw 'done t)))
+            mode-line-modes))
+  #+END_SRC
+
+  Overwrite the built-in =comment-dwim= with the superior sequel.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package comment-dwim-2
+      :ensure t
+      :bind ("M-;" . comment-dwim-2))
+  #+END_SRC
+
+  Use =expand-region= to highlight incrementally larger blocks of
+  text.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package expand-region
+      :ensure t
+      :bind ("C-=" . er/expand-region))
+  #+END_SRC
+
+  Here is my configuration for [[https://github.com/emacs-helm/helm][helm]].  It's a little bloaty, and I
+  would eventually like to move away from it.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package helm
+      :ensure t
+      :config
+      (setq helm-semantic-fuzzy-match t
+            helm-imenu-fuzzy-match t)
+      (helm-mode 1)
+      :bind (("C-x C-b" . helm-buffers-list)
+             ("C-x b" . helm-mini)
+             ("C-x C-f" . helm-find-files)
+             ("C-c h o" . helm-occur)
+             ("C-c i" . helm-imenu)
+             ("C-x r b" . helm-filtered-bookmarks)
+             ("M-x" . helm-M-x)
+             ("M-y" . helm-show-kill-ring)
+             :map helm-map
+             ("<tab>" . helm-execute-persistent-action)))
+
+    (use-package helm-projectile
+      :ensure t
+      :config
+      (projectile-global-mode)
+      (setq projectile-completion-system 'helm)
+      (helm-projectile-on)
+      :bind ("C-c f" . helm-projectile))
+  #+END_SRC
+
+  Some git packages.  If you haven't tried [[https://magit.vc/][magit]], know that this
+  plug-in alone might be a good enough reason to switch to emacs.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package magit
+      :ensure t
+      :bind ("C-x g" . magit-status))
+
+    (use-package git-gutter
+      :ensure t
+      :config (global-git-gutter-mode 1))
+  #+END_SRC
+
+  Auto completion is achieved by letting company mode do its thing.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package company
+      :ensure t
+      :config (global-company-mode))
+  #+END_SRC
+
+* Modes
+
+  This is the text-mode hook, which is for /editing text written for
+  humans to read/. It is up to more specific modes to disable these
+  options if desired.
+
+  #+BEGIN_SRC emacs-lisp
+    (defun recker/text-mode-hook ()
+      (auto-fill-mode 1)
+      (flyspell-mode 1))
+    (add-hook 'text-mode-hook 'recker/text-mode-hook)
+  #+END_SRC
+
+  Since I find myself often alphabetizing lists in text files, let's
+  just bind it to a key combination.
+
+  #+BEGIN_SRC emacs-lisp
+    (global-set-key (kbd "C-c l") 'sort-lines)
+  #+END_SRC
+
+  Globally clean up whitespace on save.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package whitespace-cleanup-mode
+      :ensure t
+      :config (global-whitespace-cleanup-mode))
+  #+END_SRC
+
+** Markdown
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package markdown-mode
+       :ensure t
+       :commands (markdown-mode gfm-mode)
+       :mode (("README\\.md\\'" . gfm-mode)
+              ("\\.md\\'" . markdown-mode)
+              ("\\.markdown\\'" . markdown-mode)))
+   #+END_SRC
+
+** Term
+   
+   A simple BASH shell for a simple man.
+
+   #+BEGIN_SRC emacs-lisp
+     (defun recker/ansi-term ()
+       (interactive)
+       (ansi-term "/bin/bash"))
+     (global-set-key (kbd "C-c e") 'eshell)
+     (global-set-key (kbd "C-x t") 'recker/ansi-term)
+   #+END_SRC
+   
+   Disable line-hilighting in a terminal.
+
+   #+BEGIN_SRC emacs-lisp
+     (defun recker/term-mode-hook ()
+       (global-hl-line-mode 0))
+     (add-hook 'term-mode-hook 'recker/term-mode-hook)
+   #+END_SRC
+
+   Kill terminal buffers on exit.
+
+   #+BEGIN_SRC emacs-lisp
+     (defadvice term-handle-exit
+         (after term-kill-buffer-on-exit activate)
+       (kill-buffer))
+   #+END_SRC
+
+* Org
+
+  Install the org and org contrib packages.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package "org"
+      :ensure t
+      :pin "org"
+      :init
+      (setq org-agenda-files '("~/org")
+            org-capture-templates
+            '(
+              ("i" "idea" entry (file+headline "~/org/personal.org" "Ideas")
+               "* %?"
+               :empty-lines 1)
+              ))
+      :config
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '((python . t)
+         (ruby . t)
+         (sh . t)
+         (java . t)
+         (js . t)
+         (C . t)))
+      :bind (("C-c a" . org-agenda)
+             ("C-c c" . org-capture)
+             ("C-c s" . org-store-link)))
+
+    (use-package "org-plus-contrib"
+      :ensure t
+      :pin "org")
+  #+END_SRC
+  
+  Load publishing logic for my blog, found [[file:blog.el][here]].
+
+  #+BEGIN_SRC emacs-lisp
+    (load-file "~/.emacs.d/blog.el")
+  #+END_SRC
+
+* Functions
+
+  These are miscellaneous functions that I've written (or
+  plagiarized).
+
+  #+BEGIN_SRC emacs-lisp
+    (defun recker/purge-buffers ()
+      "Deletes all buffers except for *scratch*"
+      (interactive)
+      (let ((kill-if-not-scratch
+             (lambda (b)
+               (unless (string= (buffer-name b) "*scratch*")
+                 (kill-buffer b)))))
+        (mapc kill-if-not-scratch (buffer-list))))
+
+    (defun recker/unfill-region (beg end)
+      "Unfill the region, joining text paragraphs into a single
+            logical line.  This is useful, e.g., for use with
+            `visual-line-mode'."
+      (interactive "*r")
+      (let ((fill-column (point-max)))
+        (fill-region beg end)))
+  #+END_SRC
+
+  Also, browser bookmarks.  Emacs should use your system's default browser.
+
+  #+BEGIN_SRC emacs-lisp
+    ;; TODO: modify this so it's not so dependent on helm
+    (defun recker/bookmark-open (link)
+      "Opens a browser bookmark"
+      (interactive
+       (helm-comp-read "Select Bookmark: " recker/bookmark-list))
+      (browse-url link))
+    (load-file "~/org/bookmarks.el")
+    (global-set-key (kbd "C-c b") 'recker/bookmark-open)
+  #+END_SRC
+
+* Local
+
+  For any secrets or lispy changes you are testing out for the day, I
+  find it conenvient to keep those [[file:lisp/][here]].  This function loads all
+  =.el= files found there.
+
+  #+BEGIN_SRC emacs-lisp
+    (defun recker/load-directory (dir)
+      (let ((load-it (lambda (f)
+                       (load-file (concat (file-name-as-directory dir) f)))
+                     ))
+        (mapc load-it (directory-files dir nil "\\.el$"))))
+    (recker/load-directory "~/.emacs.d/lisp/")
+  #+END_SRC

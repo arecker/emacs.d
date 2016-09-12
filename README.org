@@ -193,6 +193,12 @@ change these variable.  Otherwise, you might confuse my mother.
       :config (global-company-mode))
   #+END_SRC
 
+  Disable tabs.  If you really need one, you can insert it with =C-q TAB=.
+
+  #+BEGIN_SRC emacs-lisp
+    (setq-default indent-tabs-mode nil)
+  #+END_SRC
+
 * Modes
 
   This is the text-mode hook, which is for /editing text written for

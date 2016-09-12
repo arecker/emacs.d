@@ -1,3 +1,7 @@
+(use-package company
+  :ensure t
+  :config (global-company-mode))
+
 (defun recker/text-mode-hook ()
   (auto-fill-mode 1)
   (flyspell-mode 1))
@@ -12,6 +16,11 @@
 (use-package js2-mode
   :ensure t
   :config (add-hook 'js-mode-hook 'js2-minor-mode))
+
+(use-package elpy
+  :ensure t
+  :config (elpy-enable)
+  :init (setq elpy-rpc-timeout 10))
 
 (defadvice term-handle-exit
     (after term-kill-buffer-on-exit activate)

@@ -199,6 +199,15 @@ change these variable.  Otherwise, you might confuse my mother.
     (setq-default indent-tabs-mode nil)
   #+END_SRC
 
+  Current theme (this changes frequently).
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package "gruvbox-theme"
+      :ensure t
+      :config
+      (load-theme 'gruvbox t))
+  #+END_SRC
+
 * Modes
 
   This is the text-mode hook, which is for /editing text written for

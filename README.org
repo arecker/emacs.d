@@ -27,3 +27,10 @@ The same goes for this config, which can simply be cloned in place.
 #+BEGIN_EXAMPLE
   git clone https://github.com/arecker/emacs.d .emacs.d
 #+END_EXAMPLE
+
+If you want to take advantage of the python features in this
+configuration, install the provided pip packages.
+
+#+BEGIN_EXAMPLE
+  # pip install -r ~/.emacs.d/requirements.txt
+#+END_EXAMPLE

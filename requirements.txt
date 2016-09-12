@@ -1,0 +1,11 @@
+autopep8
+flake8
+importmagic
+ipdb
+ipython
+jedi
+pyflakes
+rope
+virtualenv
+virtualenvwrapper
+yapf

@@ -245,6 +245,18 @@ change these variable.  Otherwise, you might confuse my mother.
               ("\\.markdown\\'" . markdown-mode)))
    #+END_SRC
 
+** Python
+
+   To fully take advantage of elpy, be sure to globally install the
+   [[file:requirements.txt][python requirements]].
+   
+   #+BEGIN_SRC emacs-lisp
+     (use-package elpy
+       :ensure t
+       :config (elpy-enable)
+       :init (setq elpy-rpc-timeout 10))
+   #+END_SRC
+
 ** Term
    
    A simple BASH shell for a simple man.

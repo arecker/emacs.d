@@ -305,6 +305,43 @@
       :pin "org")
   #+END_SRC
 
+* Functions
+
+  These are just some helpful functions I made (or plagiarized).
+
+  #+BEGIN_SRC emacs-lisp
+    (defun recker/purge-buffers ()
+      "Deletes all buffers except for *scratch*"
+      (interactive)
+      (let ((kill-if-not-scratch
+             (lambda (b)
+               (unless (string= (buffer-name b) "*scratch*")
+                 (kill-buffer b)))))
+        (mapc kill-if-not-scratch (buffer-list))))
+
+    (defun recker/unfill-region (beg end)
+      "Unfill the region, joining text paragraphs into a single
+        logical line.  This is useful, e.g., for use with
+        `visual-line-mode'."
+      (interactive "*r")
+      (let ((fill-column (point-max)))
+        (fill-region beg end)))
+  #+END_SRC
+
+  Also, browser bookmarks.
+
+  #+BEGIN_SRC emacs-lisp
+    ;; TODO: modify this so it's not so dependent on helm
+    (defun recker/bookmark-open (link)
+      "Opens a browser bookmark"
+      (interactive
+       (helm-comp-read "Select Bookmark: " recker/bookmark-list))
+      (browse-url link))
+
+    (load-file "~/org/bookmarks.el")
+    (global-set-key (kbd "C-c b") 'recker/bookmark-open)
+  #+END_SRC
+
 * Local Changes
 
   Miscellaneous local changes can be kept [[file:lisp][here]].  This is convenient

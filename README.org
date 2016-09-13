@@ -348,6 +348,40 @@ change these variable.  Otherwise, you might confuse my mother.
     (load-file "~/.emacs.d/blog.el")
   #+END_SRC
 
+* Gnus
+
+  This is basically a "blank" gnus.  Setting the primary method as
+  =nnml ""= is just a way for you to open the program and poke around.
+
+  #+BEGIN_SRC emacs-lisp
+    (setq gnus-select-method '(nnml "")
+          message-directory "~/org/.mail"
+          gnus-directory "~/org/.news"
+          nnfolder-directory "~/org/.mail/archive"
+          gnus-always-read-dribble-file 't)
+  #+END_SRC
+
+  Mail accounts.
+
+  #+BEGIN_SRC emacs-lisp
+    (setq gnus-secondary-select-methods
+          '((nnimap "personal"
+                    (nnimap-address "imap.gmail.com")
+                    (nnimap-server-port 993)
+                    (nnimap-stream ssl))
+            (nnimap "work"
+                    (nnimap-address "outlook.office365.com")
+                    (nnimap-server-port 993)
+                    (nnimap-stream ssl))
+            (nntp "news.gmane.org")))
+  #+END_SRC
+
+  Default on topic mode
+
+  #+BEGIN_SRC emacs-lisp
+    (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+  #+END_SRC
+
 * Functions
 
   These are miscellaneous functions that I've written (or

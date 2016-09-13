@@ -348,6 +348,48 @@ change these variable.  Otherwise, you might confuse my mother.
     (load-file "~/.emacs.d/blog.el")
   #+END_SRC
 
+* GNUS
+
+  This configures GNUS to just dump everything in a =~/.gnus=.  This
+  simplifies syncing and configuration.
+
+  #+BEGIN_SRC emacs-lisp
+    (setq gnus-home-directory "~/.gnus"
+          nnfolder-directory "~/.gnus/Mail")
+  #+END_SRC
+
+  This is a dummy setting that allows you to open up gnus without it
+  exploding.
+
+  #+BEGIN_SRC emacs-lisp
+    (setq gnus-select-method '(nnml ""))
+  #+END_SRC
+
+  Default on topic view
+
+  #+BEGIN_SRC emacs-lisp
+    (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+  #+END_SRC
+
+  Mail and news accounts.
+
+  #+BEGIN_SRC emacs-lisp
+    (setq gnus-secondary-select-methods
+          '((nnimap "personal"
+                    (nnimap-address "imap.gmail.com")
+                    (nnimap-server-port 993)
+                    (nnimap-stream ssl))
+            (nntp "news.gmane.org")))
+  #+END_SRC
+
+  Currently, sending is only supported from my personal account.
+
+  #+BEGIN_SRC emacs-lisp
+    (setq smtpmail-smtp-server "smtp.gmail.com"
+          smtpmail-smtp-service 587
+          message-send-mail-function 'smtpmail-send-it)
+  #+END_SRC
+
 * Functions
 
   These are miscellaneous functions that I've written (or

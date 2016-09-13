@@ -387,7 +387,8 @@ change these variable.  Otherwise, you might confuse my mother.
   #+BEGIN_SRC emacs-lisp
     (setq smtpmail-smtp-server "smtp.gmail.com"
           smtpmail-smtp-service 587
-          message-send-mail-function 'smtpmail-send-it)
+          message-send-mail-function 'smtpmail-send-it
+          gnus-message-archive-group nil)
   #+END_SRC
 
 * Functions

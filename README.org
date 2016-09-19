@@ -350,8 +350,7 @@ change these variable.  Otherwise, you might confuse my mother.
 
 * GNUS
 
-  This configures GNUS to just dump everything in a =~/.gnus=.  This
-  simplifies syncing and configuration.
+  Hide everything in a hidden folder.
 
   #+BEGIN_SRC emacs-lisp
     (setq gnus-home-directory "~/.gnus"
@@ -390,6 +389,16 @@ change these variable.  Otherwise, you might confuse my mother.
           smtpmail-smtp-service 587
           message-send-mail-function 'smtpmail-send-it
           gnus-message-archive-group nil)
+  #+END_SRC
+
+  Sync everything to a remote file on my favorite server.
+
+  #+BEGIN_SRC emacs-lisp
+    (setq gnus-sync-backend "/ssh:ebonhawk:~/.gnus"
+          gnus-sync-global-vars '(gnus-newsrc-last-checked-date)
+          gnus-sync-newsrc-groups '("nnimap" "nntp" "nnrss")
+          gnus-sync-newsrc-offsets '(2 3))
+    (gnus-sync-initialize)
   #+END_SRC
 
 * Functions

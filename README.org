@@ -202,10 +202,10 @@ change these variable.  Otherwise, you might confuse my mother.
   Current theme (this changes frequently).
 
   #+BEGIN_SRC emacs-lisp
-    (use-package "gruvbox-theme"
+    (use-package "zenburn-theme"
       :ensure t
       :config
-      (load-theme 'gruvbox t))
+      (load-theme 'zenburn t))
   #+END_SRC
 
 * Modes
@@ -355,7 +355,8 @@ change these variable.  Otherwise, you might confuse my mother.
 
   #+BEGIN_SRC emacs-lisp
     (setq gnus-home-directory "~/.gnus"
-          nnfolder-directory "~/.gnus/Mail")
+          nnfolder-directory "~/.gnus/Mail/archive"
+          message-directory "~/.gnus/Mail")
   #+END_SRC
 
   This is a dummy setting that allows you to open up gnus without it

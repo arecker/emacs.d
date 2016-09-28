@@ -323,6 +323,8 @@ change these variable.  Otherwise, you might confuse my mother.
               ("i" "idea" entry (file+headline "~/org/personal.org" "Ideas")
                "* %?"
                :empty-lines 1)
+              ("t" "task" entry (file+headline "~/org/work.org" "Tasks")
+               )
               ))
       :config
       (org-babel-do-load-languages
@@ -379,22 +381,71 @@ change these variable.  Otherwise, you might confuse my mother.
                     (nnimap-address "imap.gmail.com")
                     (nnimap-server-port 993)
                     (nnimap-stream ssl))
+            (nnimap "work"
+                    (nnimap-address "imap.gmail.com")
+                    (nnimap-server-port 993)
+                    (nnimap-stream ssl))
             (nntp "news.gmane.org")))
+
+    (setq gnus-posting-styles
+          '(("*work*"
+             (signature-file "~/.emacs.d/work-signature.txt")
+             (address "arecker@zendesk.com"))))
   #+END_SRC
 
-  Currently, sending is only supported from my personal account.
+  Sending mail is handled with =mstmp= to support multiple accounts.
+  For it to work, there should be a =~/.msmtprc= file resembling this.
+
+  #+BEGIN_EXAMPLE
+    defaults
+    tls on
+    auto_from on
+    logfile ~/.msmtp.log
+
+    account personal
+    host smtp.gmail.com
+    tls on
+    tls_certcheck off
+    auth on
+    from account2@gmail.com
+    user account2@gmail.com
+    password so-secret
+    port 587
+
+    account work
+    host smtp.gmail.com
+    tls on
+    tls_certcheck off
+    auth on
+    from account2@gmail.com
+    user account2@gmail.com
+    password so-very-secret
+    port 587
+  #+END_EXAMPLE
 
   #+BEGIN_SRC emacs-lisp
     (setq smtpmail-smtp-server "smtp.gmail.com"
           smtpmail-smtp-service 587
-          message-send-mail-function 'smtpmail-send-it
-          gnus-message-archive-group nil)
+          gnus-message-archive-group nil
+          message-send-mail-function 'message-send-mail-with-sendmail
+          sendmail-program "msmtp"
+          message-sendmail-extra-arguments '("--read-envelope-from")
+          message-sendmail-f-is-evil 't)
   #+END_SRC
 
-  Sync everything to a remote file on my favorite server.
+  GPG Things
 
   #+BEGIN_SRC emacs-lisp
-    (setq gnus-sync-backend "/ssh:ebonhawk:~/.gnus"
+    (setq mml2015-encrypt-to-self t
+          mml2015-signers '("1BF49F4B"))
+  #+END_SRC
+
+  Sync everything to a remote file on my favorite server.  Since gnus
+  is way easier to setup interactively, I just use the =gnus-sync=
+  utility to keep it looking the same on all machines.
+
+  #+BEGIN_SRC emacs-lisp
+    (setq gnus-sync-backend "/ssh:ebonhawk:~/.gnus.eld"
           gnus-sync-global-vars '(gnus-newsrc-last-checked-date)
           gnus-sync-newsrc-groups '("nnimap" "nntp" "nnrss")
           gnus-sync-newsrc-offsets '(2 3))

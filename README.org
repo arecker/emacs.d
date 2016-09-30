@@ -272,6 +272,22 @@ change these variable.  Otherwise, you might confuse my mother.
        :init (setq elpy-rpc-timeout 10))
    #+END_SRC
 
+** Ruby
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package "enh-ruby-mode"
+       :ensure t
+       :config
+       (add-to-list 'auto-mode-alist '("\\.rb$" . enh-ruby-mode))
+       (add-to-list 'auto-mode-alist
+                  '("\\(?:\\.rb\\|ru\\|rake\\|thor\\|jbuilder\\|gemspec\\|podspec\\|/\\(?:Gem\\|Rake\\|Cap\\|Thor\\|Vagrant\\|Guard\\|Pod\\)file\\)\\'" . enh-ruby-mode)))
+
+     (use-package "rubocop"
+       :ensure t
+       :config
+       (add-hook 'enh-ruby-mode-hook #'rubocop-mode))
+   #+END_SRC
+
 ** Term
    
    A simple BASH shell for a simple man.
@@ -487,6 +503,22 @@ change these variable.  Otherwise, you might confuse my mother.
       (browse-url link))
     (load-file "~/org/bookmarks.el")
     (global-set-key (kbd "C-c b") 'recker/bookmark-open)
+  #+END_SRC  
+
+  Work in progress.
+
+  #+BEGIN_SRC emacs-lisp
+    (defun recker/import-ics-files()
+      (interactive)
+      (let ((diary-file "~/org/diary")
+            (ics-files '("~/.calendars/personal.ics"
+                         "~/.calendars/work.ics")))
+        (when (file-exists-p diary-file)
+          (delete-file diary-file))
+        (mapc (lambda (f)
+                (icalendar-import-file f diary-file)
+                (kill-buffer (file-name-nondirectory f))) ics-files))
+      (kill-buffer "diary"))
   #+END_SRC
 
 * Local

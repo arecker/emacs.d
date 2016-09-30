@@ -274,6 +274,13 @@ change these variable.  Otherwise, you might confuse my mother.
 
 ** Ruby
 
+   These are very much a work in progress.  As of now, I have to
+   manually trigger rbenv to activate the right version with =M-x=
+   =rbenv-use-corresponding=.  I'm not sure if that's correct or not.
+
+   Also, =readline= and =pry-doc= need to be installed, but the
+   prompts in these plugins are helpful.
+
    #+BEGIN_SRC emacs-lisp
      (use-package "enh-ruby-mode"
        :ensure t
@@ -286,6 +293,19 @@ change these variable.  Otherwise, you might confuse my mother.
        :ensure t
        :config
        (add-hook 'enh-ruby-mode-hook #'rubocop-mode))
+
+     (use-package "robe"
+       :ensure t
+       :config
+       (eval-after-load 'company
+         '(push 'company-robe company-backends))
+       (add-hook 'enh-ruby-mode-hook 'robe-mode))
+
+     (use-package "rbenv"
+       :ensure t
+       :config
+       (global-rbenv-mode)
+       (setq rbenv-executable "rbenv"))
    #+END_SRC
 
 ** Term

@@ -274,9 +274,7 @@ change these variable.  Otherwise, you might confuse my mother.
 
 ** Ruby
 
-   These are very much a work in progress.  As of now, I have to
-   manually trigger rbenv to activate the right version with =M-x=
-   =rbenv-use-corresponding=.  I'm not sure if that's correct or not.
+   These are very much a work in progress.
 
    Also, =readline= and =pry-doc= need to be installed, but the
    prompts in these plugins are helpful.
@@ -285,9 +283,7 @@ change these variable.  Otherwise, you might confuse my mother.
      (use-package "enh-ruby-mode"
        :ensure t
        :config
-       (add-to-list 'auto-mode-alist '("\\.rb$" . enh-ruby-mode))
-       (add-to-list 'auto-mode-alist
-                  '("\\(?:\\.rb\\|ru\\|rake\\|thor\\|jbuilder\\|gemspec\\|podspec\\|/\\(?:Gem\\|Rake\\|Cap\\|Thor\\|Vagrant\\|Guard\\|Pod\\)file\\)\\'" . enh-ruby-mode)))
+       (add-hook 'ruby-mode-hook 'enh-ruby-mode))
 
      (use-package "rubocop"
        :ensure t
@@ -305,7 +301,8 @@ change these variable.  Otherwise, you might confuse my mother.
        :ensure t
        :config
        (global-rbenv-mode)
-       (setq rbenv-executable "rbenv"))
+       (setq rbenv-executable "rbenv")
+       (add-hook 'enh-ruby-mode-hook 'rbenv-use-corresponding))
    #+END_SRC
 
 ** Term

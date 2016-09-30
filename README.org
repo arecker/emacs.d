@@ -300,9 +300,12 @@ change these variable.  Otherwise, you might confuse my mother.
      (use-package "rbenv"
        :ensure t
        :config
-       (global-rbenv-mode)
-       (setq rbenv-executable "rbenv")
-       (add-hook 'enh-ruby-mode-hook 'rbenv-use-corresponding))
+       (setq rbenv-executable "rbenv"
+             rbenv-modeline-function
+             '(lambda (current-ruby)
+                (list "rbenv:" current-ruby)))
+       (add-hook 'enh-ruby-mode-hook 'rbenv-use-corresponding)
+       (global-rbenv-mode))
    #+END_SRC
 
 ** Term

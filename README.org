@@ -414,20 +414,15 @@ change these variable.  Otherwise, you might confuse my mother.
 
   #+BEGIN_SRC emacs-lisp
     (setq gnus-secondary-select-methods
-          '((nnimap "personal"
-                    (nnimap-address "imap.gmail.com")
-                    (nnimap-server-port 993)
-                    (nnimap-stream ssl))
-            (nnimap "work"
-                    (nnimap-address "imap.gmail.com")
-                    (nnimap-server-port 993)
-                    (nnimap-stream ssl))
+          '((nnmaildir "personal"
+                       (directory "~/git/mail/maildirs/personal")
+                       (directory-files nnheader-directory-files-safe)
+                       (get-new-mail nil))
+            (nnmaildir "work"
+                       (directory "~/git/mail/maildirs/work")
+                       (directory-files nnheader-directory-files-safe)
+                       (get-new-mail nil))
             (nntp "news.gmane.org")))
-
-    (setq gnus-posting-styles
-          '(("*work*"
-             (signature-file "~/.emacs.d/work-signature.txt")
-             (address "arecker@zendesk.com"))))
   #+END_SRC
 
   Sending mail is handled with =mstmp= to support multiple accounts.
@@ -468,6 +463,7 @@ change these variable.  Otherwise, you might confuse my mother.
           sendmail-program "msmtp"
           message-sendmail-extra-arguments '("--read-envelope-from")
           message-sendmail-f-is-evil 't)
+
   #+END_SRC
 
   GPG Things

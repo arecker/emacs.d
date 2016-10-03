@@ -394,7 +394,8 @@ change these variable.  Otherwise, you might confuse my mother.
   #+BEGIN_SRC emacs-lisp
     (setq gnus-home-directory "~/.gnus"
           nnfolder-directory "~/.gnus/Mail/archive"
-          message-directory "~/.gnus/Mail")
+          message-directory "~/.gnus/Mail"
+          gnus-always-read-dribble-file t)
   #+END_SRC
 
   This is a dummy setting that allows you to open up gnus without it

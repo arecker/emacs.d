@@ -360,7 +360,8 @@ change these variable.  Otherwise, you might confuse my mother.
                "* %?"
                :empty-lines 1)
               ("t" "task" entry (file+headline "~/org/work.org" "Tasks")
-               )
+               "* TODO %?"
+               :empty-lines 1)
               ))
       :config
       (org-babel-do-load-languages

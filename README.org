@@ -208,6 +208,12 @@ change these variable.  Otherwise, you might confuse my mother.
       (load-theme 'zenburn t))
   #+END_SRC
 
+  Current font (this too changes frequently)
+
+  #+BEGIN_SRC emacs-lisp
+    (set-default-font "Inconsolata 14")
+  #+END_SRC
+
 * Modes
 
   This is the text-mode hook, which is for /editing text written for

@@ -192,7 +192,9 @@ directory.
 
 ** Better Git
 
-   Let's add some fun git plugins.
+   Let's add some fun git plugins, like magit and git-gutter.
+
+   [[file:screenshots/git.png]]
 
    #+BEGIN_SRC emacs-lisp
      (use-package magit

@@ -1,11 +1,8 @@
+*.pyc
+.DS_Store
 /README.el
+auto-save-list
 /bookmarks
 elpa
-eshell
-auto-save-list
-/recentf
-/network-security.data
 /projectile-bookmarks.eld
-url
-/tramp
-org-gcal
+/recentf

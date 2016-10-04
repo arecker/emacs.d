@@ -1,6 +1,8 @@
 #+TITLE: Emacs Configuration
 #+AUTHOR: Alex Recker
 
+[[file:screenshots/unixporn.png]]
+
 This is my emacs config.  It's very fancy, isn't it?  If you'd like to
 use it, clone this repository in place as your new =~/.emacs.d=
 directory.

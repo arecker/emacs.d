@@ -210,6 +210,8 @@ directory.
 
    Let company-mode do its thing.
 
+   [[file:screenshots/completion.png]]
+
    #+BEGIN_SRC emacs-lisp
      (use-package company
        :ensure t

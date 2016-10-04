@@ -719,6 +719,35 @@ directory.
            smtpmail-smtp-service 587)
    #+END_SRC
 
+** Syncing
+
+   Use the gnus-sync utility over TRAMP to save my gnus configuration
+   to a remote file and read from it while starting.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq gnus-sync-backend "/ssh:ebonhawk:~/.gnus.eld"
+           gnus-sync-global-vars '(gnus-newsrc-last-checked-date)
+           gnus-sync-newsrc-groups '("nnimap" "nntp" "nnrss")
+           gnus-sync-newsrc-offsets '(2 3))
+     (gnus-sync-initialize)
+   #+END_SRC
+
+** Address Book
+
+   Collect addresses in bbdb.  This will prompt for a new entry while
+   sending mail.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package "bbdb"
+       :ensure t
+       :config
+       (setq bbdb-file "~/org/bbdb")
+       :init
+       (bbdb-mua-auto-update-init 'message)
+       (setq bbdb-mua-auto-update-p 'query)
+       (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
+   #+END_SRC
+
 * Functions
 
   These are miscellaneous functions that I've written (or

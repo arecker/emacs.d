@@ -224,6 +224,8 @@ directory.
    sometimes I question whether or not I really need it.  Comment all
    of this out if you are not into it.
 
+   [[file:screenshots/helm.png]]
+
    #+BEGIN_SRC emacs-lisp
      (use-package helm
        :ensure t

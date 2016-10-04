@@ -743,6 +743,12 @@ directory.
         (fill-region beg end)))
   #+END_SRC
 
+  Likewise, miscellaneous key-bindings.
+
+  #+BEGIN_SRC emacs-lisp
+    (global-set-key (kbd "C-c b") 'browse-url))
+  #+END_SRC
+
 * Local
 
   For any secrets or lispy changes you are testing out for the day, I

@@ -746,7 +746,7 @@ directory.
   Likewise, miscellaneous key-bindings.
 
   #+BEGIN_SRC emacs-lisp
-    (global-set-key (kbd "C-c b") 'browse-url))
+    (global-set-key (kbd "C-c b") 'browse-url)
   #+END_SRC
 
 * Local

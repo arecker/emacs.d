@@ -2,6 +2,6 @@
 # name: src
 # key: <s
 # --
-#+BEGIN_SRC $1
+#+BEGIN_SRC ${1:lang}
 $0
 #+END_SRC

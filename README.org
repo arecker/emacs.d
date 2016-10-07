@@ -239,14 +239,6 @@ directory.
        (setq ido-vertical-define-keys 'C-n-and-C-p-only))
    #+END_SRC
 
-   Use smex for =M-x=
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package "smex"
-       :ensure t
-       :bind (("M-x" . smex)))
-   #+END_SRC
-
 ** Better... Something
 
    These are my [[https://github.com/emacs-helm/helm][helm]] settings.  Helm is kind of enormous, and
@@ -263,8 +255,10 @@ directory.
              helm-imenu-fuzzy-match t)
        (helm-mode 1)
        :bind (("C-x C-b" . helm-buffers-list)
+              ("C-x b" . helm-mini)
               ("C-x C-f" . helm-find-files)
               ("C-c h o" . helm-occur)
+              ("M-x" . helm-M-x)
               ("M-y" . helm-show-kill-ring)
               :map helm-map
               ("<tab>" . helm-execute-persistent-action)))
@@ -484,7 +478,7 @@ directory.
           (C . t)))
        :bind (("C-c a" . org-agenda)
               ("C-c c" . org-capture)
-              ("C-c i" . imenu)
+              ("C-c i" . helm-imenu)
               ("C-c s" . org-store-link)))
 
      (use-package "org-plus-contrib"

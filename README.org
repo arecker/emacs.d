@@ -218,13 +218,42 @@ directory.
        :config (global-company-mode))
    #+END_SRC
 
+** Better Interactive Menus
+
+   Vertical IDO everywhere
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package "ido-ubiquitous"
+       :ensure t
+       :config
+       (ido-mode 1)
+       (ido-everywhere 1)
+       (ido-ubiquitous-mode 1)
+       (setq magit-completing-read-function 'magit-ido-completing-read
+             gnus-completing-read-function 'gnus-ido-completing-read))
+
+     (use-package "ido-vertical-mode"
+       :ensure t
+       :config
+       (ido-vertical-mode 1)
+       (setq ido-vertical-define-keys 'C-n-and-C-p-only))
+   #+END_SRC
+
+   Use smex for =M-x=
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package "smex"
+       :ensure t
+       :bind (("M-x" . smex)))
+   #+END_SRC
+
 ** Better... Something
 
    These are my [[https://github.com/emacs-helm/helm][helm]] settings.  Helm is kind of enormous, and
    sometimes I question whether or not I really need it.  Comment all
    of this out if you are not into it.
 
-   [[file:screenshots/helm.png]]
+   I'm in the process of replacing this work-flow.
 
    #+BEGIN_SRC emacs-lisp
      (use-package helm
@@ -234,12 +263,8 @@ directory.
              helm-imenu-fuzzy-match t)
        (helm-mode 1)
        :bind (("C-x C-b" . helm-buffers-list)
-              ("C-x b" . helm-mini)
               ("C-x C-f" . helm-find-files)
               ("C-c h o" . helm-occur)
-              ("C-c i" . helm-imenu)
-              ("C-x r b" . helm-filtered-bookmarks)
-              ("M-x" . helm-M-x)
               ("M-y" . helm-show-kill-ring)
               :map helm-map
               ("<tab>" . helm-execute-persistent-action)))
@@ -384,11 +409,19 @@ directory.
    #+END_SRC
 
    The terminal buffer should be killed on exit.
-
+   
    #+BEGIN_SRC emacs-lisp
      (defadvice term-handle-exit
          (after term-kill-buffer-on-exit activate)
        (kill-buffer))
+   #+END_SRC
+
+   Disable yas in ansi-term (bug)
+
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'term-mode-hook (lambda()
+                                 (yas-minor-mode -1)))
+
    #+END_SRC
 
 ** YAML
@@ -443,6 +476,7 @@ directory.
           (C . t)))
        :bind (("C-c a" . org-agenda)
               ("C-c c" . org-capture)
+              ("C-c i" . imenu)
               ("C-c s" . org-store-link)))
 
      (use-package "org-plus-contrib"

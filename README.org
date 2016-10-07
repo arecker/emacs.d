@@ -316,6 +316,14 @@ directory.
       :config (yas-global-mode))
   #+END_SRC
 
+** CSV
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package "csv-mode"
+       :ensure t
+       :mode ("\\.csv\\'" . csv-mode))
+   #+END_SRC
+
 ** HTML
 
    This really should be smaller.  Emacs has fantastic HTML markup

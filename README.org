@@ -490,7 +490,7 @@ directory.
      (use-package "deft"
        :ensure t
        :config
-       (setq deft-extensions '("txt" "tex" "org")
+       (setq deft-extensions '("txt" "tex" "org" "org_archive")
              deft-directory "~/org"
              deft-recursive t)
        :bind (("C-c d" . deft)))

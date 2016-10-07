@@ -484,6 +484,18 @@ directory.
        :pin "org")
    #+END_SRC
 
+   Search org files with deft.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package "deft"
+       :ensure t
+       :config
+       (setq deft-extensions '("txt" "tex" "org")
+             deft-directory "~/org"
+             deft-recursive t)
+       :bind (("C-c d" . deft)))
+   #+END_SRC
+
 ** Blog
 
    My [[https://alexrecker.com/][blog]] is generated from 100% org mode publishing.  For any of

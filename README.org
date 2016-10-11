@@ -619,7 +619,7 @@ directory.
 
              ("blog-static"
               :base-directory "~/git/blog"
-              :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+              :base-extension "txt\\|css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
               :publishing-directory "/var/www/blog"
               :publishing-function org-publish-attachment
               :recursive t

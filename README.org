@@ -218,27 +218,6 @@ directory.
        :config (global-company-mode))
    #+END_SRC
 
-** Better Interactive Menus
-
-   Vertical IDO everywhere
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package "ido-ubiquitous"
-       :ensure t
-       :config
-       (ido-mode 1)
-       (ido-everywhere 1)
-       (ido-ubiquitous-mode 1)
-       (setq magit-completing-read-function 'magit-ido-completing-read
-             gnus-completing-read-function 'gnus-ido-completing-read))
-
-     (use-package "ido-vertical-mode"
-       :ensure t
-       :config
-       (ido-vertical-mode 1)
-       (setq ido-vertical-define-keys 'C-n-and-C-p-only))
-   #+END_SRC
-
 ** Better... Something
 
    These are my [[https://github.com/emacs-helm/helm][helm]] settings.  Helm is kind of enormous, and
@@ -252,12 +231,14 @@ directory.
        :ensure t
        :config
        (setq helm-semantic-fuzzy-match t
-             helm-imenu-fuzzy-match t)
+             helm-imenu-fuzzy-match nil)
        (helm-mode 1)
        :bind (("C-x C-b" . helm-buffers-list)
               ("C-x b" . helm-mini)
               ("C-x C-f" . helm-find-files)
               ("C-c h o" . helm-occur)
+              ("C-c i" . helm-imenu)
+              ("C-x r b" . helm-filtered-bookmarks)
               ("M-x" . helm-M-x)
               ("M-y" . helm-show-kill-ring)
               :map helm-map
@@ -309,6 +290,14 @@ directory.
       :ensure t
       :config (yas-global-mode))
   #+END_SRC
+
+** Bats
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package "bats-mode"
+       :ensure t
+       :mode ("\\.bats\\'" . bats-mode))
+   #+END_SRC
 
 ** CSV
 
@@ -468,6 +457,9 @@ directory.
        (setq org-agenda-files '("~/org")
              org-capture-templates
              '(
+               ("h" "how" entry (file "~/org/how.org")
+                "* %?"
+                :empty-lines 1)
                ("i" "idea" entry (file+headline "~/org/personal.org" "Ideas")
                 "* %?"
                 :empty-lines 1)
@@ -480,7 +472,7 @@ directory.
         'org-babel-load-languages
         '((python . t)
           (ruby . t)
-          (sh . t)
+          (shell . t)
           (java . t)
           (js . t)
           (C . t)))
@@ -562,7 +554,7 @@ directory.
 
    #+BEGIN_SRC emacs-lisp
      (setq org-publish-project-alist
-           '(
+   	'(
 
              ("blog-index"
               :base-directory "~/git/blog"
@@ -570,7 +562,7 @@ directory.
               :html-doctype "html5"
               :html-head-extra "<link rel='stylesheet' href='./css/lora.css' />\n<link rel='stylesheet' href='./css/site.css' />"
               :html-postamble blog/index-postamble
-              :include ["index.org"]
+              :include ("index.org")
               :publishing-directory "/var/www/blog"
               :publishing-function org-html-publish-to-html
               :section-numbers nil
@@ -597,7 +589,6 @@ directory.
              ("blog-posts-pdf"
               :base-directory "~/git/blog"
               :base-extension "org"
-              :completion-function (lambda() (shell-command "rm ~/git/blog/*.pdf && rm ~/git/blog/*.tex"))
               :exclude "index.org"
               :publishing-directory "/var/www/blog/pdfs"
               :publishing-function org-latex-publish-to-pdf
@@ -630,7 +621,7 @@ directory.
               :base-extension "org"
               :exclude ".*"
               :exclude-tags ("noexport" "norss")
-              :include ["index.org"]
+              :include ("index.org")
               :html-link-home "http://alexrecker.com"
               :html-link-use-abs-url t
               :publishing-directory "/var/www/blog/feed/"
@@ -646,7 +637,7 @@ directory.
    #+BEGIN_SRC emacs-lisp
      (defun blog/push ()
        (interactive)
-       (shell-command "rsync -razp /var/www/blog/ ebonhawk:/var/www/blog"))
+       (shell-command "rsync -razp /var/www/blog/ columbia:/var/www/blog"))
    #+END_SRC
 
 * GNUS
@@ -718,38 +709,15 @@ directory.
    #+BEGIN_SRC emacs-lisp
      (add-to-list 'gnus-secondary-select-methods
                   '(nnmaildir "personal"
-                              (directory "~/.maildirs/personal")
+                              (directory "~/.maildirs/personal-docker")
                               (directory-files nnheader-directory-files-safe)
                               (get-new-mail nil)))
 
      (add-to-list 'gnus-secondary-select-methods
                   '(nnmaildir "work"
-                              (directory "~/.maildirs/work")
+                              (directory "~/.maildirs/work-docker")
                               (directory-files nnheader-directory-files-safe)
                               (get-new-mail nil)))
-   #+END_SRC
-
-   Additionally, mail downloads can be automated.  On OSX, a new
-   =plist= file in =~/Library/LaunchAgents/= can be created to take
-   care of this.
-
-   #+BEGIN_SRC xml
-     <?xml version="1.0" encoding="UTF-8"?>
-     <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-     <plist version="1.0">
-     <dict>
-       <key>Label</key>
-       <string>com.arecker.offlineimap.plist</string>
-       <key>ProgramArguments</key>
-       <array>
-         <string>/usr/local/bin/offlineimap</string>
-         <string>-c</string>
-         <string>/Users/arecker/.emacs.d/mail/offlineimaprc.conf</string>
-       </array>
-       <key>StartInterval</key>
-       <integer>30</integer>
-     </dict>
-     </plist>
    #+END_SRC
 
 ** Sending Mail
@@ -834,6 +802,49 @@ directory.
       (interactive "*r")
       (let ((fill-column (point-max)))
         (fill-region beg end)))
+
+    (defun recker/run-current-file ()
+      "Execute or compile the current file.
+    For example, if the current buffer is the file x.pl,
+    then it'll call “perl x.pl” in a shell.
+    The file can be php, perl, python, ruby, javascript, bash, ocaml, vb, elisp.
+    File suffix is used to determine what program to run.
+    If the file is modified, ask if you want to save first. (This command always run the saved version.)
+    If the file is emacs lisp, run the byte compiled version if exist."
+      (interactive)
+      (let (suffixMap fName fSuffix progName cmdStr)
+
+        ;; a keyed list of file suffix to comand-line program path/name
+        (setq suffixMap 
+              '(("php" . "php")
+                ;; ("coffee" . "coffee -p")
+                ("pl" . "perl")
+                ("py" . "python")
+                ("rb" . "ruby")
+                ("js" . "node")             ; node.js
+                ("sh" . "bash")
+                ("ml" . "ocaml")
+                ("vbs" . "cscript")))
+        (setq fName (buffer-file-name))
+        (setq fSuffix (file-name-extension fName))
+        (setq progName (cdr (assoc fSuffix suffixMap)))
+        (setq cmdStr (concat progName " \""   fName "\""))
+
+        (when (buffer-modified-p)
+          (progn 
+            (when (y-or-n-p "Buffer modified. Do you want to save first?")
+              (save-buffer) ) ) )
+
+        (if (string-equal fSuffix "el") ; special case for emacs lisp
+            (progn 
+              (load (file-name-sans-extension fName)))
+          (if progName
+              (progn
+                (message "Running…")
+                ;; (message progName)
+                (shell-command cmdStr "*run-current-file output*" ))
+            (message "No recognized program file suffix for this file.")))
+        ))
   #+END_SRC
 
   Likewise, miscellaneous key-bindings.

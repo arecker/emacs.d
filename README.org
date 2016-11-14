@@ -714,10 +714,11 @@ directory.
                               (get-new-mail nil)))
 
      (add-to-list 'gnus-secondary-select-methods
-                  '(nnmaildir "work"
-                              (directory "~/.maildirs/work-docker")
-                              (directory-files nnheader-directory-files-safe)
-                              (get-new-mail nil)))
+   	       '(nnimap "work"
+   			(nnimap-stream network)
+   			(nnimap-address "localhost")
+   			(nnimap-server-port 143)
+   			(nnimap-authenticator login)))
    #+END_SRC
 
 ** Sending Mail
@@ -749,19 +750,6 @@ directory.
    #+BEGIN_SRC emacs-lisp
      (setq smtpmail-smtp-server "smtp.gmail.com"
            smtpmail-smtp-service 587)
-   #+END_SRC
-
-** Syncing
-
-   Use the gnus-sync utility over TRAMP to save my gnus configuration
-   to a remote file and read from it while starting.
-
-   #+BEGIN_SRC emacs-lisp
-     (setq gnus-sync-backend "/ssh:ebonhawk:~/.gnus.eld"
-           gnus-sync-global-vars '(gnus-newsrc-last-checked-date)
-           gnus-sync-newsrc-groups '("nnimap" "nntp" "nnrss")
-           gnus-sync-newsrc-offsets '(2 3))
-     (gnus-sync-initialize)
    #+END_SRC
 
 ** Address Book

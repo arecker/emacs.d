@@ -1,5 +1,6 @@
 #+TITLE: Emacs Configuration
 #+AUTHOR: Alex Recker
+#+STARTUP: indent showall
 
 [[file:screenshots/unixporn.png]]
 
@@ -13,845 +14,842 @@ directory.
 
 * Personal
   
-  Make sure you change these variables.  Otherwise, you might confuse my
-  mother.
+Make sure you change these variables.  Otherwise, you might confuse my
+mother.
   
-  #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
   (setq user-full-name "Alex Recker"
-        user-mail-address "alex@reckerfamily.com")
-  #+END_SRC
+	user-mail-address "alex@reckerfamily.com")
+#+END_SRC
 
 * Building
 
-  I like compiling my emacs from source.  If you are interested in
-  doing the same, this section is for your  convencience.
+I like compiling my emacs from source.  If you are interested in doing
+the same, this section is for your convencience.
 
-  #+BEGIN_EXAMPLE
-    $ mkdir src && cd src
-    $ git clone -b master git://git.sv.gnu.org/emacs.git && cd emacs
-    $ git checkout [tag or commit]
-    $ ./autogen.sh
-    $ ./configure  # supply --with-ns if on OSX
-    $ make
-    $ sudo make install
-  #+END_EXAMPLE
+#+BEGIN_EXAMPLE
+  $ mkdir src && cd src
+  $ git clone -b master git://git.sv.gnu.org/emacs.git && cd emacs
+  $ git checkout [tag or commit]
+  $ ./autogen.sh
+  $ ./configure  # supply --with-ns if on OSX
+  $ make
+  $ sudo make install
+#+END_EXAMPLE
 
 * Packages
 
-  All extra things are retrieved by this config with the help of
-  [[https://github.com/jwiegley/use-package][use-package]].  Sadly, since that code needs to run before anything is
-  tangled, it cannot live in this document.
-  
-  See [[file:init.el][init.el]] for the package initialization portion.
+All extra things are retrieved by this config with the help of
+[[https://github.com/jwiegley/use-package][use-package]].  Sadly, since that code needs to run before anything is
+tangled, it cannot live in this document.  See [[file:init.el][init.el]] for the package
+initialization portion.
 
 * Startup
 
 ** PATH Variable
 
-   This package does a nice job ensuring the =PATH= variable is synced
-   up.  OSX is the only OS that misbehaves, but here it is nonetheless.
+This package does a nice job ensuring the =PATH= variable is synced
+up.  OSX is the only OS that misbehaves, but here it is nonetheless.
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package exec-path-from-shell
-       :ensure t
-       :config (exec-path-from-shell-initialize))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package exec-path-from-shell
+    :ensure t
+    :config (exec-path-from-shell-initialize))
+#+END_SRC
 
 ** Scratch Buffer
 
-   The slash screen displayed on startup is a little too noisy for me.
-   The =*scratch*= buffer is a lot more low key.
+The slash screen displayed on startup is a little too noisy for me.
+The =*scratch*= buffer is a lot more low key.
 
-   #+BEGIN_SRC emacs-lisp
-     (setq inhibit-startup-message 't)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-message 't)
+#+END_SRC
 
-   This function replaces the generic =;; This buffer is for text=
-   comment with something more interesting.  I have it defaulted to my
-   own [[https://pypi.python.org/pypi/wilfred-say][wilfred-say]], but [[https://en.wikipedia.org/wiki/Fortune_(Unix)][fortune]] is a stellar candidate as well.
+This function replaces the generic =;; This buffer is for text=
+comment with something more interesting.  I have it defaulted to my
+own [[https://pypi.python.org/pypi/wilfred-say][wilfred-say]], but [[https://en.wikipedia.org/wiki/Fortune_(Unix)][fortune]] is a stellar candidate as well.
 
-   [[file:screenshots/scratch.png]]
+[[file:screenshots/scratch.png]]
 
-   #+BEGIN_SRC emacs-lisp
-     (setq recker/scratch-message-program "wilfred-say")
+#+BEGIN_SRC emacs-lisp
+  (setq recker/scratch-message-program "wilfred-say")
 
-     (defun recker/startup-scratch ()
-       (let ((command-installed (executable-find recker/scratch-message-program))
-             (comment-command-output
-              (lambda (c)
-               	(concat
-                 (mapconcat
-                  (lambda (x) (concat ";; " x))
-                  (split-string (shell-command-to-string c) "\n" t) "\n")
-                 "\n" "\n"))))
-         (if command-installed
-             (setq initial-scratch-message
-                   (funcall comment-command-output recker/scratch-message-program)))))
+  (defun recker/startup-scratch ()
+    (let ((command-installed (executable-find recker/scratch-message-program))
+          (comment-command-output
+           (lambda (c)
+             (concat
+              (mapconcat
+               (lambda (x) (concat ";; " x))
+               (split-string (shell-command-to-string c) "\n" t) "\n")
+              "\n" "\n"))))
+      (if command-installed
+          (setq initial-scratch-message
+		(funcall comment-command-output recker/scratch-message-program)))))
 
-     (recker/startup-scratch)
-   #+END_SRC
+  (recker/startup-scratch)
+#+END_SRC
 
 ** File Registers
 
-   These are files that I visit often.  As file registers, any of them
-   can be opened with =C-x= =r= =x= =[letter]=.
+These are files that I visit often.  As file registers, any of them
+can be opened with =C-x= =r= =x= =[letter]=.
 
-   #+BEGIN_SRC emacs-lisp
-     (set-register ?b '(file . "~/git/blog"))
-     (set-register ?d '(file . "~/Desktop"))
-     (set-register ?e '(file . "~/.emacs.d/README.org"))
-     (set-register ?g '(file . "~/git"))
-     (set-register ?i '(file . "~/.emacs.d/init.el"))
-     (set-register ?o '(file . "~/org"))
-     (set-register ?p '(file . "~/org/personal.org"))
-     (set-register ?w '(file . "~/org/work.org"))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (set-register ?b '(file . "~/git/blog"))
+  (set-register ?d '(file . "~/Desktop"))
+  (set-register ?e '(file . "~/.emacs.d/README.org"))
+  (set-register ?g '(file . "~/git"))
+  (set-register ?i '(file . "~/.emacs.d/init.el"))
+  (set-register ?o '(file . "~/org"))
+  (set-register ?p '(file . "~/org/personal.org"))
+  (set-register ?t '(file . "~/org/ticket.org"))
+  (set-register ?w '(file . "~/org/work.org"))
+#+END_SRC
 
 * Interface
 
 ** Better Defaults
    
-   Emacs comes with some obnixious defaults.  First to go is
-   automaitic backups and auto saving.  These features clutter up the
-   file system.  Also, disable native tabs definitively (though a tab
-   can still be inserted with =C-q= =TAB=.
+Emacs comes with some obnixious defaults.  First to go is automatic
+backups and auto saving.  These features clutter up the file system.
+Also, disable native tabs definitively (though a tab can still be
+inserted with =C-q= =TAB=.
 
-   #+BEGIN_SRC emacs-lisp
-     (setq backup-inhibited t
-           auto-save-default 0
-           indent-tabs-mode nil)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq backup-inhibited t
+	auto-save-default 0
+	indent-tabs-mode nil)
+#+END_SRC
 
 ** Better Look
 
-   Remove the scrollbar, tool bar, and menu bar.
+Remove the scrollbar, tool bar, and menu bar.
 
-   #+BEGIN_SRC emacs-lisp
-     (defun recker/emacs-startup-hook ()
-       (menu-bar-mode 0)
-       (tool-bar-mode 0)
-       (toggle-scroll-bar 0))
-     (add-hook 'emacs-startup-hook 'recker/emacs-startup-hook)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun recker/emacs-startup-hook ()
+    (menu-bar-mode 0)
+    (tool-bar-mode 0)
+    (toggle-scroll-bar 0))
+  (add-hook 'emacs-startup-hook 'recker/emacs-startup-hook)
+#+END_SRC
 
-   Make the default font something prettier, like [[http://levien.com/type/myfonts/inconsolata.html][inconsolata]].
+Make the default font something prettier, like [[http://levien.com/type/myfonts/inconsolata.html][inconsolata]].
 
-   #+BEGIN_SRC emacs-lisp
-     (set-default-font "Inconsolata 14")
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (set-default-font "Inconsolata 14")
+#+END_SRC
 
-   Change the theme.
+Change the theme.
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package "zenburn-theme"
-       :ensure t
-       :config
-       (load-theme 'zenburn t))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package "zenburn-theme"
+    :ensure t
+    :config
+    (load-theme 'zenburn t))
+#+END_SRC
 
 ** Better Comments
 
-   I overwrite the build-in =comment-dwim= with its superior sequel.
+I overwrite the build-in =comment-dwim= with its superior sequel.
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package comment-dwim-2
-       :ensure t
-       :bind ("M-;" . comment-dwim-2))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package comment-dwim-2
+    :ensure t
+    :bind ("M-;" . comment-dwim-2))
+#+END_SRC
 
 ** Better Modeline
 
-   This snippet is an utter mystery to me, but somehow it hides minor
-   modes from the modeline.
+This snippet is an utter mystery to me, but somehow it hides minor
+modes from the modeline.
 
-   #+BEGIN_SRC emacs-lisp
-     (define-minor-mode minor-mode-blackout-mode
-       "Minor mode blackout"
-       t)
-     (catch 'done
-       (mapc (lambda (x)
-               (when (and (consp x)
-                          (equal (cadr x) '("" minor-mode-alist)))
-                 (let ((original (copy-sequence x)))
-                   (setcar x 'minor-mode-blackout-mode)
-                   (setcdr x (list "" original)))
-                 (throw 'done t)))
-             mode-line-modes))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (define-minor-mode minor-mode-blackout-mode
+    "Minor mode blackout"
+    t)
+  (catch 'done
+    (mapc (lambda (x)
+            (when (and (consp x)
+                       (equal (cadr x) '("" minor-mode-alist)))
+              (let ((original (copy-sequence x)))
+		(setcar x 'minor-mode-blackout-mode)
+		(setcdr x (list "" original)))
+              (throw 'done t)))
+          mode-line-modes))
+#+END_SRC
 
 ** Better Text Selection
 
-   I use =expand-region= to incrementally grab larger portions of text
-   based on where the cursor is.  It's a brilliant tool.
+I use =expand-region= to incrementally grab larger portions of text
+based on where the cursor is.  It's a brilliant tool.
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package expand-region
-       :ensure t
-       :bind ("C-=" . er/expand-region))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :ensure t
+    :bind ("C-=" . er/expand-region))
+#+END_SRC
 
 ** Better Git
 
-   Let's add some fun git plugins, like magit and git-gutter.
+Let's add some fun git plugins, like magit and git-gutter.
 
-   [[file:screenshots/git.png]]
+[[file:screenshots/git.png]]
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package magit
-       :ensure t
-       :bind ("C-x g" . magit-status))
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    :bind ("C-x g" . magit-status))
 
-     (use-package git-gutter
-       :ensure t
-       :config (global-git-gutter-mode 1))
-   #+END_SRC
+  (use-package git-gutter
+    :ensure t
+    :config (global-git-gutter-mode 1))
+#+END_SRC
 
 ** Better Completion
 
-   Let company-mode do its thing.
+Let company-mode do its thing.
 
-   [[file:screenshots/completion.png]]
+[[file:screenshots/completion.png]]
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package company
-       :ensure t
-       :config (global-company-mode))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :config (global-company-mode))
+#+END_SRC
 
 ** Better... Something
 
-   These are my [[https://github.com/emacs-helm/helm][helm]] settings.  Helm is kind of enormous, and
-   sometimes I question whether or not I really need it.  Comment all
-   of this out if you are not into it.
+These are my [[https://github.com/emacs-helm/helm][helm]] settings.  Helm is kind of enormous, and sometimes I
+question whether or not I really need it.  Comment all of this out if
+you are not into it.
 
-   I'm in the process of replacing this work-flow.
+I'm in the process of replacing this work-flow.
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package helm
-       :ensure t
-       :config
-       (setq helm-semantic-fuzzy-match t
-             helm-imenu-fuzzy-match nil)
-       (helm-mode 1)
-       :bind (("C-x C-b" . helm-buffers-list)
-              ("C-x b" . helm-mini)
-              ("C-x C-f" . helm-find-files)
-              ("C-c h o" . helm-occur)
-              ("C-c i" . helm-imenu)
-              ("C-x r b" . helm-filtered-bookmarks)
-              ("M-x" . helm-M-x)
-              ("M-y" . helm-show-kill-ring)
-              :map helm-map
-              ("<tab>" . helm-execute-persistent-action)))
+#+BEGIN_SRC emacs-lisp
+  (use-package helm
+    :ensure t
+    :config
+    (setq helm-semantic-fuzzy-match t
+          helm-imenu-fuzzy-match nil)
+    (helm-mode 1)
+    :bind (("C-x C-b" . helm-buffers-list)
+           ("C-x b" . helm-mini)
+           ("C-x C-f" . helm-find-files)
+           ("C-c h o" . helm-occur)
+           ("C-c i" . helm-imenu)
+           ("C-x r b" . helm-filtered-bookmarks)
+           ("M-x" . helm-M-x)
+           ("M-y" . helm-show-kill-ring)
+           :map helm-map
+           ("<tab>" . helm-execute-persistent-action)))
 
-     (use-package helm-projectile
-       :ensure t
-       :config
-       (projectile-global-mode)
-       (setq projectile-completion-system 'helm)
-       (helm-projectile-on)
-       :bind ("C-c f" . helm-projectile))
-   #+END_SRC
+  (use-package helm-projectile
+    :ensure t
+    :config
+    (projectile-global-mode)
+    (setq projectile-completion-system 'helm)
+    (helm-projectile-on)
+    :bind ("C-c f" . helm-projectile))
+#+END_SRC
 
 * Modes
 
-  These are the settings for various editing modes - the top level
-  being "text-mode", which is for /editing text written for humans to
-  read/.
+These are the settings for various editing modes - the top level being
+"text-mode", which is for /editing text written for humans to read/.
 
-  Inferior modes should disable these at when it makes sense too.
+Inferior modes should disable these at when it makes sense too.
 
-  #+BEGIN_SRC emacs-lisp
-    (defun recker/text-mode-hook ()
-      (auto-fill-mode 1)
-      (flyspell-mode 1))
-    (add-hook 'text-mode-hook 'recker/text-mode-hook)
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun recker/text-mode-hook ()
+    (auto-fill-mode 1)
+    (flyspell-mode 1))
+  (add-hook 'text-mode-hook 'recker/text-mode-hook)
+#+END_SRC
 
-  Since I find myself alphabetizing text files often, I like to bind
-  =sort-lines= to something convenient.
+Since I find myself alphabetizing text files often, I like to bind
+=sort-lines= to something convenient.
 
-  #+BEGIN_SRC emacs-lisp
-    (global-set-key (kbd "C-c l") 'sort-lines)
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c l") 'sort-lines)
+#+END_SRC
 
-  Globally cleanup white space on save.
+Globally cleanup white space on save.
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package whitespace-cleanup-mode
-      :ensure t
-      :config (global-whitespace-cleanup-mode))
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package whitespace-cleanup-mode
+    :ensure t
+    :config (global-whitespace-cleanup-mode))
+#+END_SRC
 
-  Enable YASnippet everywhere.
+Enable YASnippet everywhere.
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package "yasnippet"
-      :ensure t
-      :config (yas-global-mode))
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package "yasnippet"
+    :ensure t
+    :config (yas-global-mode))
+#+END_SRC
 
 ** Bats
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package "bats-mode"
-       :ensure t
-       :mode ("\\.bats\\'" . bats-mode))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package "bats-mode"
+    :ensure t
+    :mode ("\\.bats\\'" . bats-mode))
+#+END_SRC
 
 ** CSV
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package "csv-mode"
-       :ensure t
-       :mode ("\\.csv\\'" . csv-mode))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package "csv-mode"
+    :ensure t
+    :mode ("\\.csv\\'" . csv-mode))
+#+END_SRC
 
 ** Dockerfile
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package "dockerfile-mode"
-       :ensure t
-       :mode ("Dockerfile\\'" . dockerfile-mode))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package "dockerfile-mode"
+    :ensure t
+    :mode ("Dockerfile\\'" . dockerfile-mode))
+#+END_SRC
 
 ** HTML
 
-   This really should be smaller.  Emacs has fantastic HTML markup
-   manipulation out of the box, but this is just laziness from my
-   Sublime Text days.
+This really should be smaller.  Emacs has fantastic HTML markup
+manipulation out of the box, but this is just laziness from my Sublime Text days.
 
-   And web-mode makes inline CSS and JavaScript look pretty.
+And web-mode makes inline CSS and JavaScript look pretty.
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package web-mode
-       :ensure t
-       :mode ("\\.html\\'" . web-mode)
-       :config (setq web-mode-markup-indent-offset 2))
+#+BEGIN_SRC emacs-lisp
+  (use-package web-mode
+    :ensure t
+    :mode ("\\.html\\'" . web-mode)
+    :config (setq web-mode-markup-indent-offset 2))
 
-     (use-package emmet-mode
-       :ensure t
-       :config (add-hook 'web-mode-hook 'emmet-mode))
-   #+END_SRC
+  (use-package emmet-mode
+    :ensure t
+    :config (add-hook 'web-mode-hook 'emmet-mode))
+#+END_SRC
 
 ** Markdown
 
-   I'm not really a markdown power-user (Emacs has it's own version
-   that I am way more into).  But this plugin does a fine job of
-   showing me where I messed up formatting.
+I'm not really a markdown power-user (Emacs has it's own version that
+I am way more into).  But this plugin does a fine job of showing me
+where I messed up formatting.
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package markdown-mode
-       :ensure t
-       :commands (markdown-mode gfm-mode)
-       :mode (("README\\.md\\'" . gfm-mode)
-              ("\\.md\\'" . markdown-mode)
-              ("\\.markdown\\'" . markdown-mode)))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :ensure t
+    :commands (markdown-mode gfm-mode)
+    :mode (("README\\.md\\'" . gfm-mode)
+           ("\\.md\\'" . markdown-mode)
+           ("\\.markdown\\'" . markdown-mode)))
+#+END_SRC
 
 ** Python
 
-   Elpy does the heavy lifting in python.  To take full advantage,
-   install [[file:requirements/python.txt][these requirements]] in your activated environment.
+Elpy does the heavy lifting in python.  To take full advantage,
+install [[file:requirements/python.txt][these requirements]] in your activated environment.
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package elpy
-       :ensure t
-       :config (elpy-enable)
-       :init (setq elpy-rpc-timeout 10))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  ;; TODO: Uncomment when this issue is resolved
+  ;; https://github.com/jorgenschaefer/elpy/issues/1038
+  ;; (use-package elpy
+  ;;   :ensure t
+  ;;   :config (elpy-enable)
+  ;;   :init (setq elpy-rpc-timeout 10))
+#+END_SRC
 
 ** Ruby
    
-   These are very much a work in progress.  I know about as much about
-   ruby as I know about scented candles and professional football.
+These are very much a work in progress.  I know about as much about
+ruby as I know about scented candles and professional football.
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package "enh-ruby-mode"
-       :ensure t
-       :config
-       (add-hook 'ruby-mode-hook 'enh-ruby-mode))
+#+BEGIN_SRC emacs-lisp
+  (use-package "enh-ruby-mode"
+    :ensure t
+    :config
+    (add-hook 'ruby-mode-hook 'enh-ruby-mode))
 
-     (use-package "rubocop"
-       :ensure t
-       :config
-       (add-hook 'enh-ruby-mode-hook #'rubocop-mode))
+  (use-package "rubocop"
+    :ensure t
+    :config
+    (add-hook 'enh-ruby-mode-hook #'rubocop-mode))
 
-     (use-package "robe"
-       :ensure t
-       :config
-       (eval-after-load 'company
-         '(push 'company-robe company-backends))
-       (add-hook 'enh-ruby-mode-hook 'robe-mode))
+  (use-package "robe"
+    :ensure t
+    :config
+    (eval-after-load 'company
+      '(push 'company-robe company-backends))
+    (add-hook 'enh-ruby-mode-hook 'robe-mode))
 
-     (use-package "rbenv"
-       :ensure t
-       :config
-       (setq rbenv-executable "rbenv"
-             rbenv-modeline-function
-             '(lambda (current-ruby)
-                (list "rbenv:" current-ruby)))
-       (add-hook 'enh-ruby-mode-hook 'rbenv-use-corresponding)
-       (global-rbenv-mode))
-   #+END_SRC
+  (use-package "rbenv"
+    :ensure t
+    :config
+    (setq rbenv-executable "rbenv"
+          rbenv-modeline-function
+          '(lambda (current-ruby)
+             (list "rbenv:" current-ruby)))
+    (add-hook 'enh-ruby-mode-hook 'rbenv-use-corresponding)
+    (global-rbenv-mode))
+#+END_SRC
 
 ** Terminal
 
-   I'm a simple man, and I use a simple shell.
+I'm a simple man, and I use a simple shell.
 
-   #+BEGIN_SRC emacs-lisp
-     (defun recker/ansi-term ()
-       (interactive)
-       (ansi-term "/bin/bash"))
-     (global-set-key (kbd "C-c e") 'eshell)
-     (global-set-key (kbd "C-x t") 'recker/ansi-term)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun recker/ansi-term ()
+    (interactive)
+    (ansi-term "/bin/bash"))
+  (global-set-key (kbd "C-c e") 'eshell)
+  (global-set-key (kbd "C-x t") 'recker/ansi-term)
+#+END_SRC
 
-   The terminal buffer should be killed on exit.
+The terminal buffer should be killed on exit.
    
-   #+BEGIN_SRC emacs-lisp
-     (defadvice term-handle-exit
-         (after term-kill-buffer-on-exit activate)
-       (kill-buffer))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defadvice term-handle-exit
+      (after term-kill-buffer-on-exit activate)
+    (kill-buffer))
+#+END_SRC
 
-   Disable yas in ansi-term (bug)
+Disable yas in ansi-term (bug)
 
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'term-mode-hook (lambda()
-                                 (yas-minor-mode -1)))
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'term-mode-hook (lambda()
+                              (yas-minor-mode -1)))
 
-   #+END_SRC
+#+END_SRC
 
 ** YAML
 
-   YAML is so hip and cool.
+YAML is so hip and cool.
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package yaml-mode
-       :ensure t
-       :init (add-to-list 'auto-mode-alist '("\\.sls$" . yaml-mode)))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode
+    :ensure t
+    :init 
+    (add-to-list 'auto-mode-alist '("\\.sls$" . yaml-mode)
+    (add-hook 'yaml-mode-hook 'turn-off-auto-fill)))
+#+END_SRC
 
 * Org
 
-  Org is love.  Org is life.
+Org is love.  Org is life.
 
 ** General
 
-   This installs the latest org and org-contrib packages.  It also
-   sets up some [[http://orgmode.org/manual/Capture-templates.html][capture]] templates, which are wonderfully useful. 
+This installs the latest org and org-contrib packages.  It also sets
+up some [[http://orgmode.org/manual/Capture-templates.html][capture]] templates, which are wonderfully useful.
 
-   *Manual Action Required:* =use-package= is a little wonky with
-   installing org mode, since it is built-in.  At the time this was
-   written, built-in org mode is incompatible, so it needs to be
-   removed.  Find the later version in the org repo using =M-x=
-   =packages-list-packages= and install it.  Then reload the
-   installation with =M-x= =org-reload=.
+*Manual Action Required:* =use-package= is a little wonky with
+installing org mode, since it is built-in.  At the time this was
+written, built-in org mode is incompatible, so it needs to be removed.
+Find the later version in the org repo using =M-x=
+=packages-list-packages= and install it.  Then reload the installation
+with =M-x= =org-reload=.
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package "org"
-       :ensure t
-       :pin "org"
-       :init
-       (setq org-agenda-files '("~/org")
-             org-capture-templates
-             '(
-               ("h" "how" entry (file "~/org/how.org")
-                "* %?"
-                :empty-lines 1)
-               ("i" "idea" entry (file+headline "~/org/personal.org" "Ideas")
-                "* %?"
-                :empty-lines 1)
-               ("t" "task" entry (file+headline "~/org/work.org" "Tasks")
-                "* TODO %?"
-                :empty-lines 1)
-               ))
-       :config
-       (org-babel-do-load-languages
-        'org-babel-load-languages
-        '((python . t)
-          (ruby . t)
-          (shell . t)
-          (java . t)
-          (js . t)
-          (C . t)))
-       :bind (("C-c a" . org-agenda)
-              ("C-c c" . org-capture)
-              ("C-c i" . helm-imenu)
-              ("C-c s" . org-store-link)))
+#+BEGIN_SRC emacs-lisp
+  (use-package "org"
+    :ensure t
+    :pin "org"
+    :init
+    (setq org-agenda-files '("~/org")
+          org-capture-templates
+          '(
+            ("h" "how" entry (file "~/org/how.org")
+             "* %?"
+             :empty-lines 1)
+            ("i" "idea" entry (file+headline "~/org/personal.org" "Ideas")
+             "* %?"
+             :empty-lines 1)
+            ("t" "task" entry (file+headline "~/org/work.org" "Tasks")
+             "* TODO %?"
+             :empty-lines 1)
+            ))
+    :config
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((python . t)
+       (ditaa . t)
+       (ruby . t)
+       (shell . t)
+       (java . t)
+       (js . t)
+       (C . t)))
+    :bind (("C-c a" . org-agenda)
+           ("C-c c" . org-capture)
+           ("C-c i" . helm-imenu)
+           ("C-c s" . org-store-link)))
 
-     (use-package "org-plus-contrib"
-       :ensure t
-       :pin "org")
-   #+END_SRC
+  (use-package "org-plus-contrib"
+    :ensure t
+    :pin "org")
+#+END_SRC
 
-   Search org files with deft.
+Search org files with deft.
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package "deft"
-       :ensure t
-       :config
-       (setq deft-extensions '("txt" "tex" "org" "org_archive")
-             deft-directory "~/org"
-             deft-recursive t)
-       :bind (("C-c d" . deft)))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package "deft"
+    :ensure t
+    :config
+    (setq deft-extensions '("txt" "tex" "org" "org_archive")
+          deft-directory "~/org"
+          deft-recursive t)
+    :bind (("C-c d" . deft)))
+#+END_SRC
 
 ** Blog
 
-   My [[https://alexrecker.com/][blog]] is generated from 100% org mode publishing.  For any of
-   this to work, the project needs to be cloned to =~/git/blog=.  But
-   that's /my/ blog, so there's no reason you would need to publish a
-   copy of it, right?  It's not like you are a psycho who would do
-   that, right?
+[[file:screenshots/blog.png]]
 
-   Make human-friendly dates when exporting to anything.
+My [[https://alexrecker.com/][blog]] is generated from 100% org mode publishing.  For any of this
+to work, the project needs to be cloned to =~/git/blog=.  But that's
+/my/ blog, so there's no reason you would need to publish a copy of
+it, right?  It's not like you are a psycho who would do that, right?
 
-   #+BEGIN_SRC emacs-lisp
-     (setq org-export-date-timestamp-format "%B %e, %Y")
-   #+END_SRC
+Make human-friendly dates when exporting to anything.
 
-   Custom preamble that adds links to the home page and various post
-   formats.
+#+BEGIN_SRC emacs-lisp
+  (setq org-export-date-timestamp-format "%B %e, %Y")
+#+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
-     (defun blog/post-preamble (options)
-       (let ((slug (file-name-base (buffer-file-name))))
-         (concat "<nav>"
-                 "<a href=\"./index.html\">Home</a>"
-                 "<div style=\"float: right;\">"
-                 "<a href=\"" "./pdfs/" slug ".pdf" "\">PDF</a>"
-                 "&nbsp;&nbsp;"
-                 "<a href=\"" "./txt/" slug ".txt" "\">TXT</a>"
-                 "</div>"
-                 "</nav>")))
-   #+END_SRC
+Custom preamble that adds links to the home page and various post
+formats.
 
-   Other snippets that need to be injected into the HTML.
+#+BEGIN_SRC emacs-lisp
+  (defun blog/post-preamble (options)
+    (let ((slug (file-name-base (buffer-file-name))))
+      (concat "<nav>"
+              "<a href=\"./index.html\">Home</a>"
+              "<div style=\"float: right;\">"
+              "<a href=\"" "./pdfs/" slug ".pdf" "\">PDF</a>"
+              "&nbsp;&nbsp;"
+              "<a href=\"" "./txt/" slug ".txt" "\">TXT</a>"
+              "</div>"
+              "</nav>")))
+#+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
-     (defun blog/--read-partial (name)
-       (with-temp-buffer
-         (insert-file-contents (concat "~/git/blog/includes/" name))
-         (buffer-string)))
+Other snippets that need to be injected into the HTML.
 
-     (setq blog/partial-disqus (blog/--read-partial "disqus.html")
-           blog/partial-analytics (blog/--read-partial "ga.html")
-           blog/partial-highlight (blog/--read-partial "highlight.html"))
+#+BEGIN_SRC emacs-lisp
+  (defun blog/--read-partial (name)
+    (with-temp-buffer
+      (insert-file-contents (concat "~/.emacs.d/blog/" name))
+      (buffer-string)))
 
-     (defun blog/post-postamble (options)
-       (concat "<hr>"
-               blog/partial-disqus
-               blog/partial-analytics
-               blog/partial-highlight))
+  (setq blog/partial-disqus (blog/--read-partial "disqus.html")
+	blog/partial-analytics (blog/--read-partial "ga.html")
+	blog/partial-highlight (blog/--read-partial "highlight.html"))
 
-     (defun blog/index-postamble (options)
-       (concat blog/partial-analytics))
-   #+END_SRC
+  (defun blog/post-postamble (options)
+    (concat "<hr>"
+            blog/partial-disqus
+            blog/partial-analytics
+            blog/partial-highlight))
 
-   Finally, add the big fat org publishing project.
+  (defun blog/index-postamble (options)
+    (concat blog/partial-analytics))
+#+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
-     (setq org-publish-project-alist
-   	'(
+Finally, add the big fat org publishing project.
 
-             ("blog-index"
-              :base-directory "~/git/blog"
-              :exclude ".*"
-              :html-doctype "html5"
-              :html-head-extra "<link rel='stylesheet' href='./css/lora.css' />\n<link rel='stylesheet' href='./css/site.css' />"
-              :html-postamble blog/index-postamble
-              :include ("index.org")
-              :publishing-directory "/var/www/blog"
-              :publishing-function org-html-publish-to-html
-              :section-numbers nil
-              :with-tags nil
-              :with-toc nil
-              )
+#+BEGIN_SRC emacs-lisp
+  (setq org-publish-project-alist
+	'(
 
-             ("blog-posts"
-              :base-directory "~/git/blog"
-              :base-extension "org"
-              :exclude "index.org"
-              :html-doctype "html5"
-              :html-head-extra "<link rel='stylesheet' href='./css/lora.css' />\n<link rel='stylesheet' href='./css/site.css' />"
-              :html-preamble blog/post-preamble
-              :html-postamble blog/post-postamble
-              :htmlized-source nil
-              :publishing-directory "/var/www/blog"
-              :publishing-function org-html-publish-to-html
-              :recursive t
-              :section-numbers nil
-              :with-toc nil
-              )
+          ("blog-index"
+           :base-directory "~/git/blog"
+           :exclude ".*"
+           :html-doctype "html5"
+           :html-head-extra "<link rel='stylesheet' href='./css/lora.css' />\n<link rel='stylesheet' href='./css/site.css' />"
+           :html-postamble blog/index-postamble
+           :include ("index.org")
+           :publishing-directory "/var/www/blog"
+           :publishing-function org-html-publish-to-html
+           :section-numbers nil
+           :with-tags nil
+           :with-toc nil
+           )
 
-             ("blog-posts-pdf"
-              :base-directory "~/git/blog"
-              :base-extension "org"
-              :exclude "index.org"
-              :publishing-directory "/var/www/blog/pdfs"
-              :publishing-function org-latex-publish-to-pdf
-              :recursive t
-              :section-numbers nil
-              :with-toc nil
-              )
+          ("blog-posts"
+           :base-directory "~/git/blog"
+           :base-extension "org"
+           :exclude "index.org"
+           :html-doctype "html5"
+           :html-head-extra "<link rel='stylesheet' href='./css/lora.css' />\n<link rel='stylesheet' href='./css/site.css' />"
+           :html-preamble blog/post-preamble
+           :html-postamble blog/post-postamble
+           :htmlized-source nil
+           :publishing-directory "/var/www/blog"
+           :publishing-function org-html-publish-to-html
+           :recursive t
+           :section-numbers nil
+           :with-toc nil
+           )
 
-             ("blog-posts-txt"
-              :base-directory "~/git/blog"
-              :base-extension "org"
-              :exclude "index.org"
-              :publishing-directory "/var/www/blog/txt"
-              :publishing-function org-ascii-publish-to-ascii
-              :recursive t
-              :section-numbers nil
-              :with-toc nil
-              )
+          ("blog-posts-pdf"
+           :base-directory "~/git/blog"
+           :base-extension "org"
+           :exclude "index.org"
+           :publishing-directory "/var/www/blog/pdfs"
+           :publishing-function org-latex-publish-to-pdf
+           :recursive t
+           :section-numbers nil
+           :with-toc nil
+           )
 
-             ("blog-static"
-              :base-directory "~/git/blog"
-              :base-extension "txt\\|css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-              :publishing-directory "/var/www/blog"
-              :publishing-function org-publish-attachment
-              :recursive t
-              )
+          ("blog-posts-txt"
+           :base-directory "~/git/blog"
+           :base-extension "org"
+           :exclude "index.org"
+           :publishing-directory "/var/www/blog/txt"
+           :publishing-function org-ascii-publish-to-ascii
+           :recursive t
+           :section-numbers nil
+           :with-toc nil
+           )
 
-             ("blog-rss"
-              :base-directory "~/git/blog"
-              :base-extension "org"
-              :exclude ".*"
-              :exclude-tags ("noexport" "norss")
-              :include ("index.org")
-              :html-link-home "http://alexrecker.com"
-              :html-link-use-abs-url t
-              :publishing-directory "/var/www/blog/feed/"
-              :publishing-function (org-rss-publish-to-rss)
-              )
+          ("blog-static"
+           :base-directory "~/git/blog"
+           :base-extension "txt\\|css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+           :publishing-directory "/var/www/blog"
+           :publishing-function org-publish-attachment
+           :recursive t
+           )
 
-             ))
-   #+END_SRC
+          ("blog-rss"
+           :base-directory "~/git/blog"
+           :base-extension "org"
+           :exclude ".*"
+           :exclude-tags ("noexport" "norss")
+           :include ("index.org")
+           :html-link-home "http://alexrecker.com"
+           :html-link-use-abs-url t
+           :publishing-directory "/var/www/blog/feed/"
+           :publishing-function (org-rss-publish-to-rss)
+           )
 
-   And since I can't ever remember the syntax for =rsync=, this is a
-   function to help out with that.
+          ))
+#+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
-     (defun blog/push ()
-       (interactive)
-       (shell-command "rsync -razp /var/www/blog/ columbia:/var/www/blog"))
-   #+END_SRC
+And since I can't ever remember the syntax for =rsync=, this is a function to help out with that.
+
+#+BEGIN_SRC emacs-lisp
+  (defun blog/push ()
+    (interactive)
+    (shell-command "rsync -razp /var/www/blog/ columbia:/var/www/blog"))
+#+END_SRC
 
 * GNUS
 
-  Gnus has a steep learning curve, and learning to incorporate this
-  mysterious program has proven to be an emotional roller coaster.
-  I'm not even sure I know enough about it to say "it's worth it", but
-  hopefully this will help you with your own journey.
+[[file:screenshots/gnus.png]]
+
+Gnus has a steep learning curve, and learning to incorporate this
+mysterious program has proven to be an emotional roller coaster.  I'm
+not even sure I know enough about it to say "it's worth it", but
+hopefully this will help you with your own journey.
 
 ** Better Folders
 
-   Gnus creates a bunch of folders in your home directory that, as far
-   as I can tell, are not needed outside of gnus.  These settings will
-   hide them all in =~/.gnus=, which will serve as our convenient
-   /nuke-point/ if things ever go south while playing around.
+Gnus creates a bunch of folders in your home directory that, as far as
+I can tell, are not needed outside of gnus.  These settings will hide
+them all in =~/.gnus=, which will serve as our convenient /nuke-point/
+if things ever go south while playing around.
 
-   Yes - =nnfolder-directory= is really needed.  Whether this is a bug
-   or not, the redundancy is intentional.
+Yes - =nnfolder-directory= is really needed.  Whether this is a bug or
+not, the redundancy is intentional.
 
-   #+BEGIN_SRC emacs-lisp
-     (setq gnus-home-directory "~/.gnus"
-           nnfolder-directory "~/.gnus/Mail/archive"
-           message-directory "~/.gnus/Mail")
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-home-directory "~/.gnus"
+	nnfolder-directory "~/.gnus/Mail/archive"
+	message-directory "~/.gnus/Mail")
+#+END_SRC
 
 ** Better Startup
 
-   Gnus requires a "primary method" from which you obtain news.
-   Unfortunately, the program kind of explodes if this isn't set,
-   which proves to be kind of a pain when you want to poke around and
-   set up things interactively.
+Gnus requires a "primary method" from which you obtain news.
+Unfortunately, the program kind of explodes if this isn't set,
+which proves to be kind of a pain when you want to poke around and
+set up things interactively.
 
-   Here's my workaround - set the primary method to a dummy protocol
-   that will immediately come back.  In our case, this is a blank
-   =nnml= stream.
+Here's my workaround - set the primary method to a dummy protocol
+that will immediately come back.  In our case, this is a blank
+=nnml= stream.
    
-   #+BEGIN_SRC emacs-lisp
-     (setq gnus-select-method '(nnml ""))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-select-method '(nnml ""))
+#+END_SRC
 
-   Default on topic mode, since it's more helpful.
+Default on topic mode, since it's more helpful.
 
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+#+END_SRC
 
 ** News
 
-   Use gmane to follow news, mailers, and tons of other syndicated
-   things.  There are even comics.
+Use gmane to follow news, mailers, and tons of other syndicated
+things.  There are even comics.
 
-   #+BEGIN_SRC emacs-lisp
-     (setq gnus-secondary-select-methods
-           '((nntp "news.gmane.org")))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-secondary-select-methods
+     '((nntp "news.gmane.org")
+       (nntp "news.gwene.org")))
+#+END_SRC
 
 ** Reading Mail
 
-   IMAP accounts should be downloaded to local maildirs.  My
-   =offlineimap= configuration file can be found [[file:mail/offlineimaprc.conf][here]].
+This is still a work in progress.  I'm working on getting both
+offlineimap and dovecot into a tidy docker container.  Stay tuned.
 
-   Password should be stored encrypted in [[file:mail/passwords][this]] directory.  The
-   filename should match the key used in the offlineimaprc.conf
-   =passwordeval= line.
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'gnus-secondary-select-methods
+               '(nnmaildir "personal"
+                           (directory "~/.maildirs/personal-docker")
+                           (directory-files nnheader-directory-files-safe)
+                           (get-new-mail nil)))
 
-   Once offlineimap has had about 12 years to download your mailboxes,
-   gnus can serve them right off the hard drive.
-
-   #+BEGIN_SRC emacs-lisp
-     (add-to-list 'gnus-secondary-select-methods
-                  '(nnmaildir "personal"
-                              (directory "~/.maildirs/personal-docker")
-                              (directory-files nnheader-directory-files-safe)
-                              (get-new-mail nil)))
-
-     (add-to-list 'gnus-secondary-select-methods
-   	       '(nnimap "work"
-   			(nnimap-stream network)
-   			(nnimap-address "localhost")
-   			(nnimap-server-port 143)
-   			(nnimap-authenticator login)))
-   #+END_SRC
+  (add-to-list 'gnus-secondary-select-methods
+   	    '(nnimap "work"
+   		     (nnimap-stream network)
+   		     (nnimap-address "localhost")
+   		     (nnimap-server-port 143)
+   		     (nnimap-authenticator login)))
+#+END_SRC
 
 ** Sending Mail
 
-   To facilitate multiple accounts, this config leverages =msmtp=,
-   which will toggle smtp credentials based on the =FROM= header of
-   the outgoing message.
+To facilitate multiple accounts, this config leverages =msmtp=, which
+will toggle smtp credentials based on the =FROM= header of the
+outgoing message.
 
-   The emacs side will require you add [[https://www.gnu.org/software/emacs/manual/html_node/gnus/Posting-Styles.html][posting styles]] - namely the
-   =address= property.  I do this interactively through the customize
-   menu, since putting it here never seems to stick.
+The emacs side will require you add [[https://www.gnu.org/software/emacs/manual/html_node/gnus/Posting-Styles.html][posting styles]] - namely the
+=address= property.  I do this interactively through the customize
+menu, since putting it here never seems to stick.
 
-   Lastly, we just configure emacs to call =msmtp= with our config
-   file.
+Lastly, we just configure emacs to call =msmtp= with our config file.
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
      (setq  message-send-mail-function 'message-send-mail-with-sendmail
             sendmail-program "msmtp"
             message-sendmail-f-is-evil 't
             gnus-message-archive-group nil
             message-sendmail-extra-arguments '("--read-envelope-from"))
-   #+END_SRC
+#+END_SRC
 
-   As of now, you need to just manually copy [[file:mail/msmtprc.conf][this file]] to =~/.msmtprc=.
+As of now, you need to just manually copy [[file:mail/msmtprc.conf][this file]] to =~/.msmtprc=.
 
-   These are here just to keep emacs from prompting us for server
-   credentials it won't even use.
+These are here just to keep emacs from prompting us for server
+credentials it won't even use.
 
-   #+BEGIN_SRC emacs-lisp
-     (setq smtpmail-smtp-server "smtp.gmail.com"
-           smtpmail-smtp-service 587)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq smtpmail-smtp-server "smtp.gmail.com"
+	smtpmail-smtp-service 587)
+#+END_SRC
 
 ** Address Book
 
-   Collect addresses in bbdb.  This will prompt for a new entry while
-   sending mail.
+Collect addresses in bbdb.  This will prompt for a new entry while
+sending mail.
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package "bbdb"
-       :ensure t
-       :config
-       (setq bbdb-file "~/org/bbdb")
-       :init
-       (bbdb-mua-auto-update-init 'message)
-       (setq bbdb-mua-auto-update-p 'query)
-       (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package "bbdb"
+    :ensure t
+    :config
+    (setq bbdb-file "~/org/bbdb")
+    :init
+    (bbdb-mua-auto-update-init 'message)
+    (setq bbdb-mua-auto-update-p 'query)
+    (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
+#+END_SRC
 
 * Functions
 
-  These are miscellaneous functions that I've written (or
-  plagiarized).
+These are miscellaneous functions that I've written (or plagiarized).
 
-  #+BEGIN_SRC emacs-lisp
-    (defun recker/purge-buffers ()
-      "Deletes all buffers except for *scratch*"
-      (interactive)
-      (let ((kill-if-not-scratch
-             (lambda (b)
-               (unless (string= (buffer-name b) "*scratch*")
-                 (kill-buffer b)))))
-        (mapc kill-if-not-scratch (buffer-list))))
+#+BEGIN_SRC emacs-lisp
+  (defun recker/purge-buffers ()
+    "Deletes all buffers except for *scratch*"
+    (interactive)
+    (let ((kill-if-not-scratch
+           (lambda (b)
+             (unless (string= (buffer-name b) "*scratch*")
+               (kill-buffer b)))))
+      (mapc kill-if-not-scratch (buffer-list))))
 
-    (defun recker/unfill-region (beg end)
-      "Unfill the region, joining text paragraphs into a single
-                logical line.  This is useful, e.g., for use with
-                `visual-line-mode'."
-      (interactive "*r")
-      (let ((fill-column (point-max)))
-        (fill-region beg end)))
+  (defun recker/unfill-region (beg end)
+    "Unfill the region, joining text paragraphs into a single
+              logical line.  This is useful, e.g., for use with
+              `visual-line-mode'."
+    (interactive "*r")
+    (let ((fill-column (point-max)))
+      (fill-region beg end)))
 
-    (defun recker/run-current-file ()
-      "Execute or compile the current file.
-    For example, if the current buffer is the file x.pl,
-    then it'll call “perl x.pl” in a shell.
-    The file can be php, perl, python, ruby, javascript, bash, ocaml, vb, elisp.
-    File suffix is used to determine what program to run.
-    If the file is modified, ask if you want to save first. (This command always run the saved version.)
-    If the file is emacs lisp, run the byte compiled version if exist."
-      (interactive)
-      (let (suffixMap fName fSuffix progName cmdStr)
+  (defun recker/run-current-file ()
+    "Execute or compile the current file.
+  For example, if the current buffer is the file x.pl,
+  then it'll call “perl x.pl” in a shell.
+  The file can be php, perl, python, ruby, javascript, bash, ocaml, vb, elisp.
+  File suffix is used to determine what program to run.
+  If the file is modified, ask if you want to save first. (This command always run the saved version.)
+  If the file is emacs lisp, run the byte compiled version if exist."
+    (interactive)
+    (let (suffixMap fName fSuffix progName cmdStr)
 
-        ;; a keyed list of file suffix to comand-line program path/name
-        (setq suffixMap 
-              '(("php" . "php")
-                ;; ("coffee" . "coffee -p")
-                ("pl" . "perl")
-                ("py" . "python")
-                ("rb" . "ruby")
-                ("js" . "node")             ; node.js
-                ("sh" . "bash")
-                ("ml" . "ocaml")
-                ("vbs" . "cscript")))
-        (setq fName (buffer-file-name))
-        (setq fSuffix (file-name-extension fName))
-        (setq progName (cdr (assoc fSuffix suffixMap)))
-        (setq cmdStr (concat progName " \""   fName "\""))
+      ;; a keyed list of file suffix to comand-line program path/name
+      (setq suffixMap 
+            '(("php" . "php")
+              ;; ("coffee" . "coffee -p")
+              ("pl" . "perl")
+              ("py" . "python")
+              ("rb" . "ruby")
+              ("js" . "node")             ; node.js
+              ("sh" . "bash")
+              ("ml" . "ocaml")
+              ("vbs" . "cscript")))
+      (setq fName (buffer-file-name))
+      (setq fSuffix (file-name-extension fName))
+      (setq progName (cdr (assoc fSuffix suffixMap)))
+      (setq cmdStr (concat progName " \""   fName "\""))
 
-        (when (buffer-modified-p)
+      (when (buffer-modified-p)
+	(progn 
+          (when (y-or-n-p "Buffer modified. Do you want to save first?")
+            (save-buffer) ) ) )
+
+      (if (string-equal fSuffix "el") ; special case for emacs lisp
           (progn 
-            (when (y-or-n-p "Buffer modified. Do you want to save first?")
-              (save-buffer) ) ) )
+            (load (file-name-sans-extension fName)))
+	(if progName
+            (progn
+              (message "Running…")
+              ;; (message progName)
+              (shell-command cmdStr "*run-current-file output*" ))
+          (message "No recognized program file suffix for this file.")))
+      ))
+#+END_SRC
 
-        (if (string-equal fSuffix "el") ; special case for emacs lisp
-            (progn 
-              (load (file-name-sans-extension fName)))
-          (if progName
-              (progn
-                (message "Running…")
-                ;; (message progName)
-                (shell-command cmdStr "*run-current-file output*" ))
-            (message "No recognized program file suffix for this file.")))
-        ))
-  #+END_SRC
+Likewise, miscellaneous key-bindings.
 
-  Likewise, miscellaneous key-bindings.
-
-  #+BEGIN_SRC emacs-lisp
-    (global-set-key (kbd "C-c b") 'browse-url)
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c b") 'browse-url)
+#+END_SRC
 
 * Local
 
-  For any secrets or lispy changes you are testing out for the day, I
-  find it conenvient to keep those [[file:lisp/][here]].  This function loads all
-  =.el= files found there.
+For any secrets or lispy changes you are testing out for the day, I
+find it conenvient to keep those [[file:lisp/][here]].  This function loads all =.el=
+files found there.
 
-  #+BEGIN_SRC emacs-lisp
-    (defun recker/load-directory (dir)
-      (let ((load-it (lambda (f)
-                       (load-file (concat (file-name-as-directory dir) f)))
-                     ))
-        (mapc load-it (directory-files dir nil "\\.el$"))))
-    (recker/load-directory "~/.emacs.d/lisp/")
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun recker/load-directory (dir)
+    (let ((load-it (lambda (f)
+                     (load-file (concat (file-name-as-directory dir) f)))
+                   ))
+      (mapc load-it (directory-files dir nil "\\.el$"))))
+  (recker/load-directory "~/.emacs.d/lisp/")
+#+END_SRC

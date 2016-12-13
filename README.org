@@ -354,12 +354,11 @@ Elpy does the heavy lifting in python.  To take full advantage,
 install [[file:requirements/python.txt][these requirements]] in your activated environment.
 
 #+BEGIN_SRC emacs-lisp
-  ;; TODO: Uncomment when this issue is resolved
-  ;; https://github.com/jorgenschaefer/elpy/issues/1038
-  ;; (use-package elpy
-  ;;   :ensure t
-  ;;   :config (elpy-enable)
-  ;;   :init (setq elpy-rpc-timeout 10))
+  (use-package elpy
+    :ensure t
+    :pin elpy
+    :config (elpy-enable)
+    :init (setq elpy-rpc-timeout 10))
 #+END_SRC
 
 ** Ruby
@@ -429,11 +428,15 @@ Disable yas in ansi-term (bug)
 YAML is so hip and cool.
 
 #+BEGIN_SRC emacs-lisp
+  (use-package flymake-yaml
+    :ensure t)
+
   (use-package yaml-mode
     :ensure t
     :init 
-    (add-to-list 'auto-mode-alist '("\\.sls$" . yaml-mode)
-    (add-hook 'yaml-mode-hook 'turn-off-auto-fill)))
+    (add-to-list 'auto-mode-alist '("\\.sls$" . yaml-mode))
+    (add-hook 'yaml-mode-hook 'turn-off-auto-fill)
+    (add-hook 'yaml-mode-hook 'flymake-yaml-load))
 #+END_SRC
 
 * Org

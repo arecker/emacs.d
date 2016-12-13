@@ -264,7 +264,8 @@ Inferior modes should disable these at when it makes sense too.
 #+BEGIN_SRC emacs-lisp
   (defun recker/text-mode-hook ()
     (auto-fill-mode 1)
-    (flyspell-mode 1))
+    (flyspell-mode 1)
+    (flymake-mode-off))
   (add-hook 'text-mode-hook 'recker/text-mode-hook)
 #+END_SRC
 
@@ -273,6 +274,15 @@ Since I find myself alphabetizing text files often, I like to bind
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-c l") 'sort-lines)
+#+END_SRC
+
+Flycheck mode.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :init
+    (global-flycheck-mode))
 #+END_SRC
 
 Globally cleanup white space on save.
@@ -367,32 +377,21 @@ These are very much a work in progress.  I know about as much about
 ruby as I know about scented candles and professional football.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package "enh-ruby-mode"
-    :ensure t
-    :config
-    (add-hook 'ruby-mode-hook 'enh-ruby-mode))
-
-  (use-package "rubocop"
-    :ensure t
-    :config
-    (add-hook 'enh-ruby-mode-hook #'rubocop-mode))
+  (setq ruby-deep-indent-paren nil)
 
   (use-package "robe"
     :ensure t
-    :config
+    :config 
+    (add-hook 'ruby-mode-hook 'robe-mode)
+    :init
     (eval-after-load 'company
-      '(push 'company-robe company-backends))
-    (add-hook 'enh-ruby-mode-hook 'robe-mode))
+      '(push 'company-robe company-backends)))
 
-  (use-package "rbenv"
+  (use-package "rvm"
     :ensure t
-    :config
-    (setq rbenv-executable "rbenv"
-          rbenv-modeline-function
-          '(lambda (current-ruby)
-             (list "rbenv:" current-ruby)))
-    (add-hook 'enh-ruby-mode-hook 'rbenv-use-corresponding)
-    (global-rbenv-mode))
+    :init
+    (defadvice inf-ruby-console-auto (before activate-rvm-for-robe activate)
+      (rvm-activate-corresponding-ruby)))
 #+END_SRC
 
 ** Terminal

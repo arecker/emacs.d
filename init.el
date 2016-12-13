@@ -1,10 +1,11 @@
 (setq package-archives
-      '(("melpa" . "https://melpa.org/packages/")
-	("org" . "http://orgmode.org/elpa/")
-	("gnu" . "https://elpa.gnu.org/packages/")))
+      '(("elpy" . "https://jorgenschaefer.github.io/packages/")
+	("gnu" . "https://elpa.gnu.org/packages/")
+	("melpa" . "https://melpa.org/packages/")
+	("org" . "http://orgmode.org/elpa/")))
 
 (defun recker/package-init ()
-  "Initialize the package manager and install use-package"
+  "Initialize the package manager and install use-package."
   (package-initialize)
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)

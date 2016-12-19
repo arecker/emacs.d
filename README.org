@@ -581,7 +581,7 @@ Finally, add the big fat org publishing project.
            :html-head-extra "<link rel='stylesheet' href='./css/lora.css' />\n<link rel='stylesheet' href='./css/site.css' />"
            :html-postamble blog/index-postamble
            :include ("index.org")
-           :publishing-directory "/var/www/blog"
+           :publishing-directory "/ssh:columbia:public/alexrecker.com"
            :publishing-function org-html-publish-to-html
            :section-numbers nil
            :with-tags nil
@@ -597,7 +597,7 @@ Finally, add the big fat org publishing project.
            :html-preamble blog/post-preamble
            :html-postamble blog/post-postamble
            :htmlized-source nil
-           :publishing-directory "/var/www/blog"
+           :publishing-directory "/ssh:columbia:public/alexrecker.com"
            :publishing-function org-html-publish-to-html
            :recursive t
            :section-numbers nil
@@ -608,7 +608,7 @@ Finally, add the big fat org publishing project.
            :base-directory "~/git/blog"
            :base-extension "org"
            :exclude "index.org"
-           :publishing-directory "/var/www/blog/pdfs"
+           :publishing-directory "/ssh:columbia:public/alexrecker.com/pdfs"
            :publishing-function org-latex-publish-to-pdf
            :recursive t
            :section-numbers nil
@@ -619,7 +619,7 @@ Finally, add the big fat org publishing project.
            :base-directory "~/git/blog"
            :base-extension "org"
            :exclude "index.org"
-           :publishing-directory "/var/www/blog/txt"
+           :publishing-directory "/ssh:columbia:public/alexrecker.com/txt"
            :publishing-function org-ascii-publish-to-ascii
            :recursive t
            :section-numbers nil
@@ -629,7 +629,7 @@ Finally, add the big fat org publishing project.
           ("blog-static"
            :base-directory "~/git/blog"
            :base-extension "txt\\|css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-           :publishing-directory "/var/www/blog"
+           :publishing-directory "/ssh:columbia:public/alexrecker.com"
            :publishing-function org-publish-attachment
            :recursive t
            )
@@ -642,7 +642,7 @@ Finally, add the big fat org publishing project.
            :include ("index.org")
            :html-link-home "http://alexrecker.com"
            :html-link-use-abs-url t
-           :publishing-directory "/var/www/blog/feed/"
+           :publishing-directory "/ssh:columbia:public/alexrecker.com/feed/"
            :publishing-function (org-rss-publish-to-rss)
            )
 

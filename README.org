@@ -365,6 +365,14 @@ where I messed up formatting.
            ("\\.markdown\\'" . markdown-mode)))
 #+END_SRC
 
+** Nginx
+
+#+BEGIN_SRC emacs-lisp
+  (use-package nginx-mode
+    :ensure t
+    :mode ("\\nginx.conf'" "\\nginx.config'" "\\conf.nginx'"))
+#+END_SRC
+
 ** Python
 
 Elpy does the heavy lifting in python.  To take full advantage,

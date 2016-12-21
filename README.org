@@ -144,14 +144,10 @@ Make the default font something prettier, like [[http://levien.com/type/myfonts/
 Change the theme.
 
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package "zenburn-theme"
-  ;;   :ensure t
-  ;;   :config
-  ;;   (load-theme 'zenburn t))
-
-  (use-package "spacemacs-theme"
+  (use-package "zenburn-theme"
     :ensure t
-    :init (load-theme 'spacemacs-light t))
+    :config
+    (load-theme 'zenburn t))
 #+END_SRC
 
 ** Better Comments
@@ -539,6 +535,12 @@ Make human-friendly dates when exporting to anything.
   (setq org-export-date-timestamp-format "%B %e, %Y")
 #+END_SRC
 
+Use this package to make source pretty.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-html-htmlize-output-type 'css)
+#+END_SRC
+
 Custom preamble that adds links to the home page and various post
 formats.
 
@@ -564,14 +566,12 @@ Other snippets that need to be injected into the HTML.
       (buffer-string)))
 
   (setq blog/partial-disqus (blog/--read-partial "disqus.html")
-	blog/partial-analytics (blog/--read-partial "ga.html")
-	blog/partial-highlight (blog/--read-partial "highlight.html"))
+	blog/partial-analytics (blog/--read-partial "ga.html"))
 
   (defun blog/post-postamble (options)
     (concat "<hr>"
             blog/partial-disqus
-            blog/partial-analytics
-            blog/partial-highlight))
+            blog/partial-analytics))
 
   (defun blog/index-postamble (options)
     (concat blog/partial-analytics))
@@ -730,16 +730,17 @@ offlineimap and dovecot into a tidy docker container.  Stay tuned.
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'gnus-secondary-select-methods
-               '(nnmaildir "personal"
-                           (directory "~/.maildirs/personal-docker")
-                           (directory-files nnheader-directory-files-safe)
-                           (get-new-mail nil)))
+   	    '(nnimap "personal"
+   		     (nnimap-stream network)
+   		     (nnimap-address "localhost")
+   		     (nnimap-server-port 8143)
+   		     (nnimap-authenticator login)))
 
   (add-to-list 'gnus-secondary-select-methods
    	    '(nnimap "work"
    		     (nnimap-stream network)
    		     (nnimap-address "localhost")
-   		     (nnimap-server-port 143)
+   		     (nnimap-server-port 8144)
    		     (nnimap-authenticator login)))
 #+END_SRC
 

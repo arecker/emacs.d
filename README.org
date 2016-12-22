@@ -191,6 +191,13 @@ based on where the cursor is.  It's a brilliant tool.
     :bind ("C-=" . er/expand-region))
 #+END_SRC
 
+Also, if text is entered while text is highlighted, it should
+overwrite it.
+
+#+BEGIN_SRC emacs-lisp
+  (delete-selection-mode t)
+#+END_SRC
+
 ** Better Git
 
 Let's add some fun git plugins, like magit and git-gutter.
@@ -871,11 +878,23 @@ Likewise, miscellaneous key-bindings.
   (global-set-key (kbd "C-c b") 'browse-url)
   (global-set-key (kbd "C-x k") 'kill-this-buffer)
   (global-set-key (kbd "C-x C-k k") 'kill-buffer)
+#+END_SRC
 
+* Tools
+
+Miscellaneous tools.
+
+#+BEGIN_SRC emacs-lisp
   (use-package google-this
     :ensure t
     :config
     (google-this-mode 1))
+
+  (use-package wttrin
+    :ensure t
+    :commands (wttrin)
+    :init
+    (setq wttrin-default-cities '("Madison")))
 #+END_SRC
 
 * Local

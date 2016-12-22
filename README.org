@@ -774,6 +774,15 @@ credentials it won't even use.
 	smtpmail-smtp-service 587)
 #+END_SRC
 
+** Composing Mail
+
+Turn on org mode, so I can make tables and lists like a fancy boy.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'message-mode-hook 'turn-on-orgtbl)
+  (add-hook 'message-mode-hook 'turn-on-orgstruct++)
+#+END_SRC
+
 ** Address Book
 
 Collect addresses in bbdb.  This will prompt for a new entry while

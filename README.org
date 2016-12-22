@@ -871,6 +871,11 @@ Likewise, miscellaneous key-bindings.
   (global-set-key (kbd "C-c b") 'browse-url)
   (global-set-key (kbd "C-x k") 'kill-this-buffer)
   (global-set-key (kbd "C-x C-k k") 'kill-buffer)
+
+  (use-package google-this
+    :ensure t
+    :config
+    (google-this-mode 1))
 #+END_SRC
 
 * Local

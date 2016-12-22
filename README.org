@@ -885,6 +885,9 @@ Likewise, miscellaneous key-bindings.
 Miscellaneous tools.
 
 #+BEGIN_SRC emacs-lisp
+  (use-package docker
+    :ensure t)
+
   (use-package google-this
     :ensure t
     :config

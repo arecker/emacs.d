@@ -91,6 +91,14 @@ own [[https://pypi.python.org/pypi/wilfred-say][wilfred-say]], but [[https://en.
   (recker/startup-scratch)
 #+END_SRC
 
+Make it un-dead!
+
+#+BEGIN_SRC emacs-lisp
+  (use-package unkillable-scratch
+    :ensure t
+    :init (unkillable-scratch))
+#+END_SRC
+
 ** File Registers
 
 These are files that I visit often.  As file registers, any of them

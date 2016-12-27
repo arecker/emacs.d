@@ -670,6 +670,7 @@ This function will generate the publishing components.  Add one for
 		     :section-numbers nil
 		     :with-toc nil
 		     ))
+
       ;; posts-pdf
       (add-to-list 'org-publish-project-alist
 		   `(,(concat "blog-posts-pdf-" suffix)

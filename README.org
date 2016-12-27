@@ -364,11 +364,13 @@ And web-mode makes inline CSS and JavaScript look pretty.
 ** Lisp
 
 #+BEGIN_SRC emacs-lisp
+  (use-package slime-company :ensure t)
+
   (use-package slime
     :ensure t
     :config
-    (setq slime-contribs '(slime-fancy)
-	  inferior-lisp-program "clisp"))
+    (setq inferior-lisp-program "clisp"
+	  slime-contribs '(slime-fancy slime-company)))
 #+END_SRC
 
 ** Markdown
@@ -500,6 +502,7 @@ with =M-x= =org-reload=.
     :ensure t
     :pin "org"
     :init
+    (setq org-export-date-timestamp-format "%B %e, %Y")
     (setq org-agenda-files '("~/org")
           org-capture-templates
           '(
@@ -517,6 +520,7 @@ with =M-x= =org-reload=.
     (org-babel-do-load-languages
      'org-babel-load-languages
      '((python . t)
+       (lisp . t)
        (ditaa . t)
        (ruby . t)
        (shell . t)
@@ -554,141 +558,180 @@ to work, the project needs to be cloned to =~/git/blog=.  But that's
 /my/ blog, so there's no reason you would need to publish a copy of
 it, right?  It's not like you are a psycho who would do that, right?
 
-Make human-friendly dates when exporting to anything.
+*** Dependencies
+
+Use this package to make source pretty.  Or just leave the CSS classes
+in case I want to add a theme some day.
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-export-date-timestamp-format "%B %e, %Y")
+  (use-package "htmlize"
+    :ensure t
+    :config (setq org-html-htmlize-output-type 'css))
 #+END_SRC
 
-Use this package to make source pretty.
+*** Partials
+
+#+NAME: preamble
+#+BEGIN_EXAMPLE
+  <nav>
+    <a href="/index.html">Home</a>
+     <div style="float: right;">
+      <a href="./pdfs/slug.pdf">PDF</a>
+      &nbsp;&nbsp;
+      <a href="./txt/slug.txt">TXT</a>
+    </div>
+  </nav>
+#+END_EXAMPLE
+
+#+NAME: comments
+#+BEGIN_EXAMPLE
+  <div id="disqus_thread"></div>
+  <script>
+   (function() {
+       var d = document, s = d.createElement('script');
+       s.src = '//alexrecker.disqus.com/embed.js';
+       s.setAttribute('data-timestamp', +new Date());
+       (d.head || d.body).appendChild(s);
+   })();
+  </script>
+  <noscript>
+    Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments
+    powered by Disqus.</a>
+  </noscript>
+#+END_EXAMPLE
+
+#+NAME: analytics
+#+BEGIN_EXAMPLE
+  <script>
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+   ga('create', 'UA-42540208-6', 'alexrecker.com');
+   ga('send', 'pageview');
+  </script>
+#+END_EXAMPLE
+
+#+NAME: head-extra
+#+BEGIN_EXAMPLE
+  <link rel="stylesheet" href="./css/lora.css" />
+  <link rel="stylesheet" href="./css/site.css" />
+#+END_EXAMPLE
+
+*** Environments
+
+Initialize the publishing a list.
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-html-htmlize-output-type 'css)
+  (setq org-publish-project-alist '())
 #+END_SRC
 
-Custom preamble that adds links to the home page and various post
-formats.
+This function will generate the publishing components.  Add one for
+"production" and "testing".
 
-#+BEGIN_SRC emacs-lisp
-  (defun blog/post-preamble (options)
-    (let ((slug (file-name-base (buffer-file-name))))
-      (concat "<nav>"
-              "<a href=\"./index.html\">Home</a>"
-              "<div style=\"float: right;\">"
-              "<a href=\"" "./pdfs/" slug ".pdf" "\">PDF</a>"
-              "&nbsp;&nbsp;"
-              "<a href=\"" "./txt/" slug ".txt" "\">TXT</a>"
-              "</div>"
-              "</nav>")))
-#+END_SRC
+#+BEGIN_SRC emacs-lisp :var comments=comments analytics=analytics head-extra=head-extra preamble=preamble
+  (defun recker/add-blog-project (suffix pubdir analyticsp commentsp)
+    (let ((comments (if commentsp comments nil))
+	  (analytics (if analyticsp analytics nil)))
 
-Other snippets that need to be injected into the HTML.
+      ;; index
+      (add-to-list 'org-publish-project-alist
+		   `(,(concat "blog-index-" suffix)
+		     :base-directory "~/git/blog"
+		     :exclude ".*"
+		     :html-doctype "html5"
+		     :html-head-extra ,(concat head-extra)
+		     :html-postamble ,(concat analytics)
+		     :include ("index.org")
+		     :publishing-directory ,(concat pubdir)
+		     :publishing-function org-html-publish-to-html
+		     :section-numbers nil
+		     :with-tags nil
+		     :with-toc nil
+		     ))
 
-#+BEGIN_SRC emacs-lisp
-  (defun blog/--read-partial (name)
-    (with-temp-buffer
-      (insert-file-contents (concat "~/.emacs.d/blog/" name))
-      (buffer-string)))
+      ;; posts
+      (add-to-list 'org-publish-project-alist
+		   `(,(concat "blog-posts-" suffix)
+		     :base-directory "~/git/blog"
+		     :base-extension "org"
+		     :exclude "index.org"
+		     :html-doctype "html5"
+		     :html-head-extra ,(concat head-extra)
+		     :html-preamble (lambda (options)
+				      (let ((slug (file-name-base (buffer-file-name))))
+					(replace-regexp-in-string "slug" slug ,(concat preamble))))
+		     :html-postamble ,(concat comments analytics)
+		     :publishing-directory ,(concat pubdir)
+		     :publishing-function org-html-publish-to-html
+		     :recursive t
+		     :section-numbers nil
+		     :with-toc nil
+		     ))
+      ;; posts-pdf
+      (add-to-list 'org-publish-project-alist
+		   `(,(concat "blog-posts-pdf-" suffix)
+		     :base-directory "~/git/blog"
+		     :base-extension "org"
+		     :exclude "index.org"
+		     :publishing-directory ,(concat pubdir "/pdfs")
+		     :publishing-function org-latex-publish-to-pdf
+		     :recursive t
+		     :section-numbers nil
+		     :with-toc nil
+		     ))
 
-  (setq blog/partial-disqus (blog/--read-partial "disqus.html")
-	blog/partial-analytics (blog/--read-partial "ga.html"))
+      ;; posts-txt
+      (add-to-list 'org-publish-project-alist
+		   `(,(concat "blog-posts-txt-" suffix)
+		     :base-directory "~/git/blog"
+		     :base-extension "org"
+		     :exclude "index.org"
+		     :publishing-directory ,(concat pubdir "/txt")
+		     :publishing-function org-ascii-publish-to-ascii
+		     :recursive t
+		     :section-numbers nil
+		     :with-toc nil
+		     ))
 
-  (defun blog/post-postamble (options)
-    (concat "<hr>"
-            blog/partial-disqus
-            blog/partial-analytics))
+      ;; posts-static
+      (add-to-list 'org-publish-project-alist
+		   `(,(concat "blog-static-" suffix)
+		     :base-directory "~/git/blog"
+		     :base-extension "txt\\|css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+		     :publishing-directory ,(concat pubdir)
+		     :publishing-function org-publish-attachment
+		     :recursive t
+		     ))
 
-  (defun blog/index-postamble (options)
-    (concat blog/partial-analytics))
-#+END_SRC
+      ;; rss
+      (add-to-list 'org-publish-project-alist
+		   `(,(concat "blog-rss-" suffix)
+		     :base-directory "~/git/blog"
+		     :base-extension "org"
+		     :exclude ".*"
+		     :exclude-tags ("noexport" "norss")
+		     :include ("index.org")
+		     :html-link-home "http://alexrecker.com"
+		     :html-link-use-abs-url t
+		     :publishing-directory ,(concat pubdir "/feed/")
+		     :publishing-function (org-rss-publish-to-rss)
+		     ))
 
-Finally, add the big fat org publishing project.
+      ;; everything
+      (add-to-list 'org-publish-project-alist
+		   `(,(concat "blog-" suffix)
+		     :components ,(mapcar (lambda (p) (concat p "-" suffix))
+					  '("blog-index"
+					    "blog-posts"
+					    "blog-posts-pdf"
+					    "blog-posts-txt"
+					    "blog-static"
+					    "blog-rss"))))))
 
-#+BEGIN_SRC emacs-lisp
-  (setq org-publish-project-alist
-	'(
 
-          ("blog-index"
-           :base-directory "~/git/blog"
-           :exclude ".*"
-           :html-doctype "html5"
-           :html-head-extra "<link rel='stylesheet' href='./css/lora.css' />\n<link rel='stylesheet' href='./css/site.css' />"
-           :html-postamble blog/index-postamble
-           :include ("index.org")
-           :publishing-directory "/ssh:columbia:public/alexrecker.com"
-           :publishing-function org-html-publish-to-html
-           :section-numbers nil
-           :with-tags nil
-           :with-toc nil
-           )
-
-          ("blog-posts"
-           :base-directory "~/git/blog"
-           :base-extension "org"
-           :exclude "index.org"
-           :html-doctype "html5"
-           :html-head-extra "<link rel='stylesheet' href='./css/lora.css' />\n<link rel='stylesheet' href='./css/site.css' />"
-           :html-preamble blog/post-preamble
-           :html-postamble blog/post-postamble
-           :htmlized-source nil
-           :publishing-directory "/ssh:columbia:public/alexrecker.com"
-           :publishing-function org-html-publish-to-html
-           :recursive t
-           :section-numbers nil
-           :with-toc nil
-           )
-
-          ("blog-posts-pdf"
-           :base-directory "~/git/blog"
-           :base-extension "org"
-           :exclude "index.org"
-           :publishing-directory "/ssh:columbia:public/alexrecker.com/pdfs"
-           :publishing-function org-latex-publish-to-pdf
-           :recursive t
-           :section-numbers nil
-           :with-toc nil
-           )
-
-          ("blog-posts-txt"
-           :base-directory "~/git/blog"
-           :base-extension "org"
-           :exclude "index.org"
-           :publishing-directory "/ssh:columbia:public/alexrecker.com/txt"
-           :publishing-function org-ascii-publish-to-ascii
-           :recursive t
-           :section-numbers nil
-           :with-toc nil
-           )
-
-          ("blog-static"
-           :base-directory "~/git/blog"
-           :base-extension "txt\\|css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-           :publishing-directory "/ssh:columbia:public/alexrecker.com"
-           :publishing-function org-publish-attachment
-           :recursive t
-           )
-
-          ("blog-rss"
-           :base-directory "~/git/blog"
-           :base-extension "org"
-           :exclude ".*"
-           :exclude-tags ("noexport" "norss")
-           :include ("index.org")
-           :html-link-home "http://alexrecker.com"
-           :html-link-use-abs-url t
-           :publishing-directory "/ssh:columbia:public/alexrecker.com/feed/"
-           :publishing-function (org-rss-publish-to-rss)
-           )
-
-          ))
-#+END_SRC
-
-And since I can't ever remember the syntax for =rsync=, this is a function to help out with that.
-
-#+BEGIN_SRC emacs-lisp
-  (defun blog/push ()
-    (interactive)
-    (shell-command "rsync -razp /var/www/blog/ columbia:/var/www/blog"))
+  (recker/add-blog-project "testing" "~/.alexrecker.com" nil nil)
+  (recker/add-blog-project "production" "/ssh:columbia:public/alexrecker.com" 't 't)
 #+END_SRC
 
 * GNUS

@@ -595,8 +595,10 @@ in case I want to add a theme some day.
    })();
   </script>
   <noscript>
-    Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments
-    powered by Disqus.</a>
+    Please enable JavaScript to view the
+    <a href="https://disqus.com/?ref_noscript" rel="nofollow">
+    comments powered by Disqus.
+    </a>
   </noscript>
 #+END_EXAMPLE
 

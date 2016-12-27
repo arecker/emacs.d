@@ -625,7 +625,7 @@ in case I want to add a theme some day.
 Initialize the publishing a list.
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-publish-project-alist '())
+  (setq-default org-publish-project-alist '())
 #+END_SRC
 
 This function will generate the publishing components.  Add one for
@@ -800,19 +800,20 @@ This is still a work in progress.  I'm working on getting both
 offlineimap and dovecot into a tidy docker container.  Stay tuned.
 
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'gnus-secondary-select-methods
-   	    '(nnimap "personal"
-   		     (nnimap-stream network)
-   		     (nnimap-address "localhost")
-   		     (nnimap-server-port 8143)
-   		     (nnimap-authenticator login)))
+  ;; TODO: not quite working
+  ;; (add-to-list 'gnus-secondary-select-methods
+  ;;    	  '(nnimap "personal"
+  ;;    		   (nnimap-stream network)
+  ;;    		   (nnimap-address "localhost")
+  ;;    		   (nnimap-server-port 8143)
+  ;;    		   (nnimap-authenticator login)))
 
-  (add-to-list 'gnus-secondary-select-methods
-   	    '(nnimap "work"
-   		     (nnimap-stream network)
-   		     (nnimap-address "localhost")
-   		     (nnimap-server-port 8144)
-   		     (nnimap-authenticator login)))
+  ;; (add-to-list 'gnus-secondary-select-methods
+  ;;    	  '(nnimap "work"
+  ;;    		   (nnimap-stream network)
+  ;;    		   (nnimap-address "localhost")
+  ;;    		   (nnimap-server-port 8144)
+  ;;    		   (nnimap-authenticator login)))
 #+END_SRC
 
 ** Sending Mail

@@ -75,20 +75,15 @@ own [[https://pypi.python.org/pypi/wilfred-say][wilfred-say]], but [[https://en.
 #+BEGIN_SRC emacs-lisp
   (setq recker/scratch-message-program "wilfred-say")
 
-  (defun recker/startup-scratch ()
-    (let ((command-installed (executable-find recker/scratch-message-program))
-          (comment-command-output
-           (lambda (c)
-             (concat
-              (mapconcat
-               (lambda (x) (concat ";; " x))
-               (split-string (shell-command-to-string c) "\n" t) "\n")
-              "\n" "\n"))))
-      (if command-installed
-          (setq initial-scratch-message
-		(funcall comment-command-output recker/scratch-message-program)))))
+  (defun recker/get-startup-scratch ()
+    (with-temp-buffer
+      (lisp-mode)
+      (insert-string
+       (shell-command-to-string recker/scratch-message-program))
+      (comment-region (point-max) (point-min))
+      (buffer-string)))
 
-  (recker/startup-scratch)
+  (setq initial-scratch-message (recker/get-startup-scratch))
 #+END_SRC
 
 Make it un-dead!

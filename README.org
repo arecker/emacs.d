@@ -652,7 +652,7 @@ This function will generate the publishing components.  Add one for
 		   `(,(concat "blog-posts-" suffix)
 		     :base-directory "~/git/blog"
 		     :base-extension "org"
-		     :exclude "index.org"
+		     :exclude "index.org\\|README.org"
 		     :html-doctype "html5"
 		     :html-head-extra ,(concat head-extra)
 		     :html-preamble (lambda (options)
@@ -671,7 +671,7 @@ This function will generate the publishing components.  Add one for
 		   `(,(concat "blog-posts-pdf-" suffix)
 		     :base-directory "~/git/blog"
 		     :base-extension "org"
-		     :exclude "index.org"
+		     :exclude "index.org\\|README.org"
 		     :publishing-directory ,(concat pubdir "/pdfs")
 		     :publishing-function org-latex-publish-to-pdf
 		     :recursive t
@@ -684,7 +684,7 @@ This function will generate the publishing components.  Add one for
 		   `(,(concat "blog-posts-txt-" suffix)
 		     :base-directory "~/git/blog"
 		     :base-extension "org"
-		     :exclude "index.org"
+		     :exclude "index.org\\|README.org"
 		     :publishing-directory ,(concat pubdir "/txt")
 		     :publishing-function org-ascii-publish-to-ascii
 		     :recursive t

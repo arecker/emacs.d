@@ -796,12 +796,17 @@ offlineimap and dovecot into a tidy docker container.  Stay tuned.
 
 #+BEGIN_SRC emacs-lisp
   ;; TODO: not quite working
-  ;; (add-to-list 'gnus-secondary-select-methods
-  ;;    	  '(nnimap "personal"
-  ;;    		   (nnimap-stream network)
-  ;;    		   (nnimap-address "localhost")
-  ;;    		   (nnimap-server-port 8143)
-  ;;    		   (nnimap-authenticator login)))
+  (add-to-list 'gnus-secondary-select-methods
+               '(nnmaildir "personal"
+                           (directory "~/.maildirs/personal")
+                           (directory-files nnheader-directory-files-safe)
+                           (get-new-mail nil)))
+
+  (add-to-list 'gnus-secondary-select-methods
+               '(nnmaildir "work"
+                           (directory "~/.maildirs/work")
+                           (directory-files nnheader-directory-files-safe)
+                           (get-new-mail nil)))
 
   ;; (add-to-list 'gnus-secondary-select-methods
   ;;    	  '(nnimap "work"

@@ -356,18 +356,6 @@ And web-mode makes inline CSS and JavaScript look pretty.
     :config (add-hook 'web-mode-hook 'emmet-mode))
 #+END_SRC
 
-** Lisp
-
-#+BEGIN_SRC emacs-lisp
-  (use-package slime-company :ensure t)
-
-  (use-package slime
-    :ensure t
-    :config
-    (setq inferior-lisp-program "clisp"
-	  slime-contribs '(slime-fancy slime-company)))
-#+END_SRC
-
 ** Markdown
 
 I'm not really a markdown power-user (Emacs has it's own version that

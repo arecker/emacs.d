@@ -76,12 +76,10 @@ own [[https://pypi.python.org/pypi/wilfred-say][wilfred-say]], but [[https://en.
   (setq recker/scratch-message-program "wilfred-say")
 
   (defun recker/get-startup-scratch ()
-    (with-temp-buffer
-      (lisp-mode)
-      (insert-string
-       (shell-command-to-string recker/scratch-message-program))
-      (comment-region (point-max) (point-min))
-      (buffer-string)))
+    (with-temp-buffer (lisp-mode)
+		      (insert-string (shell-command-to-string recker/scratch-message-program))
+		      (comment-region (point-max) (point-min))
+		      (buffer-string)))
 
   (setq initial-scratch-message (recker/get-startup-scratch))
 #+END_SRC
@@ -357,6 +355,9 @@ And web-mode makes inline CSS and JavaScript look pretty.
 #+END_SRC
 
 ** Lisp
+
+Install [[https://github.com/roswell/roswell/wiki/1.-Installation][roswell]] from source to =~/.roswell=.  Install the slime helper
+package with =ros install slime=.
 
 #+BEGIN_SRC emacs-lisp
   (use-package slime

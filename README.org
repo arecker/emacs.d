@@ -786,8 +786,7 @@ things.  There are even comics.
 
 #+BEGIN_SRC emacs-lisp
   (setq gnus-secondary-select-methods
-     '((nntp "news.gmane.org")
-       (nntp "news.gwene.org")))
+     '((nntp "news.gmane.org")))
 #+END_SRC
 
 ** Reading Mail

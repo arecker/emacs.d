@@ -729,8 +729,8 @@ This function will generate the publishing components.  Add one for
 					    "blog-rss"))))))
 
 
-  (recker/add-blog-project "testing" "~/.alexrecker.com" nil nil)
-  (recker/add-blog-project "production" "/ssh:columbia:public/alexrecker.com" 't 't)
+  (recker/add-blog-project "testing" "/tmp/alexrecker.com" nil nil)
+  (recker/add-blog-project "production" "/ssh:strongbadia:public/alexrecker.com" 't 't)
 #+END_SRC
 
 * GNUS

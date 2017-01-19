@@ -105,8 +105,6 @@ can be opened with =C-x= =r= =x= =[letter]=.
   (set-register ?i '(file . "~/.emacs.d/init.el"))
   (set-register ?o '(file . "~/org"))
   (set-register ?p '(file . "~/org/personal.org"))
-  (set-register ?t '(file . "~/org/ticket.org"))
-  (set-register ?w '(file . "~/org/work.org"))
 #+END_SRC
 
 * Interface
@@ -502,13 +500,10 @@ with =M-x= =org-reload=.
     (setq org-agenda-files '("~/org")
           org-capture-templates
           '(
-            ("h" "how" entry (file "~/org/how.org")
-             "* %?"
-             :empty-lines 1)
             ("i" "idea" entry (file+headline "~/org/personal.org" "Ideas")
              "* %?"
              :empty-lines 1)
-            ("t" "task" entry (file+headline "~/org/work.org" "Tasks")
+            ("t" "task" entry (file+headline "~/org/personal.org" "Tasks")
              "* TODO %?"
              :empty-lines 1)
             ))
@@ -795,25 +790,19 @@ This is still a work in progress.  I'm working on getting both
 offlineimap and dovecot into a tidy docker container.  Stay tuned.
 
 #+BEGIN_SRC emacs-lisp
-  ;; TODO: not quite working
   (add-to-list 'gnus-secondary-select-methods
-               '(nnmaildir "personal"
-                           (directory "~/.maildirs/personal")
-                           (directory-files nnheader-directory-files-safe)
-                           (get-new-mail nil)))
+	'(nnimap "personal"
+             (nnimap-stream network)
+             (nnimap-address "localhost")
+             (nnimap-server-port 8143)
+             (nnimap-authenticator login)))
 
   (add-to-list 'gnus-secondary-select-methods
-               '(nnmaildir "work"
-                           (directory "~/.maildirs/work")
-                           (directory-files nnheader-directory-files-safe)
-                           (get-new-mail nil)))
-
-  ;; (add-to-list 'gnus-secondary-select-methods
-  ;;    	  '(nnimap "work"
-  ;;    		   (nnimap-stream network)
-  ;;    		   (nnimap-address "localhost")
-  ;;    		   (nnimap-server-port 8144)
-  ;;    		   (nnimap-authenticator login)))
+	'(nnimap "work"
+             (nnimap-stream network)
+             (nnimap-address "localhost")
+             (nnimap-server-port 8144)
+             (nnimap-authenticator login)))
 #+END_SRC
 
 ** Sending Mail
@@ -973,6 +962,23 @@ Miscellaneous tools.
     :commands (wttrin)
     :init
     (setq wttrin-default-cities '("Madison")))
+#+END_SRC
+
+Browser bookmarks in emacs.
+
+#+BEGIN_SRC emacs-lisp
+  (setq recker/bookmark-file (expand-file-name "~/org/bookmarks.el"))
+
+  (unless (not (file-exists-p recker/bookmark-file))
+    (load-file recker/bookmark-file))
+
+  (defun recker/open-bookmark ()
+    (interactive)
+    (unless (boundp 'recker/bookmarks)
+      (error "Value of recker/bookmarks not set"))
+    (browse-url (completing-read "Bookmark: " recker/bookmarks)))
+
+  (global-set-key (kbd "C-c n") #'recker/open-bookmark)
 #+END_SRC
 
 * Local

@@ -971,14 +971,14 @@ Miscellaneous tools.
 
 Browser bookmarks in emacs.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :results output
   (recker/load-file-if-exists "~/org/bookmarks.el")
 
   (defun recker/open-bookmark ()
     (interactive)
     (unless (boundp 'recker/bookmarks)
       (error "Value of recker/bookmarks not set"))
-    (browse-url (completing-read "Bookmark: " recker/bookmarks)))
+    (browse-url (car (alist-get (intern (completing-read "Bookmark: " recker/bookmarks)) recker/bookmarks))))
 
   (global-set-key (kbd "C-c n") #'recker/open-bookmark)
 #+END_SRC

@@ -874,6 +874,11 @@ These are miscellaneous functions that I've written (or plagiarized).
                (kill-buffer b)))))
       (mapc kill-if-not-scratch (buffer-list))))
 
+  (defun recker/load-file-if-exists (file)
+    (let ((path (expand-file-name file)))
+      (if (file-exists-p path)
+	  (load-file path))))
+
   (defun recker/unfill-region (beg end)
     "Unfill the region, joining text paragraphs into a single
               logical line.  This is useful, e.g., for use with
@@ -967,10 +972,7 @@ Miscellaneous tools.
 Browser bookmarks in emacs.
 
 #+BEGIN_SRC emacs-lisp
-  (setq recker/bookmark-file (expand-file-name "~/org/bookmarks.el"))
-
-  (unless (not (file-exists-p recker/bookmark-file))
-    (load-file recker/bookmark-file))
+  (recker/load-file-if-exists "~/org/bookmarks.el")
 
   (defun recker/open-bookmark ()
     (interactive)

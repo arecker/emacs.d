@@ -103,6 +103,7 @@ can be opened with =C-x= =r= =x= =[letter]=.
   (set-register ?e '(file . "~/.emacs.d/README.org"))
   (set-register ?g '(file . "~/git"))
   (set-register ?i '(file . "~/.emacs.d/init.el"))
+  (set-register ?l '(file . "~/.emacs.d/lisp"))
   (set-register ?o '(file . "~/org"))
   (set-register ?p '(file . "~/org/personal.org"))
 #+END_SRC

@@ -456,6 +456,13 @@ Disable yas in ansi-term (bug)
 
 #+END_SRC
 
+** Terraform
+
+#+BEGIN_SRC emacs-lisp
+  (use-package terraform-mode
+    :ensure t)
+#+END_SRC
+
 ** YAML
 
 YAML is so hip and cool.

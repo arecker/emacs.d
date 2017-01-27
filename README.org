@@ -411,21 +411,6 @@ ruby as I know about scented candles and professional football.
 
 #+BEGIN_SRC emacs-lisp
   (setq ruby-deep-indent-paren nil)
-
-  (use-package bundler :ensure t)
-
-  (use-package "robe"
-    :ensure t
-    :config (add-hook 'ruby-mode-hook 'robe-mode)
-    :init
-    (eval-after-load 'company
-      '(push 'company-robe company-backends)))
-
-  (use-package "rvm"
-    :ensure t
-    :init
-    (defadvice inf-ruby-console-auto
-	(before activate-rvm-for-robe activate)))
 #+END_SRC
 
 ** Terminal

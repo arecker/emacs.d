@@ -596,6 +596,7 @@ in case I want to add a theme some day.
 #+BEGIN_EXAMPLE
   <link rel="stylesheet" href="./css/lora.css" />
   <link rel="stylesheet" href="./css/site.css" />
+  <script type="text/javascript" src="/js/app.js"></script>
 #+END_EXAMPLE
 
 *** Environments

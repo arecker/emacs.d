@@ -73,7 +73,7 @@ own [[https://pypi.python.org/pypi/wilfred-say][wilfred-say]], but [[https://en.
 [[file:screenshots/scratch.png]]
 
 #+BEGIN_SRC emacs-lisp
-  (setq recker/scratch-message-program "wilfred-say")
+  (setq recker/scratch-message-program "fortune")
 
   (defun recker/get-startup-scratch ()
     (with-temp-buffer (lisp-mode)
@@ -351,6 +351,14 @@ And web-mode makes inline CSS and JavaScript look pretty.
   (use-package emmet-mode
     :ensure t
     :config (add-hook 'web-mode-hook 'emmet-mode))
+#+END_SRC
+
+** JavaScript
+
+These settings are /webscale/.
+
+#+BEGIN_SRC emacs-lisp
+  (setq js-indent-level 2)
 #+END_SRC
 
 ** Lisp

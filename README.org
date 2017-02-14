@@ -1,8 +1,5 @@
 #+TITLE: Emacs Configuration
 #+AUTHOR: Alex Recker
-#+STARTUP: indent showall
-
-[[file:screenshots/unixporn.png]]
 
 This is my emacs config.  It's very fancy, isn't it?  If you'd like to
 use it, clone this repository in place as your new =~/.emacs.d=
@@ -46,10 +43,10 @@ initialization portion.
 
 * Startup
 
-** PATH Variable
-
 This package does a nice job ensuring the =PATH= variable is synced
 up.  OSX is the only OS that misbehaves, but here it is nonetheless.
+
+** Path
 
 #+BEGIN_SRC emacs-lisp
   (use-package exec-path-from-shell
@@ -57,7 +54,7 @@ up.  OSX is the only OS that misbehaves, but here it is nonetheless.
     :config (exec-path-from-shell-initialize))
 #+END_SRC
 
-** Scratch Buffer
+** Scratch
 
 The slash screen displayed on startup is a little too noisy for me.
 The =*scratch*= buffer is a lot more low key.
@@ -66,20 +63,17 @@ The =*scratch*= buffer is a lot more low key.
   (setq inhibit-startup-message 't)
 #+END_SRC
 
-This function replaces the generic =;; This buffer is for text=
-comment with something more interesting.  I have it defaulted to my
-own [[https://pypi.python.org/pypi/wilfred-say][wilfred-say]], but [[https://en.wikipedia.org/wiki/Fortune_(Unix)][fortune]] is a stellar candidate as well.
-
-[[file:screenshots/scratch.png]]
+This function replaces the generic =;; This buffer is for text...=
+comment with something more interesting.
 
 #+BEGIN_SRC emacs-lisp
   (setq recker/scratch-message-program "fortune")
 
   (defun recker/get-startup-scratch ()
     (with-temp-buffer (lisp-mode)
-		      (insert-string (shell-command-to-string recker/scratch-message-program))
-		      (comment-region (point-max) (point-min))
-		      (buffer-string)))
+                      (insert-string (shell-command-to-string recker/scratch-message-program))
+                      (comment-region (point-max) (point-min))
+                      (buffer-string)))
 
   (setq initial-scratch-message (recker/get-startup-scratch))
 #+END_SRC
@@ -92,30 +86,11 @@ Make it un-dead!
     :init (unkillable-scratch))
 #+END_SRC
 
-** File Registers
-
-These are files that I visit often.  As file registers, any of them
-can be opened with =C-x= =r= =x= =[letter]=.
-
-#+BEGIN_SRC emacs-lisp
-  (set-register ?b '(file . "~/git/blog"))
-  (set-register ?d '(file . "~/Desktop"))
-  (set-register ?e '(file . "~/.emacs.d/README.org"))
-  (set-register ?g '(file . "~/git"))
-  (set-register ?i '(file . "~/.emacs.d/init.el"))
-  (set-register ?l '(file . "~/.emacs.d/lisp"))
-  (set-register ?o '(file . "~/org"))
-  (set-register ?p '(file . "~/org/personal.org"))
-#+END_SRC
-
 * Interface
 
 ** Better Defaults
    
-Emacs comes with some obnixious defaults.  First to go is automatic
-backups and auto saving.  These features clutter up the file system.
-Also, disable native tabs definitively (though a tab can still be
-inserted with =C-q= =TAB=.
+Emacs comes with some obnixious defaults.
 
 #+BEGIN_SRC emacs-lisp
   (setq backup-inhibited t
@@ -138,16 +113,16 @@ Remove the scrollbar, tool bar, and menu bar.
 Make the default font something prettier, like [[http://levien.com/type/myfonts/inconsolata.html][inconsolata]].
 
 #+BEGIN_SRC emacs-lisp
-  (set-default-font "Inconsolata Medium 14")
+  (set-default-font "Inconsolata Medium 11")
+  (set-default-font "Monospace 10")
 #+END_SRC
 
-Change the theme.
+Load a good theme.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package "zenburn-theme"
+  (use-package zenburn-theme
     :ensure t
-    :config
-    (load-theme 'zenburn t))
+    :init (load-theme 'zenburn t))
 #+END_SRC
 
 ** Better Comments
@@ -162,22 +137,11 @@ I overwrite the build-in =comment-dwim= with its superior sequel.
 
 ** Better Modeline
 
-This snippet is an utter mystery to me, but somehow it hides minor
-modes from the modeline.
-
 #+BEGIN_SRC emacs-lisp
-  (define-minor-mode minor-mode-blackout-mode
-    "Minor mode blackout"
-    t)
-  (catch 'done
-    (mapc (lambda (x)
-            (when (and (consp x)
-                       (equal (cadr x) '("" minor-mode-alist)))
-              (let ((original (copy-sequence x)))
-		(setcar x 'minor-mode-blackout-mode)
-		(setcdr x (list "" original)))
-              (throw 'done t)))
-          mode-line-modes))
+  (use-package rich-minority
+    :ensure t
+    :init (rich-minority-mode 1)
+    :config (setq rm-blacklist ""))
 #+END_SRC
 
 ** Better Text Selection
@@ -200,68 +164,37 @@ overwrite it.
 
 ** Better Git
 
-Let's add some fun git plugins, like magit and git-gutter.
-
-[[file:screenshots/git.png]]
+Magit.
 
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :ensure t
     :bind ("C-x g" . magit-status))
-
-  (use-package git-gutter
-    :ensure t
-    :config (global-git-gutter-mode 1))
 #+END_SRC
 
 ** Better Completion
 
-Let company-mode do its thing.
-
-[[file:screenshots/completion.png]]
+Completion and filtering with ivy, supported by counsel.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package company
+  (use-package ivy
     :ensure t
-    :config (global-company-mode))
+    :config
+    (ivy-mode 1))
+
+  (use-package counsel
+    :ensure t
+    :bind
+    ("C-c i" . counsel-imenu)
+    ("C-c s" . swiper))
 #+END_SRC
 
-** Better... Something
-
-These are my [[https://github.com/emacs-helm/helm][helm]] settings.  Helm is kind of enormous, and sometimes I
-question whether or not I really need it.  Comment all of this out if
-you are not into it.
-
-I'm in the process of replacing this work-flow.
+And actual auto-complete.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package helm
+  (use-package auto-complete
     :ensure t
-    :config
-    (setq helm-semantic-fuzzy-match t
-          helm-imenu-fuzzy-match nil)
-    (helm-mode 1)
-    :bind (("C-x C-b" . helm-buffers-list)
-           ("C-x b" . helm-mini)
-           ("C-x C-f" . helm-find-files)
-           ("C-c h o" . helm-occur)
-           ("C-c i" . helm-imenu)
-           ("C-x r b" . helm-filtered-bookmarks)
-           ("M-x" . helm-M-x)
-           ("M-y" . helm-show-kill-ring)
-           :map helm-map
-           ("<tab>" . helm-execute-persistent-action)))
-
-  (use-package helm-projectile
-    :ensure t
-    :config
-    (projectile-global-mode)
-    (setq projectile-completion-system 'helm)
-    (helm-projectile-on)
-    :bind ("C-c f" . helm-projectile))
-
-  (use-package helm-ag
-    :ensure t)
+    :init (ac-config-default)) 
 #+END_SRC
 
 * Modes
@@ -269,7 +202,7 @@ I'm in the process of replacing this work-flow.
 These are the settings for various editing modes - the top level being
 "text-mode", which is for /editing text written for humans to read/.
 
-Inferior modes should disable these at when it makes sense too.
+Inferior modes should disable these at when it makes sense to.
 
 #+BEGIN_SRC emacs-lisp
   (defun recker/text-mode-hook ()
@@ -303,113 +236,12 @@ Globally cleanup white space on save.
     :config (global-whitespace-cleanup-mode))
 #+END_SRC
 
-Enable YASnippet everywhere.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package "yasnippet"
-    :ensure t
-    :config (yas-global-mode))
-#+END_SRC
-
-** Bats
-
-#+BEGIN_SRC emacs-lisp
-  (use-package "bats-mode"
-    :ensure t
-    :mode ("\\.bats\\'" . bats-mode))
-#+END_SRC
-
-** CSV
-
-#+BEGIN_SRC emacs-lisp
-  (use-package "csv-mode"
-    :ensure t
-    :mode ("\\.csv\\'" . csv-mode))
-#+END_SRC
-
-** Dockerfile
-
-#+BEGIN_SRC emacs-lisp
-  (use-package "dockerfile-mode"
-    :ensure t
-    :mode ("Dockerfile\\'" . dockerfile-mode))
-#+END_SRC
-
-** HTML
-
-This really should be smaller.  Emacs has fantastic HTML markup
-manipulation out of the box, but this is just laziness from my Sublime Text days.
-
-And web-mode makes inline CSS and JavaScript look pretty.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package web-mode
-    :ensure t
-    :mode ("\\.html\\'" "\\.jinja\\'")
-    :config (setq web-mode-markup-indent-offset 2))
-
-  (use-package emmet-mode
-    :ensure t
-    :config (add-hook 'web-mode-hook 'emmet-mode))
-#+END_SRC
-
 ** JavaScript
 
-These settings are /webscale/.
+This is the web-scale portion of my config.
 
 #+BEGIN_SRC emacs-lisp
   (setq js-indent-level 2)
-#+END_SRC
-
-** Lisp
-
-Install [[https://github.com/roswell/roswell/wiki/1.-Installation][roswell]] from source to =~/.roswell=.  Install the slime helper
-package with =ros install slime=.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package slime
-    :ensure t
-    :init
-    (load (expand-file-name "~/.roswell/helper.el"))
-    :config
-    (setq inferior-lisp-program "ros -Q run"
-	  slime-contribs '(slime-fancy)))
-#+END_SRC
-
-** Markdown
-
-I'm not really a markdown power-user (Emacs has it's own version that
-I am way more into).  But this plugin does a fine job of showing me
-where I messed up formatting.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package markdown-mode
-    :ensure t
-    :commands (markdown-mode gfm-mode)
-    :mode (("README\\.md\\'" . gfm-mode)
-           ("\\.md\\'" . markdown-mode)
-           ("\\.markdown\\'" . markdown-mode)))
-#+END_SRC
-
-** Nginx
-
-#+BEGIN_SRC emacs-lisp
-  (use-package nginx-mode
-    :ensure t
-    :mode ("\\nginx.conf'" "\\nginx.config'" "\\conf.nginx'"))
-#+END_SRC
-
-** Python
-
-Elpy does the heavy lifting in python.  To take full advantage,
-install [[file:requirements/python.txt][these requirements]] in your activated environment.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package elpy
-    :ensure t
-    :pin elpy
-    :config (elpy-enable)
-    :init (setq elpy-rpc-timeout 10))
 #+END_SRC
 
 ** Ruby
@@ -441,21 +273,6 @@ The terminal buffer should be killed on exit.
     (kill-buffer))
 #+END_SRC
 
-Disable yas in ansi-term (bug)
-
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'term-mode-hook (lambda()
-                              (yas-minor-mode -1)))
-
-#+END_SRC
-
-** Terraform
-
-#+BEGIN_SRC emacs-lisp
-  (use-package terraform-mode
-    :ensure t)
-#+END_SRC
-
 ** YAML
 
 YAML is so hip and cool.
@@ -482,62 +299,26 @@ Org is love.  Org is life.
 
 ** General
 
-This installs the latest org and org-contrib packages.  It also sets
-up some [[http://orgmode.org/manual/Capture-templates.html][capture]] templates, which are wonderfully useful.
-
-*Manual Action Required:* =use-package= is a little wonky with
-installing org mode, since it is built-in.  At the time this was
-written, built-in org mode is incompatible, so it needs to be removed.
-Find the later version in the org repo using =M-x=
-=packages-list-packages= and install it.  Then reload the installation
-with =M-x= =org-reload=.
-
 #+BEGIN_SRC emacs-lisp
   (use-package "org"
     :ensure t
     :pin "org"
-    :init
-    (setq org-export-date-timestamp-format "%B %e, %Y")
-    (setq org-agenda-files '("~/org")
-          org-capture-templates
-          '(("i" "idea" entry (file+headline "~/org/personal.org" "Ideas") "* %?" :empty-lines 1)
-            ("t" "task" entry (file+headline "~/org/personal.org" "Tasks") "* TODO %?" :empty-lines 1)))
-    :config
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((python . t)
-       (lisp . t)
-       (ditaa . t)
-       (ruby . t)
-       (shell . t)
-       (java . t)
-       (js . t)
-       (C . t)))
+    :init (add-hook 'org-mode-hook 'org-indent-mode)
+    :config (org-babel-do-load-languages
+             'org-babel-load-languages
+             '((python . t)
+               (lisp . t)
+               (ditaa . t)
+               (ruby . t)
+               (sh . t)
+               (java . t)
+               (js . t)
+               (C . t)))
     :bind (("C-c a" . org-agenda)
-           ("C-c c" . org-capture)
-           ("C-c i" . helm-imenu)
-           ("C-c s" . org-store-link)))
-
-  (use-package "org-plus-contrib"
-    :ensure t
-    :pin "org")
-#+END_SRC
-
-Search org files with deft.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package "deft"
-    :ensure t
-    :config
-    (setq deft-extensions '("txt" "tex" "org" "org_archive")
-          deft-directory "~/org"
-          deft-recursive t)
-    :bind (("C-c d" . deft)))
+           ("C-c c" . org-capture)))
 #+END_SRC
 
 ** Blog
-
-[[file:screenshots/blog.png]]
 
 My [[https://alexrecker.com/][blog]] is generated from 100% org mode publishing.  For any of this
 to work, the project needs to be cloned to =~/git/blog=.  But that's
@@ -553,6 +334,16 @@ in case I want to add a theme some day.
   (use-package "htmlize"
     :ensure t
     :config (setq org-html-htmlize-output-type 'css))
+#+END_SRC
+
+Also, I need the rss publishing function found in this package.  It
+doesn't play well with org mode.  May have to =org-reload= and clear
+out your =elpa= folder a few times.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package "org-plus-contrib"
+    :ensure t
+    :pin "org")
 #+END_SRC
 
 *** Partials
@@ -615,245 +406,112 @@ Initialize the publishing a list.
   (setq-default org-publish-project-alist '())
 #+END_SRC
 
-This function will generate the publishing components.  Add one for
-"production" and "testing".
+This function will generate the publishing components.
 
 #+BEGIN_SRC emacs-lisp :var comments=comments analytics=analytics head-extra=head-extra preamble=preamble
   (defun recker/add-blog-project (suffix pubdir analyticsp commentsp)
     (let ((comments (if commentsp comments nil))
-	  (analytics (if analyticsp analytics nil)))
+          (analytics (if analyticsp analytics nil)))
 
       ;; index
       (add-to-list 'org-publish-project-alist
-		   `(,(concat "blog-index-" suffix)
-		     :base-directory "~/git/blog"
-		     :exclude ".*"
-		     :html-doctype "html5"
-		     :html-head-extra ,(concat head-extra)
-		     :html-postamble ,(concat analytics)
-		     :include ("index.org")
-		     :publishing-directory ,(concat pubdir)
-		     :publishing-function org-html-publish-to-html
-		     :section-numbers nil
-		     :with-tags nil
-		     :with-toc nil
-		     ))
+                   `(,(concat "blog-index-" suffix)
+                     :base-directory "~/git/blog"
+                     :exclude ".*"
+                     :html-doctype "html5"
+                     :html-head-extra ,(concat head-extra)
+                     :html-postamble ,(concat analytics)
+                     :include ("index.org")
+                     :publishing-directory ,(concat pubdir)
+                     :publishing-function org-html-publish-to-html
+                     :section-numbers nil
+                     :with-tags nil
+                     :with-toc nil
+                     ))
 
       ;; posts
       (add-to-list 'org-publish-project-alist
-		   `(,(concat "blog-posts-" suffix)
-		     :base-directory "~/git/blog"
-		     :base-extension "org"
-		     :exclude "index.org\\|README.org"
-		     :html-doctype "html5"
-		     :html-head-extra ,(concat head-extra)
-		     :html-preamble (lambda (options)
-				      (let ((slug (file-name-base (buffer-file-name))))
-					(replace-regexp-in-string "slug" slug ,(concat preamble))))
-		     :html-postamble ,(concat comments analytics)
-		     :publishing-directory ,(concat pubdir)
-		     :publishing-function org-html-publish-to-html
-		     :recursive t
-		     :section-numbers nil
-		     :with-toc nil
-		     ))
+                   `(,(concat "blog-posts-" suffix)
+                     :base-directory "~/git/blog"
+                     :base-extension "org"
+                     :exclude "index.org\\|README.org"
+                     :html-doctype "html5"
+                     :html-head-extra ,(concat head-extra)
+                     :html-preamble (lambda (options)
+                                      (let ((slug (file-name-base (buffer-file-name))))
+                                        (replace-regexp-in-string "slug" slug ,(concat preamble))))
+                     :html-postamble ,(concat comments analytics)
+                     :publishing-directory ,(concat pubdir)
+                     :publishing-function org-html-publish-to-html
+                     :recursive t
+                     :section-numbers nil
+                     :with-toc nil
+                     ))
 
       ;; posts-pdf
       (add-to-list 'org-publish-project-alist
-		   `(,(concat "blog-posts-pdf-" suffix)
-		     :base-directory "~/git/blog"
-		     :base-extension "org"
-		     :exclude "index.org\\|README.org"
-		     :publishing-directory ,(concat pubdir "/pdfs")
-		     :publishing-function org-latex-publish-to-pdf
-		     :recursive t
-		     :section-numbers nil
-		     :with-toc nil
-		     ))
+                   `(,(concat "blog-posts-pdf-" suffix)
+                     :base-directory "~/git/blog"
+                     :base-extension "org"
+                     :exclude "index.org\\|README.org"
+                     :publishing-directory ,(concat pubdir "/pdfs")
+                     :publishing-function org-latex-publish-to-pdf
+                     :recursive t
+                     :section-numbers nil
+                     :with-toc nil
+                     ))
 
       ;; posts-txt
       (add-to-list 'org-publish-project-alist
-		   `(,(concat "blog-posts-txt-" suffix)
-		     :base-directory "~/git/blog"
-		     :base-extension "org"
-		     :exclude "index.org\\|README.org"
-		     :publishing-directory ,(concat pubdir "/txt")
-		     :publishing-function org-ascii-publish-to-ascii
-		     :recursive t
-		     :section-numbers nil
-		     :with-toc nil
-		     ))
+                   `(,(concat "blog-posts-txt-" suffix)
+                     :base-directory "~/git/blog"
+                     :base-extension "org"
+                     :exclude "index.org\\|README.org"
+                     :publishing-directory ,(concat pubdir "/txt")
+                     :publishing-function org-ascii-publish-to-ascii
+                     :recursive t
+                     :section-numbers nil
+                     :with-toc nil
+                     ))
 
       ;; posts-static
       (add-to-list 'org-publish-project-alist
-		   `(,(concat "blog-static-" suffix)
-		     :base-directory "~/git/blog"
-		     :base-extension "txt\\|css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-		     :publishing-directory ,(concat pubdir)
-		     :publishing-function org-publish-attachment
-		     :recursive t
-		     ))
+                   `(,(concat "blog-static-" suffix)
+                     :base-directory "~/git/blog"
+                     :base-extension "txt\\|css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+                     :publishing-directory ,(concat pubdir)
+                     :publishing-function org-publish-attachment
+                     :recursive t
+                     ))
 
       ;; rss
       (add-to-list 'org-publish-project-alist
-		   `(,(concat "blog-rss-" suffix)
-		     :base-directory "~/git/blog"
-		     :base-extension "org"
-		     :exclude ".*"
-		     :exclude-tags ("noexport" "norss")
-		     :include ("index.org")
-		     :html-link-home "http://alexrecker.com"
-		     :html-link-use-abs-url t
-		     :publishing-directory ,(concat pubdir "/feed/")
-		     :publishing-function (org-rss-publish-to-rss)
-		     ))
+                   `(,(concat "blog-rss-" suffix)
+                     :base-directory "~/git/blog"
+                     :base-extension "org"
+                     :exclude ".*"
+                     :exclude-tags ("noexport" "norss")
+                     :include ("index.org")
+                     :html-link-home "http://alexrecker.com"
+                     :html-link-use-abs-url t
+                     :publishing-directory ,(concat pubdir "/feed/")
+                     :publishing-function (org-rss-publish-to-rss)
+                     ))
 
       ;; everything
       (add-to-list 'org-publish-project-alist
-		   `(,(concat "blog-" suffix)
-		     :components ,(mapcar (lambda (p) (concat p "-" suffix))
-					  '("blog-index"
-					    "blog-posts"
-					    "blog-posts-pdf"
-					    "blog-posts-txt"
-					    "blog-static"
-					    "blog-rss"))))))
+                   `(,(concat "blog-" suffix)
+                     :components ,(mapcar (lambda (p) (concat p "-" suffix))
+                                          '("blog-index"
+                                            "blog-posts"
+                                            "blog-posts-pdf"
+                                            "blog-posts-txt"
+                                            "blog-static"
+                                            "blog-rss"))))))
 
 
   (recker/add-blog-project "testing" "/tmp/testing.alexrecker.com" nil nil)
   (recker/add-blog-project "production" "/tmp/alexrecker.com" 't 't)
-#+END_SRC
-
-* GNUS
-
-[[file:screenshots/gnus.png]]
-
-Gnus has a steep learning curve, and learning to incorporate this
-mysterious program has proven to be an emotional roller coaster.  I'm
-not even sure I know enough about it to say "it's worth it", but
-hopefully this will help you with your own journey.
-
-** Better Folders
-
-Gnus creates a bunch of folders in your home directory that, as far as
-I can tell, are not needed outside of gnus.  These settings will hide
-them all in =~/.gnus=, which will serve as our convenient /nuke-point/
-if things ever go south while playing around.
-
-Yes - =nnfolder-directory= is really needed.  Whether this is a bug or
-not, the redundancy is intentional.
-
-#+BEGIN_SRC emacs-lisp
-  (setq gnus-home-directory "~/.gnus"
-	nnfolder-directory "~/.gnus/Mail/archive"
-	message-directory "~/.gnus/Mail")
-#+END_SRC
-
-** Better Startup
-
-Gnus requires a "primary method" from which you obtain news.
-Unfortunately, the program kind of explodes if this isn't set,
-which proves to be kind of a pain when you want to poke around and
-set up things interactively.
-
-Here's my workaround - set the primary method to a dummy protocol
-that will immediately come back.  In our case, this is a blank
-=nnml= stream.
-   
-#+BEGIN_SRC emacs-lisp
-  (setq gnus-select-method '(nnml ""))
-#+END_SRC
-
-Default on topic mode, since it's more helpful.
-
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
-#+END_SRC
-
-** News
-
-Use gmane to follow news, mailers, and tons of other syndicated
-things.  There are even comics.
-
-#+BEGIN_SRC emacs-lisp
-  (setq gnus-secondary-select-methods
-     '((nntp "news.gmane.org")))
-#+END_SRC
-
-** Reading Mail
-
-This is still a work in progress.  I'm working on getting both
-offlineimap and dovecot into a tidy docker container.  Stay tuned.
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'gnus-secondary-select-methods
-	'(nnimap "personal"
-             (nnimap-stream network)
-             (nnimap-address "localhost")
-             (nnimap-server-port 8143)
-             (nnimap-authenticator login)))
-
-  (add-to-list 'gnus-secondary-select-methods
-	'(nnimap "work"
-             (nnimap-stream network)
-             (nnimap-address "localhost")
-             (nnimap-server-port 8144)
-             (nnimap-authenticator login)))
-#+END_SRC
-
-** Sending Mail
-
-To facilitate multiple accounts, this config leverages =msmtp=, which
-will toggle smtp credentials based on the =FROM= header of the
-outgoing message.
-
-The emacs side will require you add [[https://www.gnu.org/software/emacs/manual/html_node/gnus/Posting-Styles.html][posting styles]] - namely the
-=address= property.  I do this interactively through the customize
-menu, since putting it here never seems to stick.
-
-Lastly, we just configure emacs to call =msmtp= with our config file.
-
-#+BEGIN_SRC emacs-lisp
-     (setq  message-send-mail-function 'message-send-mail-with-sendmail
-            sendmail-program "msmtp"
-            message-sendmail-f-is-evil 't
-            gnus-message-archive-group nil
-            message-sendmail-extra-arguments '("--read-envelope-from"))
-#+END_SRC
-
-As of now, you need to just manually copy [[file:mail/msmtprc.conf][this file]] to =~/.msmtprc=.
-
-These are here just to keep emacs from prompting us for server
-credentials it won't even use.
-
-#+BEGIN_SRC emacs-lisp
-  (setq smtpmail-smtp-server "smtp.gmail.com"
-	smtpmail-smtp-service 587)
-#+END_SRC
-
-** Composing Mail
-
-Turn on org mode, so I can make tables and lists like a fancy boy.
-
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'message-mode-hook 'turn-on-orgtbl)
-  (add-hook 'message-mode-hook 'turn-on-orgstruct++)
-#+END_SRC
-
-** Address Book
-
-Collect addresses in bbdb.  This will prompt for a new entry while
-sending mail.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package "bbdb"
-    :ensure t
-    :config
-    (setq bbdb-file "~/org/bbdb")
-    :init
-    (bbdb-mua-auto-update-init 'message)
-    (setq bbdb-mua-auto-update-p 'query)
-    (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
 #+END_SRC
 
 * Functions
@@ -943,40 +601,6 @@ Likewise, miscellaneous key-bindings.
   (global-set-key (kbd "C-x k") 'kill-this-buffer)
   (global-set-key (kbd "C-x C-k k") 'kill-buffer)
   (global-set-key (kbd "C-c o") 'recker/org-scratch)
-#+END_SRC
-
-* Tools
-
-Miscellaneous tools.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package docker
-    :ensure t)
-
-  (use-package google-this
-    :ensure t
-    :config
-    (google-this-mode 1))
-
-  (use-package wttrin
-    :ensure t
-    :commands (wttrin)
-    :init
-    (setq wttrin-default-cities '("Madison")))
-#+END_SRC
-
-Browser bookmarks in emacs.
-
-#+BEGIN_SRC emacs-lisp :results output
-  (recker/load-file-if-exists "~/org/bookmarks.el")
-
-  (defun recker/open-bookmark ()
-    (interactive)
-    (unless (boundp 'recker/bookmarks)
-      (error "Value of recker/bookmarks not set"))
-    (browse-url (car (alist-get (intern (completing-read "Bookmark: " recker/bookmarks)) recker/bookmarks))))
-
-  (global-set-key (kbd "C-c n") #'recker/open-bookmark)
 #+END_SRC
 
 * Local

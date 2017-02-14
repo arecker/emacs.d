@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: src-elisp
-# key: <se
-# --
-#+BEGIN_SRC emacs-lisp
-$0
-#+END_SRC

@@ -1,6 +1,5 @@
 (setq package-archives
-      '(("elpy" . "https://jorgenschaefer.github.io/packages/")
-	("gnu" . "https://elpa.gnu.org/packages/")
+      '(("gnu" . "https://elpa.gnu.org/packages/")
 	("melpa" . "https://melpa.org/packages/")
 	("org" . "http://orgmode.org/elpa/")))
 

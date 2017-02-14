@@ -114,7 +114,6 @@ Make the default font something prettier, like [[http://levien.com/type/myfonts/
 
 #+BEGIN_SRC emacs-lisp
   (set-default-font "Inconsolata Medium 11")
-  (set-default-font "Monospace 10")
 #+END_SRC
 
 Load a good theme.
@@ -192,9 +191,9 @@ Completion and filtering with ivy, supported by counsel.
 And actual auto-complete.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package auto-complete
+  (use-package company
     :ensure t
-    :init (ac-config-default)) 
+    :config (global-company-mode))
 #+END_SRC
 
 Who knew this was an actual built-in function?
@@ -240,6 +239,14 @@ Globally cleanup white space on save.
   (use-package whitespace-cleanup-mode
     :ensure t
     :config (global-whitespace-cleanup-mode))
+#+END_SRC
+
+** Dired
+
+This is the emacs file manager.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'dired-x)
 #+END_SRC
 
 ** JavaScript
@@ -575,18 +582,45 @@ things.  There are even comics.
 
 ** Reading Mail
 
-Read mail from gmail.  In this configuration, I have a personal
-account and a work account.  If you have only one account, you should
-be able to pare this down.
+Read mail from gmail.  Rely on =~/.authinfo= for authentication (emacs
+will prompt for this info if it is empty).
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'gnus-secondary-select-methods
-	       '(nnimap "personal"
-			(nnimap-address "imap.gmail.com")
-			(nnimap-server-port "imaps")
-			(nnimap-stream ssl)
-			(nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
-			(nnmail-expiry-wait immediate)))
+               '(nnimap "personal"
+                        (nnimap-address "imap.gmail.com")
+                        (nnimap-server-port "imaps")
+                        (nnimap-stream ssl)
+                        (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
+                        (nnmail-expiry-wait immediate)))
+#+END_SRC
+
+** Sending Mail
+
+To facilitate multiple accounts, this config leverages =msmtp=, which
+will toggle smtp credentials based on the =FROM= header of the
+outgoing message.
+
+The emacs side will require you add [[https://www.gnu.org/software/emacs/manual/html_node/gnus/Posting-Styles.html][posting styles]] - namely the
+=address= property.  I do this interactively through the customize
+menu, since putting it here never seems to stick.
+
+Lastly, we just configure emacs to call =msmtp= with our config file.
+
+#+BEGIN_SRC emacs-lisp
+     (setq  message-send-mail-function 'message-send-mail-with-sendmail
+            sendmail-program "msmtp"
+            message-sendmail-f-is-evil 't
+            gnus-message-archive-group nil
+            message-sendmail-extra-arguments '("--read-envelope-from"))
+#+END_SRC
+
+These are here just to keep emacs from prompting us for server
+credentials it won't even use.
+
+#+BEGIN_SRC emacs-lisp
+  (setq smtpmail-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-service 587)
 #+END_SRC
 
 ** Composing Mail

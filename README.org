@@ -119,9 +119,9 @@ Make the default font something prettier, like [[http://levien.com/type/myfonts/
 Load a good theme.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package gruvbox-theme
+  (use-package darktooth-theme
     :ensure t
-    :init (load-theme 'gruvbox t))
+    :init (load-theme 'darktooth t))
 #+END_SRC
 
 ** Better Comments

@@ -254,6 +254,10 @@ This is the web-scale portion of my config.
 
 #+BEGIN_SRC emacs-lisp
   (setq js-indent-level 2)
+
+  (use-package flymake-json
+    :ensure t
+    :init (add-hook 'js-mode-hook 'flymake-json-maybe-load))
 #+END_SRC
 
 ** Ruby

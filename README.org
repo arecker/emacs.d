@@ -322,7 +322,7 @@ Org is love.  Org is life.
                (lisp . t)
                (ditaa . t)
                (ruby . t)
-               (sh . t)
+               (shell . t)
                (java . t)
                (js . t)
                (C . t)))

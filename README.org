@@ -260,6 +260,22 @@ This is the web-scale portion of my config.
     :init (add-hook 'js-mode-hook 'flymake-json-maybe-load))
 #+END_SRC
 
+** Python
+
+Install these pip dependencies.
+
+#+BEGIN_SRC sh
+  pip install jedi flake8 importmagic autopep9 yapf
+#+END_SRC
+
+Let Elpy do it's thing.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package elpy
+    :ensure t
+    :init (elpy-enable))
+#+END_SRC
+
 ** Ruby
    
 These are very much a work in progress.  I know about as much about

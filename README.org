@@ -644,6 +644,12 @@ credentials it won't even use.
 
 ** Composing Mail
 
+Automatically sign emails with my PGP key.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'gnus-message-setup-hook 'mml-secure-message-sign-pgpmime)
+#+END_SRC
+
 Turn on org mode, so I can make tables and lists like a fancy boy.
 
 #+BEGIN_SRC emacs-lisp

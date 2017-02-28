@@ -313,6 +313,12 @@ The terminal buffer should be killed on exit.
     (kill-buffer))
 #+END_SRC
 
+Aliases for eshell
+
+#+BEGIN_SRC emacs-lisp
+  (defalias 'ff #'find-file)
+#+END_SRC
+
 ** YAML
 
 YAML is so hip and cool.

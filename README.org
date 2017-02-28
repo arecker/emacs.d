@@ -240,6 +240,14 @@ Globally cleanup white space on save.
     :config (global-whitespace-cleanup-mode))
 #+END_SRC
 
+Yasnippet
+
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :init (yas-global-mode 1))
+#+END_SRC
+
 ** Dired
 
 This is the emacs file manager.

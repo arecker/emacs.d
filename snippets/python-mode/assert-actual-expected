@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: assert-actual-expected
+# key: aae
+# --
+self.assertEqual(actual, expected)

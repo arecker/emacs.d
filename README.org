@@ -362,6 +362,9 @@ Org is love.  Org is life.
                (C . t)))
     :bind (("C-c a" . org-agenda)
            ("C-c c" . org-capture)))
+
+  (use-package ox-jira
+    :ensure t)
 #+END_SRC
 
 ** Blog

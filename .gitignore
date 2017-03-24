@@ -1,4 +1,5 @@
 *.pyc
+.cask
 .DS_Store
 /emms
 /README.el

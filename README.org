@@ -248,14 +248,6 @@ Yasnippet
     :init (yas-global-mode 1))
 #+END_SRC
 
-** Cucumber
-
-#+BEGIN_SRC emacs-lisp
-  (use-package feature-mode
-    :ensure t
-    :mode ("\\.feature$\\'"))
-#+END_SRC
-
 ** Dired
 
 This is the emacs file manager.

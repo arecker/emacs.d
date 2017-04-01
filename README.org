@@ -113,7 +113,7 @@ Remove the scrollbar, tool bar, and menu bar.
 Make the default font something prettier, like [[http://levien.com/type/myfonts/inconsolata.html][inconsolata]].
 
 #+BEGIN_SRC emacs-lisp
-  (set-default-font "Inconsolata Medium 11")
+  ;; (set-default-font "Inconsolata Medium 11")
 #+END_SRC
 
 Load a good theme.
@@ -254,6 +254,19 @@ This is the emacs file manager.
 
 #+BEGIN_SRC emacs-lisp
   (require 'dired-x)
+#+END_SRC
+
+** HTML
+
+#+BEGIN_SRC emacs-lisp
+  (use-package web-mode
+    :ensure t
+    :mode ("\\.html\\'" "\\.jinja\\'")
+    :config (setq web-mode-markup-indent-offset 2))
+
+  (use-package emmet-mode
+    :ensure t
+    :config (add-hook 'web-mode-hook 'emmet-mode))
 #+END_SRC
 
 ** JavaScript

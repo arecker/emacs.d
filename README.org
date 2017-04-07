@@ -282,6 +282,21 @@ This is the web-scale portion of my config.
     :init (add-hook 'js-mode-hook 'flymake-json-maybe-load))
 #+END_SRC
 
+** Lisp
+
+For this to work, =sbcl= should be installed and in =PATH=.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package slime
+    :ensure t
+    :config (setq inferior-lisp-program (executable-find "sbcl")))
+
+
+  (use-package slime-company
+    :ensure t
+    :init (slime-setup '(slime-fancy slime-company)))
+#+END_SRC
+
 ** Python
 
 Install these pip dependencies.

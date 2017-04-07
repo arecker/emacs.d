@@ -262,7 +262,8 @@ This is the emacs file manager.
   (use-package web-mode
     :ensure t
     :mode ("\\.html\\'" "\\.jinja\\'")
-    :config (setq web-mode-markup-indent-offset 2))
+    :config (setq web-mode-markup-indent-offset 2
+		  web-mode-code-indent-offset 2))
 
   (use-package emmet-mode
     :ensure t

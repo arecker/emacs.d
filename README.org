@@ -113,7 +113,7 @@ Remove the scrollbar, tool bar, and menu bar.
 Make the default font something prettier, like [[http://levien.com/type/myfonts/inconsolata.html][inconsolata]].
 
 #+BEGIN_SRC emacs-lisp
-  ;; (set-default-font "Inconsolata Medium 11")
+  (set-default-font "Inconsolata 12")
 #+END_SRC
 
 Load a good theme.

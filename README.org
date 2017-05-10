@@ -302,7 +302,7 @@ For this to work, =sbcl= should be installed and in =PATH=.
 Install these pip dependencies.
 
 #+BEGIN_SRC sh
-  pip install jedi flake8 importmagic autopep9 yapf
+  pip install jedi flake8 importmagic autopep8 yapf
 #+END_SRC
 
 Let Elpy do it's thing.

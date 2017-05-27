@@ -119,8 +119,9 @@ Make the default font something prettier, like [[http://levien.com/type/myfonts/
 Load a good theme.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package tango
-    :init (load-theme 'tango t))
+  (use-package monokai-theme
+    :ensure t
+    :init (load-theme 'monokai 't))
 #+END_SRC
 
 ** Better Comments

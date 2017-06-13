@@ -249,6 +249,15 @@ Yasnippet
     :init (yas-global-mode 1))
 #+END_SRC
 
+Support for [[http://editorconfig.org/][editorconfig]].
+
+#+BEGIN_SRC emacs-lisp
+  (use-package editorconfig
+    :ensure t
+    :config
+    (editorconfig-mode 1))
+#+END_SRC
+
 ** Dired
 
 This is the emacs file manager.

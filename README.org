@@ -139,6 +139,14 @@ based on where the cursor is. It’s a brilliant tool.
 
 ** Better Completion
 
+Company mode.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :config (global-company-mode))
+#+END_SRC
+
 Yasnippet - I don't use this nearly as much as I should be.
 
 #+BEGIN_SRC emacs-lisp
@@ -193,6 +201,20 @@ Support for [[http://editorconfig.org/][editorconfig]].
   (use-package editorconfig
     :ensure t
     :config (editorconfig-mode 1))
+#+END_SRC
+
+** Commmon Lisp
+
+For this to work, sbcl should be installed and in =PATH=.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package slime
+    :ensure t
+    :config (setq inferior-lisp-program (executable-find "sbcl")))
+
+  (use-package slime-company
+    :ensure t
+    :init (slime-setup '(slime-fancy slime-company)))
 #+END_SRC
 
 ** Elisp

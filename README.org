@@ -226,6 +226,28 @@ Disable those silly docstring warnings when editing elisp.
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 #+END_SRC
 
+** HTML
+
+#+BEGIN_SRC emacs-lisp
+  (use-package web-mode
+    :ensure t
+    :mode ("\\.html\\'" "\\.jinja\\'")
+    :config (setq web-mode-markup-indent-offset 2
+                  web-mode-code-indent-offset 2))
+
+  (use-package emmet-mode
+    :ensure t
+    :config (add-hook 'web-mode-hook 'emmet-mode))
+#+END_SRC
+
+** JavaScript
+
+This is the web-scale portion of my config.
+
+#+BEGIN_SRC emacs-lisp
+  (setq js-indent-level 2)
+#+END_SRC
+
 ** Ruby
    
 These are very much a work in progress.  I know about as much about
@@ -259,6 +281,35 @@ Aliases for eshell
 
 #+BEGIN_SRC emacs-lisp
   (defalias 'ff #'find-file)
+#+END_SRC
+
+* YAML
+
+#+BEGIN_SRC emacs-lisp
+  (use-package indent-guide
+    :ensure t
+    :init (add-hook 'yaml-mode-hook 'indent-guide-mode))
+
+  (use-package yaml-mode
+    :ensure t
+    :mode ("\\.yml\\'" "\\.sls\\'")
+    :init
+    (add-hook 'yaml-mode-hook 'turn-off-auto-fill))
+#+END_SRC
+
+* Org
+
+Org is love. Org is life.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package "org")
+#+END_SRC
+
+This package gives the ability to export documents in that wonky fake
+markdown that Atlassian invented.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ox-jira :ensure t)
 #+END_SRC
 
 * Miscellaneous

@@ -478,6 +478,13 @@ Disable saving to a =newsrc= config file.
   (setq gnus-save-newsrc-file nil)
 #+END_SRC
 
+Read the auto save file on startup without asking.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-always-read-dribble-file t)
+#+END_SRC
+
+
 ** Better Folders
 
 Gnus creates a bunch of folders in your home directory that, as far as
@@ -533,6 +540,19 @@ Don't attempt to archive outbound emails to groups.
 #+BEGIN_SRC emacs-lisp
   (setq gnus-message-archive-group nil)
 #+END_SRC
+
+Keep addresses locally using =bbdb=.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package bbdb
+    :ensure t
+    :config (setq bbdb-file "~/.bbdb")
+    :init
+    (bbdb-mua-auto-update-init 'message)
+    (setq bbdb-mua-auto-update-p 'query)
+    (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
+#+END_SRC
+
 
 The rest of the configuration can be set up interactively.  Just open
 a message buffer and hit =C-c C-c=.  Emacs will allow you to choose a

@@ -309,7 +309,6 @@ Install these dependencies
 
 #+BEGIN_SRC sh
   pip install --user rope flake8 importmagic autopep8 yapf ipdb ipython virtualenv virtualenvwrapper
-  # rope pip install jedi
 #+END_SRC
 
 Install virtualenvwrapper support.

@@ -211,6 +211,12 @@ Globally cleanup white space on save.
     :config (global-whitespace-cleanup-mode))
 #+END_SRC
 
+Use pretty symbols where possible.
+
+#+BEGIN_SRC emacs-lisp
+  (global-prettify-symbols-mode t)
+#+END_SRC
+
 Support for [[http://editorconfig.org/][editorconfig]].
 
 #+BEGIN_SRC emacs-lisp
@@ -569,18 +575,12 @@ These are miscellaneous functions that I’ve written (or plagiarized).
 
 #+BEGIN_SRC emacs-lisp
   (defun recker/purge-buffers ()
-    "Deletes all buffers except for *scratch*"
+    "Delete all buffers, except for *scratch*."
     (interactive)
-    (let ((kill-if-not-scratch
-           (lambda (b)
-             (unless (string= (buffer-name b) "*scratch*")
-               (kill-buffer b)))))
-      (mapc kill-if-not-scratch (buffer-list))))
+    (mapc #'(lambda (b) (unless (string= (buffer-name b) "*scratch*") (kill-buffer b))) (buffer-list)))
 
   (defun recker/unfill-region (beg end)
-    "Unfill the region, joining text paragraphs into a single
-               logical line.  This is useful, e.g., for use with
-               `visual-line-mode'."
+    "Unfill the region, joining text paragraphs into a single logical line."
     (interactive "*r")
     (let ((fill-column (point-max)))
       (fill-region beg end)))
@@ -590,9 +590,7 @@ These are miscellaneous functions that I’ve written (or plagiarized).
     (interactive)
     (switch-to-buffer "*org scratch*")
     (org-mode)
-    (insert "#+TITLE: Org Scratch")
-    (newline)
-    (newline))
+    (insert "#+TITLE: Org Scratch\n\n"))
 #+END_SRC
 
 ** Keybindings

@@ -232,6 +232,23 @@ For this to work, sbcl should be installed and in =PATH=.
     :init (slime-setup '(slime-fancy slime-company)))
 #+END_SRC
 
+** Csv
+
+#+BEGIN_SRC emacs-lisp
+  (use-package csv-mode
+    :ensure t
+    :mode "\\.csv\\'")
+#+END_SRC
+
+** Dockerfile
+
+#+BEGIN_SRC emacs-lisp
+  (use-package dockerfile-mode
+    :ensure t
+    :mode "\\Dockerfile\\'")
+#+END_SRC
+
+
 ** Elisp
 
 Disable those silly docstring warnings when editing elisp.
@@ -240,6 +257,17 @@ Disable those silly docstring warnings when editing elisp.
   (with-eval-after-load 'flycheck
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 #+END_SRC
+
+** Groovy
+
+Pretty much just for Jenkins files.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package groovy-mode
+    :ensure t
+    :mode "\\Jenkinsfile\\'")
+#+END_SRC
+
 
 ** HTML
 
@@ -261,6 +289,18 @@ This is the web-scale portion of my config.
 
 #+BEGIN_SRC emacs-lisp
   (setq js-indent-level 2)
+#+END_SRC
+
+** Markdown
+
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :ensure t
+    :commands (markdown-mode gfm-mode)
+    :mode (("README\\.md\\'" . gfm-mode)
+           ("\\.md\\'" . markdown-mode)
+           ("\\.markdown\\'" . markdown-mode))
+    :init (setq markdown-command "pandoc"))
 #+END_SRC
 
 ** Python
@@ -304,6 +344,15 @@ ruby as I know about scented candles and professional football.
 #+BEGIN_SRC emacs-lisp
   (setq ruby-deep-indent-paren nil)
 #+END_SRC
+
+** Terraform
+
+#+BEGIN_SRC emacs-lisp
+  (use-package terraform-mode
+    :ensure t
+    :mode "\\.tf\\'")
+#+END_SRC
+
 
 ** Terminal
 

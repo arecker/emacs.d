@@ -167,7 +167,8 @@ Completion and filtering with ivy, supported by counsel.
     :ensure t
     :bind
     ("C-c i" . counsel-imenu)
-    ("C-c s" . swiper))
+    ("C-c s" . swiper)
+    ("C-x C-y" . counsel-yank-pop))
 #+END_SRC
 
 ** Better Git

@@ -1,5 +1,6 @@
 README.el
 auto-save-list
+custom.el
 elpa
 eshell
 local.el

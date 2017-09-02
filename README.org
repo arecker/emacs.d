@@ -155,6 +155,21 @@ Yasnippet - I don't use this nearly as much as I should be.
     :init (yas-global-mode 1))
 #+END_SRC
 
+Completion and filtering with ivy, supported by counsel.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy
+    :ensure t
+    :config (setq ivy-use-selectable-prompt t)
+    :init (ivy-mode 1))
+
+  (use-package counsel
+    :ensure t
+    :bind
+    ("C-c i" . counsel-imenu)
+    ("C-c s" . swiper))
+#+END_SRC
+
 ** Better Git
 
 Magit.  Seriously.  Just try it you heathen.
@@ -248,6 +263,39 @@ This is the web-scale portion of my config.
   (setq js-indent-level 2)
 #+END_SRC
 
+** Python
+
+Install these dependencies
+
+#+BEGIN_SRC sh
+  pip install --user rope flake8 importmagic autopep8 yapf ipdb ipython virtualenv virtualenvwrapper
+  # rope pip install jedi
+#+END_SRC
+
+Install virtualenvwrapper support.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package virtualenvwrapper
+    :ensure t)
+#+END_SRC
+
+Use ipython for running the code in a shell.  Evidently, it's still
+experimental.  I have issues with some of the tab completion, so I'll
+end up using =*ansi-term*= instead.
+
+#+BEGIN_SRC emacs-lisp
+  (setq python-shell-interpreter "ipython"
+	python-shell-interpreter-args "-i --simple-prompt")
+#+END_SRC
+
+Let elpy do its thing.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package elpy
+    :ensure t
+    :init (elpy-enable))
+#+END_SRC
+
 ** Ruby
    
 These are very much a work in progress.  I know about as much about
@@ -302,7 +350,36 @@ Aliases for eshell
 Org is love. Org is life.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package "org")
+  (use-package ob-http :ensure t)
+  (use-package ob-browser :ensure t)
+
+  (use-package org
+    :ensure t
+    :init (org-babel-do-load-languages
+           'org-babel-load-languages
+           '((awk . t)
+             (browser . t)
+             (C . t)
+             (calc . t)
+             (clojure . t)
+             (css . t)
+             (ditaa . t)
+             (ditaa . t)
+             (haskell . t)
+             (http . t)
+             (java . t)
+             (js . t)
+             (latex . t)
+             (lisp . t)
+             (makefile . t)
+             (perl . t)
+             (python . t)
+             (ruby . t)
+             (scala . t)
+             (screen . t)
+             (sh . t)
+             (sql . t)
+             (sqlite . t))))
 #+END_SRC
 
 This package gives the ability to export documents in that wonky fake
@@ -310,6 +387,51 @@ markdown that Atlassian invented.
 
 #+BEGIN_SRC emacs-lisp
   (use-package ox-jira :ensure t)
+#+END_SRC
+
+Use this package to make source pretty. Or just leave the CSS classes in case I want to add a theme some day.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package "htmlize"
+    :ensure t
+    :config (setq org-html-htmlize-output-type 'css))
+#+END_SRC
+
+* Gnus
+
+Gnus has a steep learning curve, and learning to incorporate this
+mysterious program has proven to be an emotional roller coaster. I’m
+not even sure I know enough about it to say “it’s worth it”, but
+hopefully this will help you with your own journey.
+
+** Better Startup
+
+Gnus requires a “primary method” from which you obtain
+news. Unfortunately, the program kind of explodes if this isn’t set,
+which proves to be kind of a pain when you want to poke around and set
+up things interactively.
+
+Here’s my workaround - set the primary method to a dummy protocol that
+will immediately come back. In our case, this is a blank nnml stream.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-select-method '(nnml ""))
+#+END_SRC
+
+Default on topic mode, since it’s more helpful.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+#+END_SRC
+
+** Reading News
+
+Use gmane and gwene to follow news, mailers, and tons of other
+syndicated things. There are even comics.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-secondary-select-methods '((nntp "news.gmane.org")
+                                        (nntp "news.gwene.org")))
 #+END_SRC
 
 * Miscellaneous
@@ -355,4 +477,30 @@ These are miscellaneous functions that I’ve written (or plagiarized).
   (global-set-key (kbd "C-c f") 'project-find-file)
   (global-set-key (kbd "C-c l") 'sort-lines)
   (global-set-key (kbd "C-c o") 'recker/org-scratch)
+#+END_SRC
+
+** Local
+
+Emacs sometimes dumps things in =init.el=.  It means well, but I would
+rather this be in a different file ignored by git.
+
+#+BEGIN_SRC emacs-lisp
+  (let ((custom (concat (file-name-as-directory user-emacs-directory) "custom.el")))
+    (unless (file-exists-p custom)
+      (with-temp-buffer
+        (write-file custom)))
+    (setq custom-file custom))
+#+END_SRC
+
+I also like to keep a file around for miscellaneous elisp that should
+run on startup.  This is for machine specific settings or things I am
+still tinkering with.
+
+#+BEGIN_SRC emacs-lisp
+  (let ((local (concat (file-name-as-directory user-emacs-directory) "custom.el")))
+    (unless (file-exists-p local)
+      (with-temp-buffer
+        (insert ";; This file is for local changes")
+        (write-file local)))
+    (load local))
 #+END_SRC

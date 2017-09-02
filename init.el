@@ -16,15 +16,5 @@
 	(org-babel-load-file config)
       (warn (concat config " not found - not loading")))))
 
-(defun recker/touch-local-file ()
-  "Ensure local.el is available" ()
-  (let ((local (concat (file-name-as-directory user-emacs-directory) "local.el")))
-    (unless (file-exists-p local)
-      (with-temp-buffer
-	(insert ";; Local Customizations\n")
-	(write-file local)))
-    (setq custom-file local)))
-
-(recker/touch-local-file)
 (recker/package-init)
 (recker/load-config)

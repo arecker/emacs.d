@@ -424,6 +424,30 @@ Default on topic mode, since it’s more helpful.
   (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 #+END_SRC
 
+Disable saving to a =newsrc= config file.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-save-newsrc-file nil)
+#+END_SRC
+
+** Better Folders
+
+Gnus creates a bunch of folders in your home directory that, as far as
+I can tell, are not needed outside of gnus. These settings will hide
+them all in =~/.gnus=, which will serve as our convenient nuke-point
+if things ever go south while playing around.
+
+Yes - nnfolder-directory is really needed. Whether this is a bug or
+not, the redundancy is intentional.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-home-directory "~/.gnus"
+        nnfolder-directory "~/.gnus/Mail/archive"
+        message-directory "~/.gnus/Mail"
+        nndraft-directory "~/.gnus/Drafts")
+#+END_SRC
+
+
 ** Reading News
 
 Use gmane and gwene to follow news, mailers, and tons of other
@@ -433,6 +457,40 @@ syndicated things. There are even comics.
   (setq gnus-secondary-select-methods '((nntp "news.gmane.org")
                                         (nntp "news.gwene.org")))
 #+END_SRC
+
+** Reading Mail
+
+Add a personal IMAP account.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'gnus-secondary-select-methods
+               '(nnimap "personal"
+                        (nnimap-address "imap.gmail.com")
+                        (nnimap-server-port "imaps")
+                        (nnimap-stream ssl)
+                        (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
+                        (nnmail-expiry-wait immediate)))
+#+END_SRC
+
+** Sending Mail
+
+Posting styles for a personal email.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-posting-styles '((".*" (signature (string-join '("Alex Recker" "alex@reckerfamily.com") "\n")))))
+#+END_SRC
+
+Don't attempt to archive outbound emails to groups.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-message-archive-group nil)
+#+END_SRC
+
+The rest of the configuration can be set up interactively.  Just open
+a message buffer and hit =C-c C-c=.  Emacs will allow you to choose a
+delivery method, enter your credentials, and even save everything.
+
+To encrypt your credentials, just save it within =~/.authinfo.gpg=.
 
 * Miscellaneous
 

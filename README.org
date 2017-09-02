@@ -623,7 +623,7 @@ run on startup.  This is for machine specific settings or things I am
 still tinkering with.
 
 #+BEGIN_SRC emacs-lisp
-  (let ((local (concat (file-name-as-directory user-emacs-directory) "custom.el")))
+  (let ((local (concat (file-name-as-directory user-emacs-directory) "local.el")))
     (unless (file-exists-p local)
       (with-temp-buffer
         (insert ";; This file is for local changes")

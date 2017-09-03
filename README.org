@@ -76,6 +76,7 @@ Make the =*scratch*= buffer unkillable.
 Start the emacs server if it is not running.
 
 #+BEGIN_SRC emacs-lisp
+  (require 'server)
   (unless (server-running-p)
     (server-start))
 #+END_SRC

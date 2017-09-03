@@ -177,7 +177,8 @@ parentheses and quotes.
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
     :ensure t
-    :init (smartparens-global-mode t))
+    :init (progn (smartparens-global-mode t)
+                 (sp-pair "'" nil :actions :rem)))
 #+END_SRC
 
 

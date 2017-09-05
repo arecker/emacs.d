@@ -2,6 +2,8 @@
 #+AUTHOR: Alex Recker
 #+STARTUP: showall
 
+[[file:screenshots/scratch.png]]
+
 It's been said "there are many ways to skin a cat".  The same can be
 said of Emacs.  Probably.
 

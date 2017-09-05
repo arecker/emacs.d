@@ -489,6 +489,8 @@ Use this package to make source pretty. Or just leave the CSS classes in case I 
 
 * Gnus
 
+[[file:screenshots/gnus.png]]
+
 Gnus has a steep learning curve, and learning to incorporate this
 mysterious program has proven to be an emotional roller coaster. I’m
 not even sure I know enough about it to say “it’s worth it”, but

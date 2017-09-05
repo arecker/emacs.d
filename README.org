@@ -181,6 +181,7 @@ Completion and filtering with ivy, supported by counsel.
     :bind
     ("C-c i" . counsel-imenu)
     ("C-c s" . swiper)
+    ("C-c g" . counsel-git-grep)
     ("C-x C-y" . counsel-yank-pop))
 #+END_SRC
 

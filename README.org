@@ -471,7 +471,9 @@ Org is love. Org is life.
              (sqlite . t))))
 #+END_SRC
 
-Fix this broken function.
+** Shims
+
+Fix this broken function.  Thanks, [[http://www.howardism.org/Technical/Emacs/literate-devops.html][Howard.]]
 
 #+BEGIN_SRC emacs-lisp
   (defun org-babel-temp-file (prefix &optional suffix)

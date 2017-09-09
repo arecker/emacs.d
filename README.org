@@ -187,17 +187,6 @@ Completion and filtering with ivy, supported by counsel.
     ("C-x C-y" . counsel-yank-pop))
 #+END_SRC
 
-Spartparens - because I can't even be bothered to close my own
-parentheses and quotes.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package smartparens
-    :ensure t
-    :init (progn (smartparens-global-mode t)
-                 (sp-pair "'" nil :actions :rem)))
-#+END_SRC
-
-
 ** Better Git
 
 Magit.  Seriously.  Just try it you heathen.

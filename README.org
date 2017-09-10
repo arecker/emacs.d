@@ -326,6 +326,13 @@ This is the web-scale portion of my config.
     :init (setq markdown-command "pandoc"))
 #+END_SRC
 
+** Nginx
+
+#+BEGIN_SRC emacs-lisp
+  (use-package nginx-mode
+    :ensure t)
+#+END_SRC
+
 ** Python
 
 Install these dependencies
@@ -459,6 +466,15 @@ Org is love. Org is life.
              (sql . t)
              (sqlite . t))))
 #+END_SRC
+
+Prettify code blocks when exporting.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package "htmlize"
+    :ensure t
+    :config (setq org-html-htmlize-output-type 'css))
+#+END_SRC
+
 
 ** Shims
 

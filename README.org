@@ -227,12 +227,6 @@ Globally cleanup white space on save.
     :config (global-whitespace-cleanup-mode))
 #+END_SRC
 
-Use pretty symbols where possible.
-
-#+BEGIN_SRC emacs-lisp
-  (global-prettify-symbols-mode t)
-#+END_SRC
-
 Support for [[http://editorconfig.org/][editorconfig]].
 
 #+BEGIN_SRC emacs-lisp

@@ -297,7 +297,6 @@ Pretty much just for Jenkins files.
     :mode "\\Jenkinsfile\\'")
 #+END_SRC
 
-
 ** HTML
 
 #+BEGIN_SRC emacs-lisp
@@ -318,6 +317,18 @@ This is the web-scale portion of my config.
 
 #+BEGIN_SRC emacs-lisp
   (setq js-indent-level 2)
+#+END_SRC
+
+** Log
+
+Taken from [[https://writequit.org/articles/working-with-logs-in-emacs.html][Working with Log Files in Emacs]].
+
+#+BEGIN_SRC emacs-lisp
+  (use-package vlf :ensure t)
+
+  (use-package log4j-mode
+    :ensure t
+    :mode "\\.log\\'")
 #+END_SRC
 
 ** Markdown

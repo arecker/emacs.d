@@ -426,6 +426,14 @@ Aliases for eshell
   (defalias 'ff #'find-file)
 #+END_SRC
 
+** Typescript
+
+#+BEGIN_SRC emacs-lisp
+  (use-package typescript-mode
+    :ensure t
+    :mode "\\.ts\\'")
+#+END_SRC
+
 * YAML
 
 #+BEGIN_SRC emacs-lisp

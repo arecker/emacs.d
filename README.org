@@ -331,6 +331,14 @@ Pretty much just for Jenkins files.
     :mode "\\Jenkinsfile\\'")
 #+END_SRC
 
+** Haskell
+
+#+BEGIN_SRC emacs-lisp
+  (use-package haskell-mode
+    :ensure t
+    :mode "\\.hs\\'")
+#+END_SRC
+
 ** HTML
 
 #+BEGIN_SRC emacs-lisp
@@ -367,15 +375,7 @@ Taken from [[https://writequit.org/articles/working-with-logs-in-emacs.html][Wor
 
 ** Markdown
 
-#+BEGIN_SRC emacs-lisp
-  (use-package markdown-mode
-    :ensure t
-    :commands (markdown-mode gfm-mode)
-    :mode (("README\\.md\\'" . gfm-mode)
-           ("\\.md\\'" . markdown-mode)
-           ("\\.markdown\\'" . markdown-mode))
-    :init (setq markdown-command "pandoc"))
-#+END_SRC
+Nothing!  Nothing for markdown!  Just treat it like stupid plain text!
 
 ** Nginx
 
@@ -425,6 +425,14 @@ ruby as I know about scented candles and professional football.
   (setq ruby-deep-indent-paren nil)
 #+END_SRC
 
+** Rust
+
+#+BEGIN_SRC emacs-lisp
+  (use-package rust-mode
+    :ensure t
+    :mode "\\.rs'")
+#+END_SRC
+
 ** Terraform
 
 #+BEGIN_SRC emacs-lisp
@@ -432,7 +440,6 @@ ruby as I know about scented candles and professional football.
     :ensure t
     :mode "\\.tf\\'")
 #+END_SRC
-
 
 ** Terminal
 

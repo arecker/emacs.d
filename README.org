@@ -390,7 +390,7 @@ Nothing!  Nothing for markdown!  Just treat it like stupid plain text!
 Install these dependencies
 
 #+BEGIN_SRC sh
-  pip install --user rope flake8 importmagic autopep8 yapf ipdb ipython virtualenv virtualenvwrapper
+  pip install rope flake8 importmagic autopep8 yapf ipdb ipython virtualenv virtualenvwrapper
 #+END_SRC
 
 Install virtualenvwrapper support.

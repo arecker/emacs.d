@@ -96,7 +96,8 @@ Alex as he disabled them.
 #+BEGIN_SRC emacs-lisp
   (setq make-backup-files nil
         auto-save-default nil
-        indent-tabs-mode nil)
+        indent-tabs-mode nil
+        ns-confirm-quit 1)
 
   (global-auto-revert-mode 1)
   (menu-bar-mode 0)

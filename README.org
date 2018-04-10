@@ -541,6 +541,7 @@ Add my blog as a publishing project.
 #+BEGIN_SRC emacs-lisp
   (require 'ox-html)
   (setq org-publish-project-alist '(("blog-html"
+                                     :html-link-home "/"
                                      :base-directory "~/git/blog/"
                                      :base-extension "org"
                                      :html-head-extra "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\" />"

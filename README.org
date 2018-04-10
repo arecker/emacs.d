@@ -534,14 +534,33 @@ Org is love. Org is life.
              (sqlite . t))))
 #+END_SRC
 
-Prettify code blocks when exporting.
+** Blog
+
+Add my blog as a publishing project.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package "htmlize"
-    :ensure t
-    :config (setq org-html-htmlize-output-type 'css))
-#+END_SRC
+  (require 'ox-html)
+  (setq org-publish-project-alist '(("blog-html"
+                                     :base-directory "~/git/blog/"
+                                     :base-extension "org"
+                                     :html-head-extra "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\" />"
+                                     :html-postamble "<script type=\"text/javascript\" src=\"script.js\"/>"
+                                     :publishing-directory "~/.site"
+                                     :publishing-function org-html-publish-to-html
+                                     :recursive t
+                                     :section-numbers nil
+                                     :with-toc nil
+                                     )
+                                    ("blog-static"
+                                     :base-directory "~/git/blog/"
+                                     :base-extension "css\\|jpg\\|jpeg\\|gif\\|png\\|txt\\|ogg\\|js"
+                                     :publishing-directory "~/.site"
+                                     :publishing-function org-publish-attachment
+                                     :recursive t
+                                     )
+                                    ("blog" :components ("blog-html" "blog-static"))))
 
+#+END_SRC
 
 ** Shims
 
@@ -583,7 +602,7 @@ Use this package to make source pretty. Or just leave the CSS classes in case I 
 #+BEGIN_SRC emacs-lisp
   (use-package "htmlize"
     :ensure t
-    :config (setq org-html-htmlize-output-type 'css))
+    :config (setq org-html-htmlize-output-type 'inline-css))
 #+END_SRC
 
 * Gnus

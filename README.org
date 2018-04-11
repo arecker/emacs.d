@@ -197,7 +197,11 @@ Magit.  Seriously.  Just try it you heathen.
     :ensure t
     :bind
     ("C-x g" . magit-status)
-    ("C-c m" . magit-blame))
+    ("C-c m" . magit-blame)
+    :config (magit-add-section-hook 'magit-status-sections-hook
+                                  'magit-insert-unpushed-to-upstream
+                                  'magit-insert-unpushed-to-upstream-or-recent
+                                  'replace))
 #+END_SRC
 
 * Modes
@@ -495,9 +499,6 @@ Aliases for eshell
 Org is love. Org is life.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package ob-http :ensure t)
-  (use-package ob-browser :ensure t)
-
   (use-package org
     :ensure t
     :config (progn (custom-set-faces      ;Get rid of the different font sizes on headers
@@ -510,7 +511,6 @@ Org is love. Org is life.
     :init (org-babel-do-load-languages
            'org-babel-load-languages
            '((awk . t)
-             (browser . t)
              (C . t)
              (calc . t)
              (clojure . t)
@@ -518,7 +518,6 @@ Org is love. Org is life.
              (ditaa . t)
              (ditaa . t)
              (haskell . t)
-             (http . t)
              (java . t)
              (js . t)
              (latex . t)
@@ -594,7 +593,7 @@ This package gives the ability to export documents in that wonky fake
 markdown that Atlassian invented.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package ox-jira :ensure t)
+  ;; (use-package ox-jira :ensure t)
 #+END_SRC
 
 Use this package to make source pretty. Or just leave the CSS classes in case I want to add a theme some day.

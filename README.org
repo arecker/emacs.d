@@ -545,7 +545,6 @@ Add my blog as a publishing project.
                                      :base-directory "~/git/blog/"
                                      :base-extension "org"
                                      :html-head-extra "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\" />"
-                                     :html-postamble "<script type=\"text/javascript\" src=\"script.js\"/>"
                                      :publishing-directory "~/.site"
                                      :publishing-function org-html-publish-to-html
                                      :recursive t

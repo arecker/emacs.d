@@ -4,6 +4,9 @@
       '(("gnu" . "https://elpa.gnu.org/packages/")
 	("melpa" . "https://melpa.org/packages/")))
 
+(setq debug-on-error 't
+      network-security-level 'low)
+
 (defun recker/package-init ()
   "Initialize the package manager and install use-package."
   (package-initialize)

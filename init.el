@@ -1,4 +1,4 @@
-(load-library "url-handlers")
+(require 'package)
 
 (setq package-archives
       '(("gnu" . "https://elpa.gnu.org/packages/")

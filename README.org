@@ -558,11 +558,6 @@ Add my blog as a publishing project.
                                      :recursive t
                                      )
                                     ("blog" :components ("blog-html" "blog-static"))))
-
-  (defun recker/blog-publish ()
-    (interactive)
-    (let ((package-check-signature nil))
-      (org-publish-all)))
 #+END_SRC
 
 ** Shims

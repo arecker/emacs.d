@@ -378,6 +378,14 @@ Taken from [[https://writequit.org/articles/working-with-logs-in-emacs.html][Wor
     :mode "\\.log\\'")
 #+END_SRC
 
+** Lua
+
+#+BEGIN_SRC emacs-lisp
+  (use-package lua-mode
+    :ensure t
+    :mode ("\\.lua\\'" "\\.p8\\'"))
+#+END_SRC
+
 ** Markdown
 
 Nothing!  Nothing for markdown!  Just treat it like stupid plain text!

@@ -541,33 +541,6 @@ Org is love. Org is life.
              (sqlite . t))))
 #+END_SRC
 
-** Blog
-
-Add my blog as a publishing project.
-
-#+BEGIN_SRC emacs-lisp
-  (require 'ox-html)
-  (setq org-publish-project-alist '(("blog-html"
-                                     :html-link-home "/"
-                                     :base-directory "~/git/blog/"
-                                     :base-extension "org"
-                                     :html-head-extra "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\" />"
-                                     :publishing-directory "~/.site"
-                                     :publishing-function org-html-publish-to-html
-                                     :recursive t
-                                     :section-numbers nil
-                                     :with-toc nil
-                                     )
-                                    ("blog-static"
-                                     :base-directory "~/git/blog/"
-                                     :base-extension "css\\|jpg\\|jpeg\\|gif\\|png\\|txt\\|ogg\\|js"
-                                     :publishing-directory "~/.site"
-                                     :publishing-function org-publish-attachment
-                                     :recursive t
-                                     )
-                                    ("blog" :components ("blog-html" "blog-static"))))
-#+END_SRC
-
 ** Shims
 
 Fix this broken function.  Thanks, [[http://www.howardism.org/Technical/Emacs/literate-devops.html][Howard.]]

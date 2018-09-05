@@ -738,6 +738,12 @@ These are miscellaneous functions that I’ve written (or plagiarized).
     (switch-to-buffer "*org scratch*")
     (org-mode)
     (insert "#+TITLE: Org Scratch\n\n"))
+
+  (defun recker/sudo (file-name)
+    "find-file, as sudo."
+    (interactive "Fsudo Find file:")
+    (let ((tramp-file-name (concat "/sudo::" (expand-file-name file-name))))
+      (find-file tramp-file-name)))
 #+END_SRC
 
 ** Keybindings

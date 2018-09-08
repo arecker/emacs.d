@@ -501,7 +501,7 @@ Aliases for eshell
     :mode "\\.ts\\'")
 #+END_SRC
 
-* YAML
+** YAML
 
 #+BEGIN_SRC emacs-lisp
   (use-package indent-guide

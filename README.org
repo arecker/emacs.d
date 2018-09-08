@@ -700,12 +700,23 @@ Keep addresses locally using =bbdb=.
     (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
 #+END_SRC
 
+SMTP settings.
 
-The rest of the configuration can be set up interactively.  Just open
-a message buffer and hit =C-c C-c=.  Emacs will allow you to choose a
-delivery method, enter your credentials, and even save everything.
+#+BEGIN_SRC emacs-lisp
+  (setq smtpmail-smtp-service 587
+        smtpmail-smtp-user "alex@reckerfamily.com"
+        smtpmail-smtp-server "smtp.gmail.com"
+        send-mail-function 'smtpmail-send-it)
+#+END_SRC
 
-To encrypt your credentials, just save it within =~/.authinfo.gpg=.
+For this to work out of the box, be sure to fill out your
+=~/.authinfo= like so (or name the file =~/.authinfo.gpg= if you want
+to encrypt it).
+
+#+BEGIN_EXAMPLE
+  machine imap.gmail.com login alex@reckerfamily.com password <password> port imaps
+  machine smtp.gmail.com login alex@reckerfamily.com password <password> port 587
+#+END_EXAMPLE
 
 * Miscellaneous
 

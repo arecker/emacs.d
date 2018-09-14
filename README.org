@@ -142,6 +142,12 @@ of jumping to the current file in dired with =C-x C-j=.
   (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
 #+END_SRC
 
+Add the =-h= switch to the dired output to show prettier filenames.
+
+#+BEGIN_SRC emacs-lisp
+  (setq dired-listing-switches "-alh")
+#+END_SRC
+
 ** Better Text Selection
 
 I use =expand-region= to incrementally grab larger portions of text

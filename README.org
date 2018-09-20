@@ -726,6 +726,14 @@ to encrypt it).
 
 * Miscellaneous
 
+** Tools
+
+#+BEGIN_SRC emacs-lisp
+  (use-package pass
+    :ensure t
+    :bind (("C-x p" . pass)))
+#+END_SRC
+
 ** Functions
 
 These are miscellaneous functions that I’ve written (or plagiarized).

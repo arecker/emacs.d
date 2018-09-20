@@ -485,6 +485,13 @@ I'm a simple man, and I use a simple shell.
   (global-set-key (kbd "C-x t") 'recker/ansi-term)
 #+END_SRC
 
+When executing shell commands with =M-!=, use an interactive shell
+so I can run my aliases.
+
+#+BEGIN_SRC emacs-lisp
+  (setq shell-command-switch "-ic")
+#+END_SRC
+
 The terminal buffer should be killed on exit.
    
 #+BEGIN_SRC emacs-lisp

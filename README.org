@@ -739,6 +739,9 @@ to encrypt it).
   (use-package pass
     :ensure t
     :bind (("C-x p" . pass)))
+
+  (use-package request
+    :ensure t)
 #+END_SRC
 
 ** Functions
@@ -773,6 +776,12 @@ These are miscellaneous functions that I’ve written (or plagiarized).
   (defun recker/do-fancy-equal-thingy (beg end)
     (interactive "r")
     (align-regexp beg end "\\(\\s-*\\)\\ =" 1 0 t))
+
+  (defun recker/pass-to-string (entry)
+    "Read an entry from `pass` as a string."
+    (with-temp-buffer
+      (password-store-copy entry)
+      (progn (yank) (buffer-string))))
 #+END_SRC
 
 ** Keybindings

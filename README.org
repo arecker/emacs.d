@@ -128,6 +128,15 @@ hundred).
     :config (setq rm-blacklist ""))
 #+END_SRC
 
+** Better Bookmarks
+
+Automatically save the bookmark file each time it is modified.  This
+prevents losing bookmarks created in separate emacs clients.
+
+#+BEGIN_SRC emacs-lisp
+  (setq bookmark-save-flag 1)
+#+END_SRC
+
 ** Better File Manager
 
 By default, hide dot files.  They can be shown by disabling
@@ -485,13 +494,6 @@ I'm a simple man, and I use a simple shell.
   (global-set-key (kbd "C-x t") 'recker/ansi-term)
 #+END_SRC
 
-When executing shell commands with =M-!=, use an interactive shell
-so I can run my aliases.
-
-#+BEGIN_SRC emacs-lisp
-  (setq shell-command-switch "-ic")
-#+END_SRC
-
 The terminal buffer should be killed on exit.
    
 #+BEGIN_SRC emacs-lisp
@@ -542,6 +544,7 @@ Org is love. Org is life.
 		    '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
 		    '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
 		    '(org-level-5 ((t (:inherit outline-5 :height 1.0))))))
+    :bind (("C-c a" . org-agenda))
     :init (org-babel-do-load-languages
 	   'org-babel-load-languages
 	   '((awk . t)

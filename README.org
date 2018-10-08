@@ -647,6 +647,11 @@ Read the auto save file on startup without asking.
   (setq gnus-always-read-dribble-file t)
 #+END_SRC
 
+Enable the asynchronous flag.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-asynchronous t)
+#+END_SRC
 
 ** Better Folders
 

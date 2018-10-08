@@ -326,6 +326,14 @@ For this to work, sbcl should be installed and in =PATH=.
     :mode "\\.csv\\'")
 #+END_SRC
 
+** D
+
+#+BEGIN_SRC emacs-lisp
+  (use-package d-mode
+    :ensure t
+    :mode "\\.d\\'")
+#+END_SRC
+
 ** Dockerfile
 
 #+BEGIN_SRC emacs-lisp

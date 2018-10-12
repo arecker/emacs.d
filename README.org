@@ -157,6 +157,18 @@ Add the =-h= switch to the dired output to show prettier filenames.
   (setq dired-listing-switches "-alh")
 #+END_SRC
 
+** Better Music
+
+OK, so there's no music in Emacs to begin with.  But check out mingus,
+it's pretty awesome.  This works, assuming you have an local mpd
+server running on the default port.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package mingus
+    :ensure t
+    :bind (("C-x m" . mingus)))
+#+END_SRC
+
 ** Better Text Selection
 
 I use =expand-region= to incrementally grab larger portions of text

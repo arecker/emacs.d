@@ -765,8 +765,7 @@ to encrypt it).
 
 #+BEGIN_SRC emacs-lisp
   (use-package pass
-    :ensure t
-    :bind (("C-x p" . pass)))
+    :ensure t)
 
   (use-package request
     :ensure t)
@@ -822,6 +821,7 @@ These are miscellaneous functions that I’ve written (or plagiarized).
   (global-set-key (kbd "C-c r") 'replace-string)
   (global-set-key (kbd "C-x C-k k") 'kill-buffer)
   (global-set-key (kbd "C-x k") 'kill-this-buffer)
+  (global-set-key (kbd "C-x p") 'password-store-copy)
   (global-set-key (kbd "C-x |") 'recker/do-fancy-equal-thingy)
 #+END_SRC
 

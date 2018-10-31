@@ -734,7 +734,7 @@ Keep addresses locally using =bbdb=.
 #+BEGIN_SRC emacs-lisp
   (use-package bbdb
     :ensure t
-    :config (setq bbdb-file "~/.bbdb")
+    :config (setq bbdb-file "~/src/notes/bbdb")
     :init
     (bbdb-mua-auto-update-init 'message)
     (setq bbdb-mua-auto-update-p 'query)

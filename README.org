@@ -134,7 +134,8 @@ Automatically save the bookmark file each time it is modified.  This
 prevents losing bookmarks created in separate emacs clients.
 
 #+BEGIN_SRC emacs-lisp
-  (setq bookmark-save-flag 1)
+  (setq bookmark-save-flag 1
+	bookmark-default-file (expand-file-name "~/src/notes/bookmarks"))
 #+END_SRC
 
 ** Better File Manager

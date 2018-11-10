@@ -135,7 +135,7 @@ prevents losing bookmarks created in separate emacs clients.
 
 #+BEGIN_SRC emacs-lisp
   (setq bookmark-save-flag 1
-	bookmark-default-file (expand-file-name "~/src/notes/bookmarks"))
+	bookmark-default-file (expand-file-name "~/docs/bookmarks.el"))
 #+END_SRC
 
 ** Better File Manager
@@ -735,7 +735,7 @@ Keep addresses locally using =bbdb=.
 #+BEGIN_SRC emacs-lisp
   (use-package bbdb
     :ensure t
-    :config (setq bbdb-file "~/src/notes/bbdb")
+    :config (setq bbdb-file "~/docs/bbdb.el")
     :init
     (bbdb-mua-auto-update-init 'message)
     (setq bbdb-mua-auto-update-p 'query)

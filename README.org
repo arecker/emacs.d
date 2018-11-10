@@ -656,10 +656,10 @@ Default on topic mode, since it’s more helpful.
   (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 #+END_SRC
 
-Disable saving to a =newsrc= config file.
+Change path to =newsrc= config file.
 
 #+BEGIN_SRC emacs-lisp
-  (setq gnus-save-newsrc-file nil)
+  (setq gnus-startup-file "~/docs/newsrc")
 #+END_SRC
 
 Read the auto save file on startup without asking.
@@ -685,12 +685,11 @@ Yes - nnfolder-directory is really needed. Whether this is a bug or
 not, the redundancy is intentional.
 
 #+BEGIN_SRC emacs-lisp
-  (setq gnus-home-directory "~/.gnus"
-        nnfolder-directory "~/.gnus/Mail/archive"
-        message-directory "~/.gnus/Mail"
-        nndraft-directory "~/.gnus/Drafts")
+  (setq gnus-home-directory "~/docs/gnus"
+        nnfolder-directory "~/docs/gnus/Mail/archive"
+        message-directory "~/docs/gnus/Mail"
+        nndraft-directory "~/docs/gnus/Drafts")
 #+END_SRC
-
 
 ** Reading News
 
@@ -751,9 +750,13 @@ SMTP settings.
         send-mail-function 'smtpmail-send-it)
 #+END_SRC
 
-For this to work out of the box, be sure to fill out your
-=~/.authinfo= like so (or name the file =~/.authinfo.gpg= if you want
-to encrypt it).
+I keep an encrypted authinfo in my docs under version control.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auth-sources "~/docs/authinfo.gpg")
+#+END_SRC
+
+Here's what it looks like.
 
 #+BEGIN_EXAMPLE
   machine imap.gmail.com login alex@reckerfamily.com password <password> port imaps

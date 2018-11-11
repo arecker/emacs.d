@@ -627,6 +627,31 @@ Use this package to make source pretty. Or just leave the CSS classes in case I 
     :config (setq org-html-htmlize-output-type 'inline-css))
 #+END_SRC
 
+** Blog
+
+My blog.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-publish-project-alist '(("blog-html"
+				     :html-link-home "/"
+				     :base-directory "~/src/blog"
+				     :base-extension "org"
+				     :publishing-directory "~/public/www.alexrecker.com"
+				     :publishing-function org-html-publish-to-html
+				     :recursive t
+				     :section-numbers nil
+				     :with-toc nil)
+				    ("blog-static"
+				     :base-directory "~/src/blog"
+				     :base-extension "css\\|jpg\\|jpeg\\|gif\\|png\\|txt\\|ogg\\|js\\|webm"
+				     :publishing-directory "~/public/www.alexrecker.com"
+				     :publishing-function org-publish-attachment
+				     :recursive t)
+				    ("blog" :components ("blog-html" "blog-static"))))
+
+#+END_SRC
+
+
 * Gnus
 
 [[file:screenshots/gnus.png]]

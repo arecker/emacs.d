@@ -149,7 +149,7 @@ file paths instead of just the "name".
 		   (read (with-temp-buffer
 			   (insert-file-contents-literally bookmark-default-file)
 			   (buffer-string))))))
-      (find-file (completing-read "Jump to Bookmark: " bookmark-list))))
+      (find-file (completing-read "Jump to Bookmark: " bookmark-list nil t))))
 
   (global-set-key (kbd "C-x r b") 'recker/bookmark-jump)
 #+END_SRC

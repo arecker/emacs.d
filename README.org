@@ -138,6 +138,23 @@ prevents losing bookmarks created in separate emacs clients.
 	bookmark-default-file (expand-file-name "~/docs/bookmarks.el"))
 #+END_SRC
 
+This is just a custom implementation of =bookmark-jump= that displays
+file paths instead of just the "name".
+
+#+BEGIN_SRC emacs-lisp
+  (defun recker/bookmark-jump ()
+    (interactive)
+    (let ((bookmark-list
+	   (mapcar (lambda (b) (cdr (assoc 'filename b)))
+		   (read (with-temp-buffer
+			   (insert-file-contents-literally bookmark-default-file)
+			   (buffer-string))))))
+      (find-file (completing-read "Jump to Bookmark: " bookmark-list))))
+
+  (global-set-key (kbd "C-x r b") 'recker/bookmark-jump)
+#+END_SRC
+
+
 ** Better File Manager
 
 By default, hide dot files.  They can be shown by disabling

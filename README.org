@@ -644,7 +644,7 @@ My blog.
 				     :with-toc nil)
 				    ("blog-static"
 				     :base-directory "~/src/blog"
-				     :base-extension "css\\|jpg\\|jpeg\\|gif\\|png\\|txt\\|ogg\\|js\\|webm"
+				     :base-extension "css\\|pdf\\|jpg\\|jpeg\\|gif\\|png\\|txt\\|ogg\\|js\\|webm"
 				     :publishing-directory "~/public/www.alexrecker.com"
 				     :publishing-function org-publish-attachment
 				     :recursive t)

@@ -716,15 +716,19 @@ Enable the asynchronous flag.
   (setq gnus-asynchronous t)
 #+END_SRC
 
+More possible placebo code to make gnus feel faster - use the cache.
+
+#+BEGIN_SRC emacs-lisp
+  (setq gnus-use-cache t)
+#+END_SRC
+
+
 ** Better Folders
 
 Gnus creates a bunch of folders in your home directory that, as far as
-I can tell, are not needed outside of gnus. These settings will hide
-them all in =~/.gnus=, which will serve as our convenient nuke-point
-if things ever go south while playing around.
-
-Yes - nnfolder-directory is really needed. Whether this is a bug or
-not, the redundancy is intentional.
+I can tell, are not needed outside of gnus. I've finally managed to
+wrangle enough variables to tell gnus to save everything in the gnus
+folder.  I save mine off in a version controlled "docs" directory.
 
 #+BEGIN_SRC emacs-lisp
   (setq gnus-home-directory "~/docs/gnus"

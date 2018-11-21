@@ -669,6 +669,23 @@ My blog.
 
 #+END_SRC
 
+** Tables
+
+Integrate gnuplot with org mode tables.  Example:
+
+#+BEGIN_EXAMPLE
+  ,#+PLOT: title:"Trial 2" ind:1 deps:(2 3) type:2d
+#+END_EXAMPLE
+
+#+BEGIN_SRC emacs-lisp
+  (use-package gnuplot
+    :ensure t)
+
+  (use-package gnuplot-mode
+    :ensure t
+    :bind ("M-C-g" . org-plot/gnuplot))
+#+END_SRC
+
 * Gnus
 
 [[file:screenshots/gnus.png]]

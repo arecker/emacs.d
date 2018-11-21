@@ -591,6 +591,7 @@ Org is love. Org is life.
 	     (calc . t)
 	     (clojure . t)
 	     (css . t)
+	     (plantuml . t)
 	     (ditaa . t)
 	     (ditaa . t)
 	     (haskell . t)

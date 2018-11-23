@@ -73,19 +73,6 @@ Make the =*scratch*= buffer unkillable.
     :init (unkillable-scratch))
 #+END_SRC
 
-** Server
-
-Start the emacs server if it is not running.
-
-#+BEGIN_SRC emacs-lisp
-  (require 'server)
-  (unless (server-running-p)
-    (server-start))
-#+END_SRC
-
-This allows you to connect to the emacs process from somewhere else -
-like a terminal session.
-
 * Interface
 
 ** Better Defaults

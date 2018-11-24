@@ -586,6 +586,7 @@ Org is love. Org is life.
 	     (js . t)
 	     (latex . t)
 	     (lisp . t)
+	     (gnuplot . t)
 	     (makefile . t)
 	     (perl . t)
 	     (python . t)

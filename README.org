@@ -875,6 +875,7 @@ These are miscellaneous functions that I’ve written (or plagiarized).
   (global-set-key (kbd "C-c l") 'sort-lines)
   (global-set-key (kbd "C-c o") 'recker/org-scratch)
   (global-set-key (kbd "C-c r") 'replace-string)
+  (global-set-key (kbd "C-c w") 'browse-web)
   (global-set-key (kbd "C-x C-k k") 'kill-buffer)
   (global-set-key (kbd "C-x k") 'kill-this-buffer)
   (global-set-key (kbd "C-x p") 'password-store-copy)

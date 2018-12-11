@@ -865,6 +865,16 @@ These are miscellaneous functions that I’ve written (or plagiarized).
     (with-temp-buffer
       (password-store-copy entry)
       (progn (yank) (buffer-string))))
+
+  (defun recker/password-store-copy-work ()
+    (interactive)
+    (setenv "PASSWORD_STORE_DIR" (expand-file-name "~/.password-store-work"))
+    (funcall-interactively #'password-store-copy (password-store--completing-read)))
+
+  (defun recker/password-store-copy ()
+    (interactive)
+    (setenv "PASSWORD_STORE_DIR" (expand-file-name "~/.password-store"))
+    (funcall-interactively #'password-store-copy (password-store--completing-read)))
 #+END_SRC
 
 ** Keybindings
@@ -879,6 +889,8 @@ These are miscellaneous functions that I’ve written (or plagiarized).
   (global-set-key (kbd "C-x C-k k") 'kill-buffer)
   (global-set-key (kbd "C-x k") 'kill-this-buffer)
   (global-set-key (kbd "C-x p") 'password-store-copy)
+  (global-set-key (kbd "C-x p") 'recker/password-store-copy)
+  (global-set-key (kbd "C-x w") 'recker/password-store-copy-work)
   (global-set-key (kbd "C-x |") 'recker/do-fancy-equal-thingy)
 #+END_SRC
 

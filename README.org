@@ -875,6 +875,18 @@ These are miscellaneous functions that I’ve written (or plagiarized).
     (interactive)
     (setenv "PASSWORD_STORE_DIR" (expand-file-name "~/.password-store"))
     (funcall-interactively #'password-store-copy (password-store--completing-read)))
+
+  (defun recker/encrypt-with-ssh (public-key-path)
+    (interactive "fPublic Key Path: ")
+    (let* ((pem (shell-command-to-string (format "ssh-keygen -f %s -e -m PKCS8" public-key-path)))
+	   (secret (read-passwd "Secret String: "))
+	   (encrypt-command
+	    (format "openssl rsautl -ssl -encrypt -pubin -inkey <(echo \"%s\") -ssl -in <(echo \"%s\") | base64" pem secret))
+	   (hash (shell-command-to-string encrypt-command))
+	   (decrypt-command
+	    (format "echo \"%s\" | base64 -D | openssl rsautl -decrypt -inkey ~/.ssh/id_rsa" hash)))
+      (kill-new decrypt-command nil)
+      (message "Decrypt command added to kill ring.")))
 #+END_SRC
 
 ** Keybindings

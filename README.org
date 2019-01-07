@@ -827,6 +827,12 @@ Here's what it looks like.
     :ensure t)
 #+END_SRC
 
+** Games
+
+#+BEGIN_SRC emacs-lisp
+  (setq tetris-score-file "~/docs/games/tetris-scores")
+#+END_SRC
+
 ** Functions
 
 These are miscellaneous functions that I’ve written (or plagiarized).

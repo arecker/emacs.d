@@ -88,9 +88,14 @@ Alex as he disabled them.
 
   (global-auto-revert-mode 1)
   (menu-bar-mode 0)
-  (scroll-bar-mode 0)
-  (tool-bar-mode 0)
   (delete-selection-mode t)
+#+END_SRC
+
+I don't use the toolbar.  I just enjoy the silly icons.
+
+#+BEGIN_SRC emacs-lisp
+  (scroll-bar-mode t)
+  (tool-bar-mode t)
 #+END_SRC
 
 ** Better Comments

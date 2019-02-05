@@ -593,7 +593,7 @@ Org is love. Org is life.
 	     (ruby . t)
 	     ;; (scala . t)
 	     (screen . t)
-	     ;; (sh . t)
+	     (shell . t)
 	     (sql . t)
 	     (sqlite . t))))
 #+END_SRC

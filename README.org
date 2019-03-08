@@ -743,9 +743,10 @@ folder.  I save mine off in a version controlled "docs" directory.
 
 #+BEGIN_SRC emacs-lisp
   (setq gnus-home-directory "~/docs/gnus"
-        nnfolder-directory "~/docs/gnus/Mail/archive"
-        message-directory "~/docs/gnus/Mail"
-        nndraft-directory "~/docs/gnus/Drafts")
+	nnfolder-directory "~/docs/gnus/Mail/archive"
+	message-directory "~/docs/gnus/Mail"
+	nndraft-directory "~/docs/gnus/Drafts"
+	gnus-cache-directory "~/docs/gnus/cache")
 #+END_SRC
 
 ** Reading News

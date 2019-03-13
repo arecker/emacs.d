@@ -82,20 +82,15 @@ Alex as he disabled them.
 
 #+BEGIN_SRC emacs-lisp
   (setq make-backup-files nil
-        auto-save-default nil
-        indent-tabs-mode nil
-        ns-confirm-quit 1)
+	auto-save-default nil
+	indent-tabs-mode nil
+	ns-confirm-quit 1)
 
   (global-auto-revert-mode 1)
   (menu-bar-mode 0)
   (delete-selection-mode t)
-#+END_SRC
-
-I don't use the toolbar.  I just enjoy the silly icons.
-
-#+BEGIN_SRC emacs-lisp
-  (scroll-bar-mode t)
-  (tool-bar-mode t)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
 #+END_SRC
 
 ** Better Comments

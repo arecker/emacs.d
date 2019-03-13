@@ -950,5 +950,3 @@ still tinkering with.
         (write-file local)))
     (load local))
 #+END_SRC
-
-Just a test.

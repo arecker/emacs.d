@@ -610,6 +610,14 @@ Org is love. Org is life.
 	     (sqlite . t))))
 #+END_SRC
 
+** Agenda
+
+Set files read in as part of agenda.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-files '("~/docs/opsat.org"))
+#+END_SRC
+
 ** Shims
 
 Fix this broken function.  Thanks, [[http://www.howardism.org/Technical/Emacs/literate-devops.html][Howard.]]

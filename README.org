@@ -254,6 +254,18 @@ These are the settings for various editing modes - the top level being
   (add-hook 'text-mode-hook 'recker/text-mode-hook)
 #+END_SRC
 
+Use personal dictionary from docs for ispell.
+
+#+BEGIN_SRC emacs-lisp
+  (setq ispell-personal-dictionary "~/docs/ispell.dict")
+#+END_SRC
+
+Disable goal column warning.
+
+#+BEGIN_SRC emacs-lisp
+  (put 'set-goal-column 'disabled nil)
+#+END_SRC
+
 Flycheck mode.
 
 #+BEGIN_SRC emacs-lisp

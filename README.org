@@ -581,7 +581,8 @@ Org is love. Org is life.
 		    '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
 		    '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
 		    '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))
-		   (setq org-confirm-babel-evaluate nil))
+		   (setq org-confirm-babel-evaluate nil
+			 org-log-into-drawer t))
     :bind (("C-c a" . org-agenda))
     :init (org-babel-do-load-languages
 	   'org-babel-load-languages
@@ -603,7 +604,6 @@ Org is love. Org is life.
 	     (perl . t)
 	     (python . t)
 	     (ruby . t)
-	     ;; (scala . t)
 	     (screen . t)
 	     (shell . t)
 	     (sql . t)
@@ -615,43 +615,7 @@ Org is love. Org is life.
 Set files read in as part of agenda.
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files '("~/docs/opsat.org"))
-#+END_SRC
-
-** Shims
-
-Fix this broken function.  Thanks, [[http://www.howardism.org/Technical/Emacs/literate-devops.html][Howard.]]
-
-#+BEGIN_SRC emacs-lisp
-  (defun org-babel-temp-file (prefix &optional suffix)
-    "Create a temporary file in the `org-babel-temporary-directory'.
-  Passes PREFIX and SUFFIX directly to `make-temp-file' with the
-  value of `temporary-file-directory' temporarily set to the value
-  of `org-babel-temporary-directory'."
-    (if (file-remote-p default-directory)
-        (let ((prefix
-               ;; We cannot use `temporary-file-directory' as local part
-               ;; on the remote host, because it might be another OS
-               ;; there.  So we assume "/tmp", which ought to exist on
-               ;; relevant architectures.
-               (concat (file-remote-p default-directory)
-                       ;; REPLACE temporary-file-directory with /tmp:
-                       (expand-file-name prefix "/tmp/"))))
-          (make-temp-file prefix nil suffix))
-      (let ((temporary-file-directory
-             (or (and (boundp 'org-babel-temporary-directory)
-                      (file-exists-p org-babel-temporary-directory)
-                      org-babel-temporary-directory)
-                 temporary-file-directory)))
-        (make-temp-file prefix nil suffix))))
-#+END_SRC
-
-Use this package to make source pretty. Or just leave the CSS classes in case I want to add a theme some day.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package "htmlize"
-    :ensure t
-    :config (setq org-html-htmlize-output-type 'inline-css))
+  (setq org-agenda-files '("~/docs/"))
 #+END_SRC
 
 ** Blog

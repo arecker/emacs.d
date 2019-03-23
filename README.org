@@ -582,33 +582,39 @@ Org is love. Org is life.
 		    '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
 		    '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))
 		   (setq org-confirm-babel-evaluate nil
-			 org-log-into-drawer t))
+			 org-log-into-drawer t
+			 org-agenda-start-with-follow-mode t))
     :bind (("C-c a" . org-agenda))
-    :init (org-babel-do-load-languages
-	   'org-babel-load-languages
-	   '((awk . t)
-	     (C . t)
-	     (calc . t)
-	     (clojure . t)
-	     (css . t)
-	     (plantuml . t)
-	     (ditaa . t)
-	     (ditaa . t)
-	     (haskell . t)
-	     (java . t)
-	     (js . t)
-	     (latex . t)
-	     (lisp . t)
-	     (gnuplot . t)
-	     (makefile . t)
-	     (perl . t)
-	     (python . t)
-	     (ruby . t)
-	     (screen . t)
-	     (shell . t)
-	     (sql . t)
-	     (sqlite . t))))
+    :init (progn (org-babel-do-load-languages
+		  'org-babel-load-languages
+		  '((awk . t)
+		    (C . t)
+		    (calc . t)
+		    (clojure . t)
+		    (css . t)
+		    (plantuml . t)
+		    (ditaa . t)
+		    (ditaa . t)
+		    (haskell . t)
+		    (java . t)
+		    (js . t)
+		    (latex . t)
+		    (lisp . t)
+		    (gnuplot . t)
+		    (makefile . t)
+		    (perl . t)
+		    (python . t)
+		    (ruby . t)
+		    (screen . t)
+		    (shell . t)
+		    (sql . t)
+		    (sqlite . t)))
+		 (require 'org-habit)))
+
 #+END_SRC
+
+#+RESULTS:
+: org-agenda
 
 ** Agenda
 

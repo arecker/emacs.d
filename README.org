@@ -36,6 +36,25 @@ Ensure that the system =PATH= is the one used by emacs.
     :config (exec-path-from-shell-initialize))
 #+END_SRC
 
+Personal directories.
+
+#+BEGIN_SRC emacs-lisp
+  (setq *recker/docs-dir* (expand-file-name (if (string-equal system-type "darwin")
+  "~/Documents" "~/docs")))
+
+
+  (setq *recker/pics-dir* (expand-file-name (if (string-equal system-type "darwin")
+						  "~/Pictures" "~/pics")))
+
+  (defun recker/path (dir &optional subpath)
+    (let ((dir (pcase dir
+		 ('docs *recker/docs-dir*)
+		 ('pics *recker/pics-dir*)
+		 (_ (error (format "no %s directory!" dir)))))
+	  (subdir (or subpath "")))
+    (concat (file-name-as-directory dir) subpath)))
+#+END_SRC
+
 ** Scratch
 
 The slash screen displayed on startup is a little too noisy for
@@ -122,7 +141,7 @@ prevents losing bookmarks created in separate emacs clients.
 
 #+BEGIN_SRC emacs-lisp
   (setq bookmark-save-flag 1
-	bookmark-default-file (expand-file-name "~/docs/bookmarks.el"))
+	bookmark-default-file (recker/path 'docs "emacs/bookmarks.el"))
 #+END_SRC
 
 This is just a custom implementation of =bookmark-jump= that displays
@@ -252,7 +271,7 @@ These are the settings for various editing modes - the top level being
 Use personal dictionary from docs for ispell.
 
 #+BEGIN_SRC emacs-lisp
-  (setq ispell-personal-dictionary "~/docs/ispell.dict")
+  (setq ispell-personal-dictionary (recker/path 'docs "emacs/ispell.dict"))
 #+END_SRC
 
 Disable goal column warning.
@@ -621,7 +640,13 @@ Org is love. Org is life.
 Set files read in as part of agenda.
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files '("~/docs/"))
+  (setq org-agenda-files (list (recker/path 'docs)))
+#+END_SRC
+
+Start agenda with follow mode turned on.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-start-with-follow-mode t)
 #+END_SRC
 
 ** Blog
@@ -697,7 +722,7 @@ Default on topic mode, since it’s more helpful.
 Change path to =newsrc= config file.
 
 #+BEGIN_SRC emacs-lisp
-  (setq gnus-startup-file "~/docs/newsrc")
+  (setq gnus-startup-file (recker/path 'docs "emacs/newsrc"))
 #+END_SRC
 
 Read the auto save file on startup without asking.
@@ -727,11 +752,11 @@ wrangle enough variables to tell gnus to save everything in the gnus
 folder.  I save mine off in a version controlled "docs" directory.
 
 #+BEGIN_SRC emacs-lisp
-  (setq gnus-home-directory "~/docs/gnus"
-	nnfolder-directory "~/docs/gnus/Mail/archive"
-	message-directory "~/docs/gnus/Mail"
-	nndraft-directory "~/docs/gnus/Drafts"
-	gnus-cache-directory "~/docs/gnus/cache")
+  (setq gnus-home-directory (recker/path 'docs "emacs/gnus")
+	nnfolder-directory (recker/path 'docs "emacs/gnus/Mail/archive")
+	message-directory (recker/path 'docs "emacs/gnus/Mail")
+	nndraft-directory (recker/path 'docs "emacs/gnus/Drafts")
+	gnus-cache-directory (recker/path 'docs "emacs/gnus/cache"))
 #+END_SRC
 
 ** Reading News
@@ -777,7 +802,7 @@ Keep addresses locally using =bbdb=.
 #+BEGIN_SRC emacs-lisp
   (use-package bbdb
     :ensure t
-    :config (setq bbdb-file "~/docs/bbdb.el")
+    :config (setq bbdb-file (recker/path 'docs "emacs/bbdb.el"))
     :init
     (bbdb-mua-auto-update-init 'message)
     (setq bbdb-mua-auto-update-p 'query)
@@ -796,7 +821,7 @@ SMTP settings.
 I keep an encrypted authinfo in my docs under version control.
 
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'auth-sources "~/docs/authinfo.gpg")
+  (add-to-list 'auth-sources (recker/path 'docs "emacs/authinfo.gpg"))
 #+END_SRC
 
 Here's what it looks like.
@@ -821,7 +846,7 @@ Here's what it looks like.
 ** Games
 
 #+BEGIN_SRC emacs-lisp
-  (setq tetris-score-file "~/docs/games/tetris-scores")
+  (setq tetris-score-file (recker/path 'docs "emacs/tetris-scores"))
 #+END_SRC
 
 ** Functions

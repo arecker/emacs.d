@@ -647,7 +647,7 @@ Open main org file.
 Set files read in as part of agenda.
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files (list (recker/path 'docs)))
+  (setq org-agenda-files (list (recker/path 'docs "opsat.org")))
 #+END_SRC
 
 Start agenda with follow mode turned on.

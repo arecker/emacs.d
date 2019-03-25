@@ -632,8 +632,15 @@ Org is love. Org is life.
 
 #+END_SRC
 
-#+RESULTS:
-: org-agenda
+Open main org file.
+
+#+BEGIN_SRC emacs-lisp
+  (defun recker/opsat ()
+    (interactive)
+    (find-file (recker/path 'docs "opsat.org")))
+
+  (global-set-key (kbd "C-c n") 'recker/opsat)
+#+END_SRC
 
 ** Agenda
 

@@ -656,6 +656,27 @@ Start agenda with follow mode turned on.
   (setq org-agenda-start-with-follow-mode t)
 #+END_SRC
 
+Custom Agenda Views
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-custom-commands
+	'(("w" "Work View"
+	   ((agenda "")
+	    (tags-todo "work"))
+	   ((org-agenda-tag-filter-preset (quote ("+work")))))
+	  ("h" "Habit View"
+	   ((agenda "")
+	    (tags-todo "habits"))
+	   ((org-agenda-tag-filter-preset (quote ("+habits")))))
+	  ("c" "Chores View"
+	   ((agenda "")
+	    (tags-todo "chores"))
+	   ((org-agenda-tag-filter-preset (quote ("+chores")))))
+	  ("e" "Emacs"
+	   ((tags-todo "emacs")))))
+	
+#+END_SRC
+
 ** Blog
 
 My blog.

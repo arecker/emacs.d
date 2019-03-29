@@ -371,6 +371,7 @@ For this to work, sbcl should be installed and in =PATH=.
 #+BEGIN_SRC emacs-lisp
   (use-package csv-mode
     :ensure t
+    :defer t
     :mode "\\.csv\\'")
 #+END_SRC
 
@@ -379,6 +380,7 @@ For this to work, sbcl should be installed and in =PATH=.
 #+BEGIN_SRC emacs-lisp
   (use-package d-mode
     :ensure t
+    :defer t
     :mode "\\.d\\'")
 #+END_SRC
 
@@ -387,9 +389,9 @@ For this to work, sbcl should be installed and in =PATH=.
 #+BEGIN_SRC emacs-lisp
   (use-package dockerfile-mode
     :ensure t
+    :defer t
     :mode "\\Dockerfile\\'")
 #+END_SRC
-
 
 ** Elisp
 
@@ -407,6 +409,7 @@ Here is the /really/ trendy part of my config.
 #+BEGIN_SRC emacs-lisp
   (use-package go-mode
     :ensure t
+    :defer t
     :mode "\\*.go\\'")
 #+END_SRC
 
@@ -417,6 +420,7 @@ Pretty much just for Jenkins files.
 #+BEGIN_SRC emacs-lisp
   (use-package groovy-mode
     :ensure t
+    :defer t
     :mode "\\Jenkinsfile\\'")
 #+END_SRC
 
@@ -425,6 +429,7 @@ Pretty much just for Jenkins files.
 #+BEGIN_SRC emacs-lisp
   (use-package haskell-mode
     :ensure t
+    :defer t
     :mode "\\.hs\\'")
 #+END_SRC
 
@@ -433,6 +438,7 @@ Pretty much just for Jenkins files.
 #+BEGIN_SRC emacs-lisp
   (use-package web-mode
     :ensure t
+    :defer t
     :mode ("\\.html\\'" "\\.jinja\\'")
     :config (setq web-mode-markup-indent-offset 2
                   web-mode-code-indent-offset 2))
@@ -455,6 +461,7 @@ This is the web-scale portion of my config.
 #+BEGIN_SRC emacs-lisp
   (use-package jsonnet-mode
     :ensure t
+    :defer t
     :mode ("\\.jsonnet\\'"))
 #+END_SRC
 
@@ -467,6 +474,7 @@ Taken from [[https://writequit.org/articles/working-with-logs-in-emacs.html][Wor
 
   (use-package log4j-mode
     :ensure t
+    :defer t
     :mode "\\.log\\'")
 #+END_SRC
 
@@ -475,18 +483,34 @@ Taken from [[https://writequit.org/articles/working-with-logs-in-emacs.html][Wor
 #+BEGIN_SRC emacs-lisp
   (use-package lua-mode
     :ensure t
+    :defer t
     :mode ("\\.lua\\'" "\\.p8\\'"))
 #+END_SRC
 
 ** Markdown
 
-Nothing!  Nothing for markdown!  Just treat it like stupid plain text!
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :ensure t
+    :defer t
+    :commands (markdown-mode gfm-mode)
+    :mode (("README\\.md\\'" . gfm-mode)
+	   ("\\.md\\'" . markdown-mode)
+	   ("\\.markdown\\'" . markdown-mode))
+    :init (setq markdown-command "multimarkdown"))
+
+  (defun recker/gfm-mode-hook ()
+    (auto-fill-mode 0))
+
+  (add-hook 'gfm-mode-hook 'recker/gfm-mode-hook)
+#+END_SRC
 
 ** Nginx
 
 #+BEGIN_SRC emacs-lisp
   (use-package nginx-mode
-    :ensure t)
+    :ensure t
+    :defer t)
 #+END_SRC
 
 ** Python
@@ -535,6 +559,7 @@ ruby as I know about scented candles and professional football.
 #+BEGIN_SRC emacs-lisp
   (use-package rust-mode
     :ensure t
+    :defer t
     :mode "\\.rs'")
 #+END_SRC
 
@@ -543,6 +568,7 @@ ruby as I know about scented candles and professional football.
 #+BEGIN_SRC emacs-lisp
   (use-package terraform-mode
     :ensure t
+    :defer t
     :mode "\\.tf\\'")
 #+END_SRC
 
@@ -577,6 +603,7 @@ Aliases for eshell
 #+BEGIN_SRC emacs-lisp
   (use-package typescript-mode
     :ensure t
+    :defer t
     :mode "\\.ts\\'")
 #+END_SRC
 
@@ -589,6 +616,7 @@ Aliases for eshell
 
   (use-package yaml-mode
     :ensure t
+    :defer t
     :mode ("\\.yml\\'" "\\.sls\\'")
     :init
     (add-hook 'yaml-mode-hook 'turn-off-auto-fill))

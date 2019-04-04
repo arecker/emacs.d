@@ -973,6 +973,38 @@ These are miscellaneous functions that I’ve written (or plagiarized).
 	    (format "echo \"%s\" | base64 -D | openssl rsautl -decrypt -inkey ~/.ssh/id_rsa" hash)))
       (kill-new decrypt-command nil)
       (message "Decrypt command added to kill ring.")))
+
+  (defun recker/send-list-at-point-to-wunderlist ()
+    "Sends the org mode list at point to wunderlist.  Any item not
+  already captured in wunderlist (by title) is added."
+    (interactive)
+    (setenv "PASSWORD_STORE_DIR" (expand-file-name "~/.password-store"))
+    (let* ((headers `(("Content-Type" . "application/json")
+		      ("X-Access-Token" . ,(password-store-get "wundercron/client-secret"))
+		      ("X-Client-ID" . ,(password-store-get "wundercron/client-id"))))
+	   (url "https://a.wunderlist.com/api/v1")
+	   (list-name "groceries")	;TODO: completing-read?
+	   (list-obj (seq-find
+		      #'(lambda (i) (string-equal list-name (cdr (assoc 'title i))))
+		      (request-response-data
+		       (request (concat url "/lists") :sync t :parser 'json-read :headers headers))))
+	   (list-id (cdr (assoc 'id list-obj)))
+	   (these-items   (if (member (first (org-element-at-point)) '(plain-list item))
+			      (mapcar #'(lambda (i) (first i)) (cdr (org-list-to-lisp)))
+			    (error "pointer not on a list")))
+	   (current-items (mapcar
+			   #'(lambda (o) (cdr (assoc 'title o)))
+			   (request-response-data
+			    (request (concat url "/tasks")
+				     :sync t :parser 'json-read :headers headers
+				     :params `(("list_id" . ,list-id))))))
+	   (new-items (remove-if #'(lambda (i) (member (format "%s" i) current-items)) these-items)))
+      (dolist (item new-items)
+	(request (concat url "/tasks")
+		 :parser 'json-read :headers headers :type "POST"
+		 :data (json-encode-alist `(("list_id" . ,list-id)
+					    ("title" . ,(format "%s" item))))))
+      (message "Added to groceries: %s" new-items)))
 #+END_SRC
 
 ** Keybindings
@@ -980,6 +1012,7 @@ These are miscellaneous functions that I’ve written (or plagiarized).
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-c b") 'browse-url)
   (global-set-key (kbd "C-c f") 'project-find-file)
+  (global-set-key (kbd "C-c g") 'recker/send-list-at-point-to-wunderlist)
   (global-set-key (kbd "C-c l") 'sort-lines)
   (global-set-key (kbd "C-c o") 'recker/org-scratch)
   (global-set-key (kbd "C-c r") 'replace-string)

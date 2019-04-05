@@ -979,7 +979,10 @@ These are miscellaneous functions that I’ve written (or plagiarized).
   already captured in wunderlist (by title) is added."
     (interactive)
     (setenv "PASSWORD_STORE_DIR" (expand-file-name "~/.password-store"))
-    (let* ((headers `(("Content-Type" . "application/json")
+    (let* ((these-items (if (member (first (org-element-at-point)) '(plain-list item))
+			    (mapcar #'(lambda (i) (first i)) (cdr (org-list-to-lisp)))
+			  (error "pointer not on a list")))
+	   (headers `(("Content-Type" . "application/json")
 		      ("X-Access-Token" . ,(password-store-get "wundercron/client-secret"))
 		      ("X-Client-ID" . ,(password-store-get "wundercron/client-id"))))
 	   (url "https://a.wunderlist.com/api/v1")
@@ -989,16 +992,14 @@ These are miscellaneous functions that I’ve written (or plagiarized).
 		      (request-response-data
 		       (request (concat url "/lists") :sync t :parser 'json-read :headers headers))))
 	   (list-id (cdr (assoc 'id list-obj)))
-	   (these-items   (if (member (first (org-element-at-point)) '(plain-list item))
-			      (mapcar #'(lambda (i) (first i)) (cdr (org-list-to-lisp)))
-			    (error "pointer not on a list")))
 	   (current-items (mapcar
 			   #'(lambda (o) (cdr (assoc 'title o)))
 			   (request-response-data
 			    (request (concat url "/tasks")
 				     :sync t :parser 'json-read :headers headers
 				     :params `(("list_id" . ,list-id))))))
-	   (new-items (remove-if #'(lambda (i) (member (format "%s" i) current-items)) these-items)))
+	   (new-items (or (remove-if #'(lambda (i) (member (format "%s" i) current-items)) these-items)
+			  (error "nothing to add!"))))
       (dolist (item new-items)
 	(request (concat url "/tasks")
 		 :parser 'json-read :headers headers :type "POST"

@@ -490,17 +490,7 @@ Taken from [[https://writequit.org/articles/working-with-logs-in-emacs.html][Wor
 ** Markdown
 
 #+BEGIN_SRC emacs-lisp
-  (use-package markdown-mode
-    :ensure t
-    :defer t
-    :commands (markdown-mode gfm-mode)
-    :mode (("README\\.md\\'" . gfm-mode)
-	   ("\\.md\\'" . markdown-mode)
-	   ("\\.markdown\\'" . markdown-mode))
-    :init (setq markdown-command "multimarkdown"))
-
-  (remove-hook 'gfm-mode-hook #'turn-on-auto-fill)
-  (remove-hook 'markdown-mode-hook #'turn-on-auto-fill)
+  ;; nothing - markdown sucks
 #+END_SRC
 
 ** Nginx

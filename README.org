@@ -499,10 +499,8 @@ Taken from [[https://writequit.org/articles/working-with-logs-in-emacs.html][Wor
 	   ("\\.markdown\\'" . markdown-mode))
     :init (setq markdown-command "multimarkdown"))
 
-  (defun recker/gfm-mode-hook ()
-    (auto-fill-mode 0))
+  (remove-hook 'gfm-mode-hook #'turn-on-auto-fill)
 
-  (add-hook 'gfm-mode-hook 'recker/gfm-mode-hook)
 #+END_SRC
 
 ** Nginx

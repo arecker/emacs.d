@@ -500,7 +500,7 @@ Taken from [[https://writequit.org/articles/working-with-logs-in-emacs.html][Wor
     :init (setq markdown-command "multimarkdown"))
 
   (remove-hook 'gfm-mode-hook #'turn-on-auto-fill)
-
+  (remove-hook 'markdown-mode-hook #'turn-on-auto-fill)
 #+END_SRC
 
 ** Nginx

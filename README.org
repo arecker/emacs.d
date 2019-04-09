@@ -50,7 +50,7 @@ Personal directories.
   (let ((dir (pcase dir
 	       ('docs *recker/docs-dir*)
 	       ('pics *recker/pics-dir*)
-	       ('emacs (file-name-as-directory user-emacs-directory))
+	       ('emacs user-emacs-directory)
 	       (_ (error (format "no %s directory!" dir)))))
 	(subdir (or subpath "")))
     (concat (file-name-as-directory dir) subpath)))

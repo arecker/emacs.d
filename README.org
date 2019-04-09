@@ -40,16 +40,17 @@ Personal directories.
 
 #+BEGIN_SRC emacs-lisp
   (setq *recker/docs-dir* (expand-file-name (if (string-equal system-type "darwin")
-  "~/Documents" "~/docs")))
+						"~/Documents" "~/docs")))
 
 
   (setq *recker/pics-dir* (expand-file-name (if (string-equal system-type "darwin")
-						  "~/Pictures" "~/pics")))
+						"~/Pictures" "~/pics")))
 
   (defun recker/path (dir &optional subpath)
     (let ((dir (pcase dir
 		 ('docs *recker/docs-dir*)
 		 ('pics *recker/pics-dir*)
+		 ('emacs (file-name-as-directory user-emacs-directory))
 		 (_ (error (format "no %s directory!" dir)))))
 	  (subdir (or subpath "")))
     (concat (file-name-as-directory dir) subpath)))
@@ -628,32 +629,7 @@ Org is love. Org is life.
 			 org-log-into-drawer t
 			 org-agenda-start-with-follow-mode t))
     :bind (("C-c a" . org-agenda))
-    :init (progn (org-babel-do-load-languages
-		  'org-babel-load-languages
-		  '((awk . t)
-		    (C . t)
-		    (calc . t)
-		    (clojure . t)
-		    (css . t)
-		    (plantuml . t)
-		    (ditaa . t)
-		    (ditaa . t)
-		    (haskell . t)
-		    (java . t)
-		    (js . t)
-		    (latex . t)
-		    (lisp . t)
-		    (gnuplot . t)
-		    (makefile . t)
-		    (perl . t)
-		    (python . t)
-		    (ruby . t)
-		    (screen . t)
-		    (shell . t)
-		    (sql . t)
-		    (sqlite . t)))
-		 (require 'org-habit)))
-
+    :init (require 'org-habit))
 #+END_SRC
 
 Open main org file.
@@ -664,6 +640,46 @@ Open main org file.
     (find-file (recker/path 'docs "opsat.org")))
 
   (global-set-key (kbd "C-c n") 'recker/opsat)
+#+END_SRC
+
+Custom before-save hook to fix up formatting.
+
+#+BEGIN_SRC emacs-lisp
+  (defun recker/org-before-save-hook ()
+    (when (eq major-mode 'org-mode)))
+
+  (add-hook 'before-save-hook #'recker/org-before-save-hook)
+#+END_SRC
+
+** Babel
+
+Load a bunch of fancy languages.
+
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((awk . t)
+     (C . t)
+     (calc . t)
+     (clojure . t)
+     (css . t)
+     (plantuml . t)
+     (ditaa . t)
+     (ditaa . t)
+     (haskell . t)
+     (java . t)
+     (js . t)
+     (latex . t)
+     (lisp . t)
+     (gnuplot . t)
+     (makefile . t)
+     (perl . t)
+     (python . t)
+     (ruby . t)
+     (screen . t)
+     (shell . t)
+     (sql . t)
+     (sqlite . t)))
 #+END_SRC
 
 ** Agenda
@@ -1019,10 +1035,10 @@ Emacs sometimes dumps things in =init.el=.  It means well, but I would
 rather this be in a different file ignored by git.
 
 #+BEGIN_SRC emacs-lisp
-  (let ((custom (concat (file-name-as-directory user-emacs-directory) "custom.el")))
+  (let ((custom (recker/path 'emacs "custom.el")))
     (unless (file-exists-p custom)
       (with-temp-buffer
-        (write-file custom)))
+	(write-file custom)))
     (setq custom-file custom))
 #+END_SRC
 
@@ -1031,10 +1047,10 @@ run on startup.  This is for machine specific settings or things I am
 still tinkering with.
 
 #+BEGIN_SRC emacs-lisp
-  (let ((local (concat (file-name-as-directory user-emacs-directory) "local.el")))
+  (let ((local (recker/path 'emacs "local.el")))
     (unless (file-exists-p local)
       (with-temp-buffer
-        (insert ";; This file is for local changes")
-        (write-file local)))
+	(insert ";; This file is for local changes")
+	(write-file local)))
     (load local))
 #+END_SRC

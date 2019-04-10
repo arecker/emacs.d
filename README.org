@@ -46,8 +46,12 @@ Personal directories.
 (setq *recker/pics-dir* (expand-file-name (if (string-equal system-type "darwin")
 					      "~/Pictures" "~/pics")))
 
+(setq *recker/desktop-dir* (expand-file-name (if (string-equal system-type "darwin")
+						 "~/Desktop" "~/desktop")))
+
 (defun recker/path (dir &optional subpath)
   (let ((dir (pcase dir
+	       ('desktop *recker/desktop-dir*)
 	       ('docs *recker/docs-dir*)
 	       ('pics *recker/pics-dir*)
 	       ('emacs user-emacs-directory)

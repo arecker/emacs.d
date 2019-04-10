@@ -688,7 +688,8 @@ Org is love. Org is life.
 		  '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))
 		 (setq org-confirm-babel-evaluate nil
 		       org-log-into-drawer t
-		       org-agenda-start-with-follow-mode t))
+		       org-agenda-start-with-follow-mode t
+		       org-cycle-separator-lines 1))
   :bind (("C-c a" . org-agenda))
   :init (require 'org-habit))
 #+END_SRC

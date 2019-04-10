@@ -237,6 +237,12 @@ Add the =-h= switch to the dired output to show prettier filenames.
 (setq dired-listing-switches "-alh")
 #+END_SRC
 
+Don't ask permission to delete the buffer of a deleted file.
+
+#+BEGIN_SRC emacs-lisp
+(setq dired-clean-confirm-killing-deleted-buffers nil)
+#+END_SRC
+
 ** Better Music
 
 OK, so there's no music in Emacs to begin with.  But check out mingus,

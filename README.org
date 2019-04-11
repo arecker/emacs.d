@@ -42,7 +42,7 @@ Personal directories.
 (defun recker/path (dir &optional subpath)
   (let* ((macos-p (string-equal system-type "darwin"))
 	 (dir (pcase dir
-		('home (expand-file-name "~"))
+		('home "~")
 		('desktop (if macos-p "~/Desktop" "~/desktop"))
 		('docs (if macos-p "~/Documents" "~/docs"))
 		('pics (if macos-p "~/Pictures" "~/pics"))

@@ -1109,6 +1109,7 @@ These are miscellaneous functions that I’ve written (or plagiarized).
 (global-set-key (kbd "C-c r") 'replace-string)
 (global-set-key (kbd "C-c w") 'recker/send-list-at-point-to-wunderlist)
 (global-set-key (kbd "C-x C-k k") 'kill-buffer)
+(global-set-key (kbd "C-x P") 'recker/purge-buffers)
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (global-set-key (kbd "C-x p") 'password-store-copy)
 (global-set-key (kbd "C-x p") 'recker/password-store-copy)

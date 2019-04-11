@@ -466,7 +466,7 @@ Disable those silly docstring warnings when editing elisp.
 
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'flycheck
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+  (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-checkdoc))
 #+END_SRC
 
 ** Go
@@ -493,6 +493,8 @@ Here is the /really/ trendy part of my config.
   :ensure t
   :defer t)
 			  
+(with-eval-after-load 'flycheck
+  (add-to-list 'flycheck-disabled-checkers 'go-vet))
 #+END_SRC
 
 ** Groovy

@@ -474,18 +474,25 @@ Disable those silly docstring warnings when editing elisp.
 Here is the /really/ trendy part of my config.
 
 #+BEGIN_SRC emacs-lisp
-(setenv "GOPATH" (recker/path 'home))
+(defun recker/go-mode-hook ()
+  (setenv "GOPATH" (recker/path 'home))
+  (set (make-local-variable 'company-backends) '(company-go))
+  (if (not (string-match "go" compile-command))
+      (set (make-local-variable 'compile-command)
+	   "go build -v && go test -v && go vet")))
 
 (use-package go-mode
   :ensure t
   :defer t
   :mode "\\*.go\\'"
-  :init (add-hook 'before-save-hook #'gofmt-before-save)
+  :init (progn (add-hook 'before-save-hook #'gofmt-before-save)
+	       (add-hook 'go-mode-hook #'recker/go-mode-hook))
   :config (setq gofmt-command "goimports"))
 
 (use-package company-go
   :ensure t
   :defer t)
+			  
 #+END_SRC
 
 ** Groovy

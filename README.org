@@ -51,6 +51,7 @@ Personal directories.
 
 (defun recker/path (dir &optional subpath)
   (let ((dir (pcase dir
+	       ('home (expand-file-name "~"))
 	       ('desktop *recker/desktop-dir*)
 	       ('docs *recker/docs-dir*)
 	       ('pics *recker/pics-dir*)
@@ -473,10 +474,18 @@ Disable those silly docstring warnings when editing elisp.
 Here is the /really/ trendy part of my config.
 
 #+BEGIN_SRC emacs-lisp
+(setenv "GOPATH" (recker/path 'home))
+
 (use-package go-mode
   :ensure t
   :defer t
-  :mode "\\*.go\\'")
+  :mode "\\*.go\\'"
+  :init (add-hook 'before-save-hook #'gofmt-before-save)
+  :config (setq gofmt-command "goimports"))
+
+(use-package company-go
+  :ensure t
+  :defer t)
 #+END_SRC
 
 ** Groovy

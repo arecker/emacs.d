@@ -39,26 +39,17 @@ Ensure that the system =PATH= is the one used by emacs.
 Personal directories.
 
 #+BEGIN_SRC emacs-lisp
-(setq *recker/docs-dir* (expand-file-name (if (string-equal system-type "darwin")
-					      "~/Documents" "~/docs")))
-
-
-(setq *recker/pics-dir* (expand-file-name (if (string-equal system-type "darwin")
-					      "~/Pictures" "~/pics")))
-
-(setq *recker/desktop-dir* (expand-file-name (if (string-equal system-type "darwin")
-						 "~/Desktop" "~/desktop")))
-
 (defun recker/path (dir &optional subpath)
-  (let ((dir (pcase dir
-	       ('home (expand-file-name "~"))
-	       ('desktop *recker/desktop-dir*)
-	       ('docs *recker/docs-dir*)
-	       ('pics *recker/pics-dir*)
-	       ('emacs user-emacs-directory)
-	       (_ (error (format "no %s directory!" dir)))))
-	(subdir (or subpath "")))
-    (concat (file-name-as-directory dir) subpath)))
+  (let* ((macos-p (string-equal system-type "darwin"))
+	 (dir (pcase dir
+		('home (expand-file-name "~"))
+		('desktop (if macos-p "~/Desktop" "~/desktop"))
+		('docs (if macos-p "~/Documents" "~/docs"))
+		('pics (if macos-p "~/Pictures" "~/pics"))
+		('emacs user-emacs-directory)
+		(_ (error (format "no %s directory!" dir)))))
+	 (subdir (or subpath "")))
+    (expand-file-name (concat (file-name-as-directory dir) subpath))))
 #+END_SRC
 
 ** Scratch

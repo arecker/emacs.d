@@ -703,7 +703,8 @@ Org is love. Org is life.
 		       org-log-into-drawer t
 		       org-agenda-start-with-follow-mode t
 		       org-cycle-separator-lines 1))
-  :bind (("C-c a" . org-agenda))
+  :bind (("C-c a" . org-agenda)
+	 ("C-c c" . org-capture))
   :init (require 'org-habit))
 #+END_SRC
 

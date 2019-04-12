@@ -725,6 +725,20 @@ Custom before-save hook to fix up formatting.
 (add-hook 'before-save-hook #'recker/org-before-save-hook)
 #+END_SRC
 
+Define some simple capture templates.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-capture-templates
+      `(("t" "task" entry (file ,(recker/path 'docs "opsat.org"))
+	 "* TODO %?" :prepend t :empty-lines 1)
+	("w" "work" entry (file+headline ,(recker/path 'docs "opsat.org") "Work")
+	 "* TODO %?" :prepend t :empty-lines 1)
+	("e" "emacs" entry (file+headline ,(recker/path 'docs "opsat.org") "Emacs")
+	 "* TODO %?" :prepend t :empty-lines 1)
+	("p" "plex" entry (file+headline ,(recker/path 'docs "opsat.org") "Plex")
+	 "* TODO %?" :prepend t :empty-lines 1)))
+#+END_SRC
+
 ** Babel
 
 Load a bunch of fancy languages.

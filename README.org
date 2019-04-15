@@ -744,7 +744,7 @@ Define some simple capture templates.
 #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
       `(("j" "journal" plain (file+olp+datetree ,(recker/path 'docs "journal.org"))
-	 "%?" :prepend t :empty-lines 1)
+	 "%?" :empty-lines 1)
 	("t" "task" entry (file ,(recker/path 'docs "opsat.org"))
 	 "* TODO %?" :prepend t :empty-lines 1)
 	("w" "work" entry (file+headline ,(recker/path 'docs "opsat.org") "Work")

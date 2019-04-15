@@ -733,6 +733,12 @@ Custom before-save hook to fix up formatting.
 (add-hook 'before-save-hook #'recker/org-before-save-hook)
 #+END_SRC
 
+Inject blank lines between headings.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-blank-before-new-entry '((heading . t) (plain-list-item . auto)))
+#+END_SRC
+
 Define some simple capture templates.
 
 #+BEGIN_SRC emacs-lisp

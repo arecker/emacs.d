@@ -757,7 +757,7 @@ Define some simple capture templates.
 
 ** Babel
 
-Load a bunch of fancy languages.
+Load a bunch of fancy languages for a fancy man like me.
 
 #+BEGIN_SRC emacs-lisp
 (org-babel-do-load-languages

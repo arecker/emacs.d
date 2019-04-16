@@ -357,14 +357,6 @@ Flycheck mode.
   (global-flycheck-mode))
 #+END_SRC
 
-Globally cleanup white space on save.
-
-#+BEGIN_SRC emacs-lisp
-(use-package whitespace-cleanup-mode
-  :ensure t
-  :config (global-whitespace-cleanup-mode))
-#+END_SRC
-
 Support for [[http://editorconfig.org/][editorconfig]].
 
 #+BEGIN_SRC emacs-lisp
@@ -577,11 +569,10 @@ Taken from [[https://writequit.org/articles/working-with-logs-in-emacs.html][Wor
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode
   :ensure t
-  :commands (markdown-mode gfm-mode)
-  :mode (("README\\.md\\'" . markdown-mode)
-         ("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command "multimarkdown"))
+  :commands (gfm-mode)
+  :mode (("\\.md\\'" . gfm-mode)
+         ("\\.gfm\\'" . gfm-mode))
+  :config (setq markdown-command "multimarkdown"))
 #+END_SRC
 
 ** Nginx

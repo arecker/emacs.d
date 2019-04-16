@@ -248,7 +248,18 @@ server running on the default port.
 #+BEGIN_SRC emacs-lisp
 (use-package mingus
   :ensure t
-  :bind (("C-x m" . mingus)))
+  :bind (("C-x m" . mingus))
+  :config
+  (setq mingus-mode-always-modeline t)
+  (setq mingus-mode-line-separator " // ")
+  (setq mingus-mode-line-show-consume-and-single-status nil)
+  (setq mingus-mode-line-show-elapsed-time nil)
+  (setq mingus-mode-line-show-volume nil)
+  (setq mingus-mode-line-show-elapsed-percentage nil)
+  (setq mingus-mode-line-show-random-and-repeat-status nil)
+  (setq mingus-mode-line-show-status nil)
+  (setq mingus-mode-line-string-max 50))
+
 #+END_SRC
 
 ** Better Text Selection

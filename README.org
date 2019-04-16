@@ -575,7 +575,13 @@ Taken from [[https://writequit.org/articles/working-with-logs-in-emacs.html][Wor
 ** Markdown
 
 #+BEGIN_SRC emacs-lisp
-;; nothing - markdown sucks
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . markdown-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
 #+END_SRC
 
 ** Nginx

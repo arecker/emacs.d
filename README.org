@@ -572,7 +572,8 @@ Taken from [[https://writequit.org/articles/working-with-logs-in-emacs.html][Wor
   :commands (gfm-mode)
   :mode (("\\.md\\'" . gfm-mode)
          ("\\.gfm\\'" . gfm-mode))
-  :config (setq markdown-command "multimarkdown"))
+  :config (setq markdown-command "multimarkdown"
+		markdown-fontify-code-blocks-natively t))
 #+END_SRC
 
 ** Nginx

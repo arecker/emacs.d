@@ -716,27 +716,13 @@ Org is love. Org is life.
   :init (require 'org-habit))
 #+END_SRC
 
-Open main org file.
-
-#+BEGIN_SRC emacs-lisp
-(defun recker/opsat ()
-  (interactive)
-  (find-file (recker/path 'docs "opsat.org")))
-#+END_SRC
-
-Open journal.
-
-#+BEGIN_SRC emacs-lisp
-(defun recker/journal ()
-  (interactive)
-  (find-file (recker/path 'docs "journal.org")))
-#+END_SRC
-
 Custom before-save hook to fix up formatting.
 
 #+BEGIN_SRC emacs-lisp
 (defun recker/org-before-save-hook ()
-  (when (eq major-mode 'org-mode)))
+  (when (eq major-mode 'org-mode)
+    ;; todo: fix up format
+    ))
 
 (add-hook 'before-save-hook #'recker/org-before-save-hook)
 #+END_SRC
@@ -1134,11 +1120,12 @@ These are miscellaneous functions that I’ve written (or plagiarized).
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c b") 'browse-url)
+(global-set-key (kbd "C-c d") #'(lambda () (interactive) (find-file (recker/path 'desktop))))
 (global-set-key (kbd "C-c f") 'project-find-file)
+(global-set-key (kbd "C-c j") #'(lambda () (interactive) (find-file (recker/path 'docs "journal.org"))))
 (global-set-key (kbd "C-c l") 'sort-lines)
 (global-set-key (kbd "C-c n") 'recker/org-scratch)
-(global-set-key (kbd "C-c j") 'recker/journal)
-(global-set-key (kbd "C-c o") 'recker/opsat)
+(global-set-key (kbd "C-c o") #'(lambda () (interactive) (find-file (recker/path 'docs "opsat.org"))))
 (global-set-key (kbd "C-c r") 'replace-string)
 (global-set-key (kbd "C-c w") 'recker/send-list-at-point-to-wunderlist)
 (global-set-key (kbd "C-x C-k k") 'kill-buffer)

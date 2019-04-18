@@ -164,7 +164,7 @@ Alex as he disabled them.
 (tool-bar-mode -1)
 #+END_SRC
 
-Because the command =C-x C-x= is easier to type by accident than you'd
+Because the command =C-x C-c= is easier to type by accident than you'd
 think, enable this so Emacs says "are you sure?"
 
 #+BEGIN_SRC emacs-lisp

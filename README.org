@@ -164,6 +164,13 @@ Alex as he disabled them.
 (tool-bar-mode -1)
 #+END_SRC
 
+Because the command =C-x C-x= is easier to type by accident than you'd
+think, enable this so Emacs says "are you sure?"
+
+#+BEGIN_SRC emacs-lisp
+(setq confirm-kill-emacs t)
+#+END_SRC
+
 ** Better Comments
 
 I overwrite the build-in =comment-dwim= with its superior sequel.

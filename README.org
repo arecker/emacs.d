@@ -168,7 +168,7 @@ Because the command =C-x C-x= is easier to type by accident than you'd
 think, enable this so Emacs says "are you sure?"
 
 #+BEGIN_SRC emacs-lisp
-(setq confirm-kill-emacs t)
+(setq confirm-kill-emacs #'yes-or-no-p)
 #+END_SRC
 
 ** Better Comments

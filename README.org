@@ -623,6 +623,13 @@ ruby as I know about scented candles and professional football.
 
 #+BEGIN_SRC emacs-lisp
 (setq ruby-deep-indent-paren nil)
+
+(use-package robe
+  :ensure t
+  :init (progn
+	  (add-hook 'ruby-mode-hook 'robe-mode)
+	  (eval-after-load 'company
+	    '(push 'company-robe company-backends))))
 #+END_SRC
 
 ** Rust

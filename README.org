@@ -795,6 +795,13 @@ Don't touch the indentation of code blocks.
 (setq org-src-preserve-indentation t)
 #+END_SRC
 
+Set up some exporting backends.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-export-backends '(ascii latex md confluence))
+#+END_SRC
+
+
 ** Agenda
 
 Set files read in as part of agenda.

@@ -803,6 +803,12 @@ Set up some exporting backends.
 (setq org-export-backends '(ascii latex md confluence))
 #+END_SRC
 
+Archive options.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-attach-directory (recker/path 'docs "attachments/"))
+(setq org-attach-archive-delete 't)
+#+END_SRC
 
 ** Agenda
 

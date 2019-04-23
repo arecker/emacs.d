@@ -755,7 +755,9 @@ Define some simple capture templates.
 	("w" "work task" entry (file ,(recker/path 'docs "work.org"))
 	 "* TODO %?" :prepend t :empty-lines 1)
 	("r" "recipe" entry (file ,(recker/path 'docs "recipes.org"))
-	 "* %?" :empty-lines 1)))
+	 "* %?" :empty-lines 1)
+	("i" "interview" entry (file+headline ,(recker/path 'docs "work.org") "Interviews")
+	 "* TODO Evaluation: %?" :empty-lines 1)))
 #+END_SRC
 
 ** Babel

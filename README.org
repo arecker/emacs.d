@@ -203,22 +203,17 @@ prevents losing bookmarks created in separate emacs clients.
       bookmark-default-file (recker/path 'docs "emacs/bookmarks.el"))
 #+END_SRC
 
-This is just a custom implementation of =bookmark-jump= that displays
-file paths instead of just the "name".
+Register some files I visit often, using my little path function.
 
 #+BEGIN_SRC emacs-lisp
-(defun recker/bookmark-jump ()
-  (interactive)
-  (let ((bookmark-list
-	 (mapcar (lambda (b) (cdr (assoc 'filename b)))
-		 (read (with-temp-buffer
-			 (insert-file-contents-literally bookmark-default-file)
-			 (buffer-string))))))
-    (find-file (completing-read "Jump to Bookmark: " bookmark-list nil t))))
-
-(global-set-key (kbd "C-x r b") 'recker/bookmark-jump)
+(set-register ?d `(file . ,(recker/path 'desktop)))
+(set-register ?e `(file . ,(recker/path 'emacs "README.org")))
+(set-register ?f '(file . "/ssh:alex@fileboi.local:/data"))
+(set-register ?j `(file . ,(recker/path 'docs "journal.org")))
+(set-register ?l `(file . ,(recker/path 'emacs "local.el")))
+(set-register ?o `(file . ,(recker/path 'docs "opsat.org")))
+(set-register ?w `(file . ,(recker/path 'docs "work.org")))
 #+END_SRC
-
 
 ** Better File Manager
 
@@ -1143,12 +1138,9 @@ These are miscellaneous functions that I’ve written (or plagiarized).
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c b") 'browse-url)
-(global-set-key (kbd "C-c d") #'(lambda () (interactive) (find-file (recker/path 'desktop))))
 (global-set-key (kbd "C-c f") 'project-find-file)
-(global-set-key (kbd "C-c j") #'(lambda () (interactive) (find-file (recker/path 'docs "journal.org"))))
 (global-set-key (kbd "C-c l") 'sort-lines)
 (global-set-key (kbd "C-c n") 'recker/org-scratch)
-(global-set-key (kbd "C-c o") #'(lambda () (interactive) (find-file (recker/path 'docs "opsat.org"))))
 (global-set-key (kbd "C-c r") 'replace-string)
 (global-set-key (kbd "C-c w") 'recker/send-list-at-point-to-wunderlist)
 (global-set-key (kbd "C-x C-k k") 'kill-buffer)

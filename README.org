@@ -411,9 +411,6 @@ obey these rules by default.
   :ensure t)
 #+END_SRC
 
-#+RESULTS:
-
-
 ** Commmon Lisp
 
 For this to work, sbcl should be installed and in =PATH=.

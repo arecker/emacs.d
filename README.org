@@ -241,28 +241,6 @@ Don't ask permission to delete the buffer of a deleted file.
 (setq dired-clean-confirm-killing-deleted-buffers nil)
 #+END_SRC
 
-** Better Music
-
-OK, so there's no music in Emacs to begin with.  But check out mingus,
-it's pretty awesome.  This works, assuming you have an local mpd
-server running on the default port.
-
-#+BEGIN_SRC emacs-lisp
-(use-package mingus
-  :ensure t
-  :bind (("C-x m" . mingus))
-  :config
-  (setq mingus-mode-always-modeline nil)
-  (setq mingus-mode-line-separator " // ")
-  (setq mingus-mode-line-show-consume-and-single-status nil)
-  (setq mingus-mode-line-show-elapsed-time nil)
-  (setq mingus-mode-line-show-volume nil)
-  (setq mingus-mode-line-show-elapsed-percentage nil)
-  (setq mingus-mode-line-show-random-and-repeat-status nil)
-  (setq mingus-mode-line-show-status nil)
-  (setq mingus-mode-line-string-max 50))
-#+END_SRC
-
 ** Better Text Selection
 
 I use =expand-region= to incrementally grab larger portions of text

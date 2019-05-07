@@ -52,6 +52,18 @@ Personal directories.
     (expand-file-name (concat (file-name-as-directory dir) subpath))))
 #+END_SRC
 
+Register some files I visit often.
+
+#+BEGIN_SRC emacs-lisp
+(set-register ?d `(file . ,(recker/path 'desktop)))
+(set-register ?e `(file . ,(recker/path 'emacs "README.org")))
+(set-register ?f '(file . "/ssh:alex@fileboi.local:/data"))
+(set-register ?j `(file . ,(recker/path 'docs "journal.org")))
+(set-register ?l `(file . ,(recker/path 'emacs "local.el")))
+(set-register ?o `(file . ,(recker/path 'docs "opsat.org")))
+(set-register ?w `(file . ,(recker/path 'docs "work.org")))
+#+END_SRC
+
 ** Scratch
 
 The slash screen displayed on startup is a little too noisy for
@@ -201,18 +213,6 @@ prevents losing bookmarks created in separate emacs clients.
 #+BEGIN_SRC emacs-lisp
 (setq bookmark-save-flag 1
       bookmark-default-file (recker/path 'docs "emacs/bookmarks.el"))
-#+END_SRC
-
-Register some files I visit often, using my little path function.
-
-#+BEGIN_SRC emacs-lisp
-(set-register ?d `(file . ,(recker/path 'desktop)))
-(set-register ?e `(file . ,(recker/path 'emacs "README.org")))
-(set-register ?f '(file . "/ssh:alex@fileboi.local:/data"))
-(set-register ?j `(file . ,(recker/path 'docs "journal.org")))
-(set-register ?l `(file . ,(recker/path 'emacs "local.el")))
-(set-register ?o `(file . ,(recker/path 'docs "opsat.org")))
-(set-register ?w `(file . ,(recker/path 'docs "work.org")))
 #+END_SRC
 
 ** Better File Manager

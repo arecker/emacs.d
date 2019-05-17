@@ -1107,6 +1107,10 @@ These are miscellaneous functions that I’ve written (or plagiarized).
 	       :data (json-encode-alist `(("list_id" . ,list-id)
 					  ("title" . ,(format "%s" item))))))
     (message "Added to groceries: %s" new-items)))
+
+(defun recker/docs-sync ()
+  (interactive)
+  (shell-command (format "git-sync -d %s" (recker/path 'docs))))
 #+END_SRC
 
 ** Keybindings

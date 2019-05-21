@@ -890,10 +890,10 @@ Change path to =newsrc= config file.
 (setq gnus-startup-file (recker/path 'docs "emacs/newsrc"))
 #+END_SRC
 
-Read the auto save file on startup without asking.
+Don't keep a dribble file.
 
 #+BEGIN_SRC emacs-lisp
-(setq gnus-always-read-dribble-file t)
+(setq gnus-use-dribble-file nil)
 #+END_SRC
 
 Enable the asynchronous flag.
@@ -907,7 +907,6 @@ More possible placebo code to make gnus feel faster - use the cache.
 #+BEGIN_SRC emacs-lisp
 (setq gnus-use-cache t)
 #+END_SRC
-
 
 ** Better Folders
 
@@ -1110,7 +1109,7 @@ These are miscellaneous functions that I’ve written (or plagiarized).
 
 (defun recker/docs-sync ()
   (interactive)
-  (shell-command (format "git-sync -d %s" (recker/path 'docs))))
+  (shell-command (format "git-sync -d %s" (recker/path 'docs)) nil nil))
 #+END_SRC
 
 ** Keybindings

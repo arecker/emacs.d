@@ -1005,6 +1005,9 @@ Here's what it looks like.
 
 (use-package request
   :ensure t)
+
+(use-package transmission
+  :ensure t)
 #+END_SRC
 
 ** Games

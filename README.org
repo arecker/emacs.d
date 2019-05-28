@@ -802,6 +802,10 @@ Custom Agenda Views
 	 ((agenda "")
 	  (tags-todo "work"))
 	 ((org-agenda-tag-filter-preset (quote ("+work")))))
+	("i" "Interns View"
+	 ((agenda "")
+	  (tags-todo "interns"))
+	 ((org-agenda-tag-filter-preset (quote ("+interns")))))
 	("h" "Habit View"
 	 ((agenda "")
 	  (tags-todo "habits"))

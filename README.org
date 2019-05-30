@@ -729,7 +729,7 @@ Define some simple capture templates.
 	("i" "interview" entry (file+headline ,(recker/path 'docs "work.org") "Interviews")
 	 "* TODO Evaluation: %?" :empty-lines )
 	("a" "anger" entry (file+headline ,(recker/path 'docs "opsat.org")  "Anger")
-	 "* %T\n\n- Trigger :: %^{Trigger}\n- Location :: %^{Location}\n- People :: %^{People Involved}\n- Thoughts :: %^{Thoughts}\n- Events :: %?\n"
+	 "* %U\n\n- Trigger :: %^{Trigger}\n- Location :: %^{Location}\n- People :: %^{People Involved}\n- Thoughts :: %^{Thoughts}\n- Events :: %?\n"
 	 :prepend t :empty-lines 1)))
 #+END_SRC
 

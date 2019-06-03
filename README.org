@@ -128,7 +128,7 @@ screen.
 | How few there are who have courage enough to own their faults, or resolution enough to mend them.                          | Benjamin Franklin         |
 | Resistance is useless.                                                                                                     | Doctor Who                |
 | Happiness does not depend on outward things, but on the way we see them.                                                   | Leo Tolstoy               |
-
+| Being president is like being a jackass in a hailstorm.  There's nothing to do but to stand there and take it.             | Lyndon Johnson            |
 
 Pick a random one on startup, wrap it in a lisp comment box, and
 assign it to the scratch message variable.

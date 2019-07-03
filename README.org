@@ -809,19 +809,17 @@ Custom Agenda Views
 My blog.
 
 #+BEGIN_SRC emacs-lisp
-(setq org-publish-project-alist `(("blog-journal"
+(defun recker/blog-journal-publish (plist filename pub-dir)
+  (shell-command-to-string
+   (format "blog %s %s %s" filename pub-dir (recker/path 'home "src/blog/index.html.erb"))))
+
+(setq org-publish-project-alist `(("blog"
 				   :base-directory ,(recker/path 'docs)
 				   :base-extension "org"
 				   :exclude ".*"
 				   :include ("journal.org")
-				   :select-tags ("public")
-				   :publishing-directory "~/desktop"
-				   :publishing-function org-html-publish-to-html
-				   :body-only t
-				   :with-toc nil
-				   :section-numbers nil
-				   :with-tags nil
-				   :headline-levels 3)))
+				   :publishing-directory ,(recker/path 'public "www.alexrecker.com")
+				   :publishing-function recker/blog-journal-publish)))
 #+END_SRC
 
 ** Tables

@@ -263,12 +263,12 @@ Company mode.
   :config (global-company-mode))
 #+END_SRC
 
-Attempts to connect to an eglot server for each language.
+Attempts to connect to an eglot server for each language when you run
+=M-x eglot=.
 
 #+BEGIN_SRC emacs-lisp
 (use-package eglot
-  :ensure t
-  :init (add-hook 'prog-mode-hook 'eglot-ensure))
+  :ensure t)
 #+END_SRC
 
 Yasnippet - I don't use this nearly as much as I should be.

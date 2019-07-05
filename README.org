@@ -337,15 +337,6 @@ Disable goal column warning.
 (put 'set-goal-column 'disabled nil)
 #+END_SRC
 
-Flycheck mode.
-
-#+BEGIN_SRC emacs-lisp
-(use-package flycheck
-  :ensure t
-  :init
-  (global-flycheck-mode))
-#+END_SRC
-
 Support for [[http://editorconfig.org/][editorconfig]].
 
 #+BEGIN_SRC emacs-lisp

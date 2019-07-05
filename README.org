@@ -263,6 +263,14 @@ Company mode.
   :config (global-company-mode))
 #+END_SRC
 
+Attempts to connect to an eglot server for each language.
+
+#+BEGIN_SRC emacs-lisp
+(use-package eglot
+  :ensure t
+  :init (add-hook 'prog-mode-hook 'eglot-ensure))
+#+END_SRC
+
 Yasnippet - I don't use this nearly as much as I should be.
 
 #+BEGIN_SRC emacs-lisp
@@ -564,34 +572,11 @@ Taken from [[https://writequit.org/articles/working-with-logs-in-emacs.html][Wor
 
 ** Python
 
-Install these dependencies
-
-#+BEGIN_SRC sh
-pip install rope flake8 importmagic autopep8 yapf ipdb ipython virtualenv virtualenvwrapper
-#+END_SRC
-
 Install virtualenvwrapper support.
 
 #+BEGIN_SRC emacs-lisp
 (use-package virtualenvwrapper
   :ensure t)
-#+END_SRC
-
-Use ipython for running the code in a shell.  Evidently, it's still
-experimental.  I have issues with some of the tab completion, so I'll
-end up using =*ansi-term*= instead.
-
-#+BEGIN_SRC emacs-lisp
-(setq python-shell-interpreter "ipython"
-      python-shell-interpreter-args "-i --simple-prompt")
-#+END_SRC
-
-Let elpy do its thing.
-
-#+BEGIN_SRC emacs-lisp
-(use-package elpy
-  :ensure t
-  :init (elpy-enable))
 #+END_SRC
 
 ** Ruby

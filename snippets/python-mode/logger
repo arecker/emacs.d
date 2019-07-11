@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: logger
-# key: logger
-# --
-import logging as logger
-logger.basicConfig(level='DEBUG', format='%(levelname)s: %(message)s')

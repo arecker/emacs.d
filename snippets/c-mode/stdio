@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: stdio
-# key: stdio
-# --
-#include <stdio.h>

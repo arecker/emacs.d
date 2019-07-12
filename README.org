@@ -168,18 +168,22 @@ Disable the toolbar, scrollbar, and menu bar.
 (tool-bar-mode -1)
 #+END_SRC
 
-Set the font to Monaco if it's installed.
-
-#+BEGIN_SRC emacs-lisp
-  (if (member "Monaco" (font-family-list))
-      (set-frame-font "Monaco 13"))
-#+END_SRC
-
 I like my emacs /extra thicc/.
 
 #+BEGIN_SRC emacs-lisp
   (setq initial-frame-alist '((width . 99) (height . 53))
 	default-frame-alist '((width . 99) (height . 53)))
+#+END_SRC
+
+** Font
+
+Set the font to Monaco if it's installed (I'm probably on a Mac
+then).  Otherwise just use Inconsolata.
+
+#+BEGIN_SRC emacs-lisp
+  (if (member "Monaco" (font-family-list))
+      (set-frame-font "Monaco 13")
+    (set-frame-font "Inconsolata 12"))
 #+END_SRC
 
 ** Modeline

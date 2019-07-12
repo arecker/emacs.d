@@ -175,6 +175,13 @@ Set the font to Monaco if it's installed.
       (set-frame-font "Monaco 13"))
 #+END_SRC
 
+I like my emacs /extra thicc/.
+
+#+BEGIN_SRC emacs-lisp
+  (setq initial-frame-alist '((width . 99) (height . 53))
+	default-frame-alist '((width . 99) (height . 53)))
+#+END_SRC
+
 ** Interactive Do
 
 Use IDO mode.

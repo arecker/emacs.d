@@ -617,6 +617,16 @@ Install magit.
     :bind ("C-x g" . magit-status))
 #+END_SRC
 
+Projectile, for finding stuff in projects.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :ensure t
+    :config
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+    (projectile-mode t))
+#+END_SRC
+
 ** Gnus
 
 *** Startup
@@ -846,7 +856,6 @@ Miscellaneous functions.
 Miscellaneous keybindings.
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-c f") 'find-file-in-project)
   (global-set-key (kbd "C-c l") 'sort-lines)
   (global-set-key (kbd "C-c n") 'recker/org-scratch)
   (global-set-key (kbd "C-c r") 'replace-string)

@@ -274,6 +274,12 @@ Disable that silly goal column warning.
 (put 'set-goal-column 'disabled nil)
 #+END_SRC
 
+Replace highlighted text when you start typing.
+
+#+BEGIN_SRC emacs-lisp
+(delete-selection-mode t)
+#+END_SRC
+
 Force emacs to use the same =PATH= defined in the shell.
 
 #+BEGIN_SRC emacs-lisp

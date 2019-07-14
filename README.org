@@ -574,6 +574,22 @@ For this to work, sbcl should be installed and in =PATH=.
 
 #+RESULTS:
 
+*** Python
+
+#+BEGIN_SRC emacs-lisp
+(use-package anaconda-mode
+  :ensure t
+  :init
+  (add-hook 'python-mode-hook 'anaconda-mode)
+  (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
+
+(use-package company-anaconda
+  :ensure t
+  :init (eval-after-load "company"
+	  '(add-to-list 'company-backends 'company-anaconda)))
+#+END_SRC
+
+
 *** Terraform
 
 #+BEGIN_SRC emacs-lisp

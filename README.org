@@ -271,6 +271,20 @@ Bind =imenu=.
 (global-set-key (kbd "C-c i") 'imenu)
 #+END_SRC
 
+** Company
+
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :init (global-company-mode)
+    :config (setq company-tooltip-align-annotations t
+		  company-dabbrev-downcase nil))
+
+  (use-package company-quickhelp
+    :ensure t
+    :init (company-quickhelp-mode))
+#+END_SRC
+
 * Behavior
 
 Prevent emacs from automatically making backups and auto-save files.
@@ -512,7 +526,7 @@ shared code bases.
   :config (editorconfig-mode 1))
 #+END_SRC
 
-*** C Mode
+*** C
 
 Taken from [[https://www.kernel.org/doc/html/v4.10/process/coding-style.html#you-ve-made-a-mess-of-it][The Linux Kernel Coding Style]], which was a way better read
 than you'd think.  I slightly modified the provided snippet so that
@@ -544,6 +558,22 @@ all of my C would obey these rules by default.
                          (c-set-style "linux-tabs-only")))
 #+END_SRC
 
+*** Common Lsp
+
+For this to work, sbcl should be installed and in =PATH=.
+
+#+BEGIN_SRC emacs-lisp
+(use-package slime
+  :ensure t
+  :config (setq inferior-lisp-program (executable-find "sbcl")))
+
+(use-package slime-company
+  :ensure t
+  :init (slime-setup '(slime-fancy slime-company)))
+#+END_SRC
+
+#+RESULTS:
+
 *** Terraform
 
 #+BEGIN_SRC emacs-lisp
@@ -551,6 +581,10 @@ all of my C would obey these rules by default.
     :ensure t
     :defer t
     :mode "\\.tf\\'")
+
+(use-package company-terraform
+  :ensure t
+  :init (company-terraform-init))
 #+END_SRC
 
 ** Special Modes

@@ -12,3 +12,4 @@ url
 .org-id-locations
 transient
 *.eld
+/ido.last~

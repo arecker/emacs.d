@@ -227,44 +227,6 @@ Enable flex matching, so I can still use emacs even while drunk.
   (setq ido-enable-flex-matching t)
 #+END_SRC
 
-Just use IDO whenever possible and sensible.
-
-#+BEGIN_SRC emacs-lisp
-(defvar ido-enable-replace-completing-read t
-  "If t, use ido-completing-read instead of completing-read if possible.
-    
-    Set it to nil using let in around-advice for functions where the
-    original completing-read is required.  For example, if a function
-    foo absolutely must use the original completing-read, define some
-    advice like this:
-    
-    (defadvice foo (around original-completing-read-only activate)
-      (let (ido-enable-replace-completing-read) ad-do-it))")
-
-;; Replace completing-read wherever possible, unless directed otherwise
-(defadvice completing-read
-    (around use-ido-when-possible activate)
-  (if (or (not ido-enable-replace-completing-read) ; Manual override disable ido
-          (and (boundp 'ido-cur-list)
-               ido-cur-list)) ; Avoid infinite loop from ido calling this
-      ad-do-it
-    (let ((allcomp (all-completions "" collection predicate)))
-      (if allcomp
-          (setq ad-return-value
-                (ido-completing-read prompt
-                                     allcomp
-                                     nil require-match initial-input hist def))
-        ad-do-it))))
-#+END_SRC
-
-Except when in DIRED mode.
-
-#+BEGIN_SRC emacs-lisp
- (add-hook 'dired-mode-hook
-              '(lambda ()
-                 (set (make-local-variable 'ido-enable-replace-completing-read) nil)))
-#+END_SRC
-
 Bind =imenu=.
 
 #+BEGIN_SRC emacs-lisp
@@ -497,7 +459,7 @@ HTML using an [[https://github.com/arecker/blog][external program]] I wrote.
 		 :publishing-function recker/blog-journal-publish))
 #+END_SRC
 
-** YAML Mode
+*** YAML Mode
 
 After pausing for a long sigh, install YAML mode.
 

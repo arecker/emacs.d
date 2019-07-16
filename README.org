@@ -2,8 +2,6 @@
 #+AUTHOR: Alex Recker
 #+STARTUP: showall
 
-[[file:screenshots/scratch.png]]
-
 It's been said "there are many ways to skin a cat".  The same can be
 said of Emacs.  Probably.
 
@@ -201,6 +199,12 @@ think, enable this so Emacs says "are you sure?"
 (setq confirm-kill-emacs #'yes-or-no-p)
 #+END_SRC
 
+Disable goal column warning.
+
+#+BEGIN_SRC emacs-lisp
+(put 'set-goal-column 'disabled nil)
+#+END_SRC
+
 ** Better Comments
 
 I overwrite the build-in =comment-dwim= with its superior sequel.
@@ -275,17 +279,15 @@ based on where the cursor is. It’s a brilliant tool.
 Company mode.
 
 #+BEGIN_SRC emacs-lisp
-(use-package company
-  :ensure t
-  :config (global-company-mode))
-#+END_SRC
+  (use-package company
+    :ensure t
+    :init (global-company-mode)
+    :config (setq company-tooltip-align-annotations t
+		  company-dabbrev-downcase nil))
 
-Attempts to connect to an eglot server for each language when you run
-=M-x eglot=.
-
-#+BEGIN_SRC emacs-lisp
-(use-package eglot
-  :ensure t)
+  (use-package company-quickhelp
+    :ensure t
+    :init (company-quickhelp-mode))
 #+END_SRC
 
 Yasnippet - I don't use this nearly as much as I should be.
@@ -329,29 +331,12 @@ Magit.  Seriously.  Just try it you heathen.
                                   'replace))
 #+END_SRC
 
-* Modes
-
-These are the settings for various editing modes - the top level being
-=text-mode=, which is for "editing text written for humans to read".
-
-#+BEGIN_SRC emacs-lisp
-(defun recker/text-mode-hook ()
-  (auto-fill-mode 1)
-  (flyspell-mode 1)
-  (flymake-mode-off))
-(add-hook 'text-mode-hook 'recker/text-mode-hook)
-#+END_SRC
+** Better spellcheck.
 
 Use personal dictionary from docs for ispell.
 
 #+BEGIN_SRC emacs-lisp
 (setq ispell-personal-dictionary (recker/path 'docs "emacs/ispell.dict"))
-#+END_SRC
-
-Disable goal column warning.
-
-#+BEGIN_SRC emacs-lisp
-(put 'set-goal-column 'disabled nil)
 #+END_SRC
 
 Flycheck mode.
@@ -363,7 +348,9 @@ Flycheck mode.
   (global-flycheck-mode))
 #+END_SRC
 
-Support for [[http://editorconfig.org/][editorconfig]].
+* Modes
+
+Support for [[http://editorconfig.org/][editorconfig]], no matter what the mode is.
 
 #+BEGIN_SRC emacs-lisp
 (use-package editorconfig
@@ -614,6 +601,20 @@ ruby as I know about scented candles and professional football.
   :mode "\\.rs'")
 #+END_SRC
 
+** Text
+
+Automatically "fill" text while editing.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+#+END_SRC
+
+Turn on spell check.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'text-mode-hook #'(lambda () (flyspell-mode t)))
+#+END_SRC
+
 ** Terraform
 
 #+BEGIN_SRC emacs-lisp
@@ -821,8 +822,6 @@ HTML using an [[https://github.com/arecker/blog][external program]] I wrote.
 
 
 * Gnus
-
-[[file:screenshots/gnus.png]]
 
 Gnus has a steep learning curve, and learning to incorporate this
 mysterious program has proven to be an emotional roller coaster. I’m

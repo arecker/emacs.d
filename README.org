@@ -237,7 +237,7 @@ Magit.  Seriously.  Just try it you heathen.
                                   'replace))
 #+END_SRC
 
-** Better spellcheck.
+** Better Spellcheck.
 
 Use personal dictionary from docs for ispell.
 

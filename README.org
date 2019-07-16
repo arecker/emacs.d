@@ -207,18 +207,30 @@ Yasnippet - I don't use this nearly as much as I should be.
 Completion and filtering with ivy, supported by counsel.
 
 #+BEGIN_SRC emacs-lisp
-(use-package ivy
-  :ensure t
-  :config (setq ivy-use-selectable-prompt t)
-  :init (ivy-mode 1))
+  (use-package ivy
+    :ensure t
+    :config (setq ivy-use-selectable-prompt t)
+    :init (ivy-mode 1))
 
-(use-package counsel
-  :ensure t
-  :bind
-  ("C-c i" . counsel-imenu)
-  ("C-c s" . swiper)
-  ("C-c g" . counsel-git-grep)
-  ("C-x C-y" . counsel-yank-pop))
+  (use-package counsel
+    :ensure t
+    :bind
+    ("C-c i" . counsel-imenu)
+    ("C-c s" . swiper)
+    ("C-c g" . counsel-git-grep)
+    ("C-x C-y" . counsel-yank-pop))
+#+END_SRC
+
+Use projectile for finding things within projects.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :ensure t
+    :config
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+    (setq projectile-completion-system 'ivy)
+    :init
+    (projectile-mode t))
 #+END_SRC
 
 ** Better Git
@@ -341,9 +353,12 @@ assign it to the scratch message variable.
 Make the =*scratch*= buffer unkillable.
 
 #+BEGIN_SRC emacs-lisp
-(use-package unkillable-scratch
-  :ensure t
-  :init (unkillable-scratch))
+  (defun recker/dont-kill-scratch ()
+    "Return NIL if the current buffer is the *scratch* buffer."
+    (unless (equal (buffer-name (current-buffer)) "*scratch*")
+      t))
+
+  (add-hook 'kill-buffer-query-functions 'recker/dont-kill-scratch)
 #+END_SRC
 
 * Modes
@@ -1081,7 +1096,6 @@ These are miscellaneous functions that I’ve written (or plagiarized).
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c b") 'browse-url)
-(global-set-key (kbd "C-c f") 'project-find-file)
 (global-set-key (kbd "C-c l") 'sort-lines)
 (global-set-key (kbd "C-c n") 'recker/org-scratch)
 (global-set-key (kbd "C-c r") 'replace-string)

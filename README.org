@@ -976,14 +976,13 @@ Here's what it looks like.
 ** Tools
 
 #+BEGIN_SRC emacs-lisp
-  (use-package pass
-    :ensure t)
+  (use-package dictionary :ensure t)
 
-  (use-package request
-    :ensure t)
+  (use-package pass :ensure t)
 
-  (use-package transmission
-    :ensure t)
+  (use-package request :ensure t)
+
+  (use-package transmission :ensure t)
 #+END_SRC
 
 ** Games

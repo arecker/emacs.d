@@ -54,7 +54,7 @@ Register some files I visit often.
 #+BEGIN_SRC emacs-lisp
   (set-register ?d `(file . ,(recker/path 'desktop)))
   (set-register ?e `(file . ,(recker/path 'emacs "README.org")))
-  (set-register ?f '(file . "/ssh:alex@fileboi.local:/data"))
+  (set-register ?f '(file . "/ssh:alex@archive.local:/mnt/"))
   (set-register ?j `(file . ,(recker/path 'docs "journal.org")))
   (set-register ?l `(file . ,(recker/path 'emacs "local.el")))
   (set-register ?o `(file . ,(recker/path 'docs "opsat.org")))

@@ -468,6 +468,17 @@ Disable those silly docstring warnings when editing elisp.
     (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-checkdoc))
 #+END_SRC
 
+** Go
+
+This is the /really/ trendy part of my config.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package go-mode
+    :ensure t
+    :defer t
+    :mode "\\*.go\\'")
+#+END_SRC
+
 ** Groovy
 
 Pretty much just for Jenkins files.

@@ -52,6 +52,7 @@ Personal directories.
 Register some files I visit often.
 
 #+BEGIN_SRC emacs-lisp
+  (set-register ?b '(file . "/ssh:bedroom:/home/alex"))
   (set-register ?d `(file . ,(recker/path 'desktop)))
   (set-register ?e `(file . ,(recker/path 'emacs "README.org")))
   (set-register ?f '(file . "/ssh:alex@archive.local:/mnt/"))

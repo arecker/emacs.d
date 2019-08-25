@@ -412,8 +412,8 @@ obey these rules by default.
 ** Clojure
 
 #+BEGIN_SRC emacs-lisp
-  (use-package cider
-    :ensure t)
+  ;; (use-package cider
+  ;;   :ensure t)
 
   (use-package clojure-mode
     :ensure t)

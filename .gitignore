@@ -13,3 +13,4 @@ url
 transient
 *.eld
 /ido.last~
+request/*

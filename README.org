@@ -262,6 +262,13 @@ Use personal dictionary from docs for ispell.
   (setq ispell-personal-dictionary (recker/path 'docs "emacs/ispell.dict"))
 #+END_SRC
 
+Use =ispell= explicitly, so it doesn't accidentally pick up a
+different program like =aspell= on a mac.
+
+#+BEGIN_SRC emacs-lisp
+(setq ispell-program-name (executable-find "ispell"))
+#+END_SRC
+
 Flycheck mode.
 
 #+BEGIN_SRC emacs-lisp

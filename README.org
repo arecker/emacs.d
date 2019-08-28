@@ -443,10 +443,10 @@ For this to work, sbcl should be installed and in =PATH=.
 ** Csv
 
 #+BEGIN_SRC emacs-lisp
-  (use-package csv-mode
-    :ensure t
-    :defer t
-    :mode "\\.csv\\'")
+  ;; (use-package csv-mode
+  ;;   :ensure t
+  ;;   :defer t
+  ;;   :mode "\\.csv\\'")
 #+END_SRC
 
 ** D

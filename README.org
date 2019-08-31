@@ -590,6 +590,14 @@ Install virtualenvwrapper support.
     :ensure t)
 #+END_SRC
 
+Let elpy do its thing.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package elpy
+    :ensure t
+    :init (elpy-enable))
+#+END_SRC
+
 ** Ruby
    
 These are very much a work in progress.  I know about as much about

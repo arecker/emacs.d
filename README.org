@@ -688,7 +688,7 @@ Aliases for eshell
   (use-package yaml-mode
     :ensure t
     :defer t
-    :mode ("\\.yml\\'" "\\.sls\\'")
+    :mode ("\\.yml\\'" "\\.sls\\'" "\\.yml.j2\\'")
     :init
     (add-hook 'yaml-mode-hook 'turn-off-auto-fill))
 #+END_SRC

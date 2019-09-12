@@ -816,26 +816,6 @@ Set up some publishing projects.
   (setq org-publish-project-alist '())
 #+END_SRC
 
-Make a simple publishing project to export public journal entries to
-HTML using an [[https://github.com/arecker/blog][external program]] I wrote.
-
-#+BEGIN_SRC emacs-lisp
-  (defun recker/blog-journal-publish (plist filename pub-dir)
-    (shell-command-to-string
-     (format "blog %s %s %s" filename pub-dir (recker/path 'home "src/blog/index.html.erb"))))
-
-  (add-to-list 'org-publish-project-alist
-	       `("blog"
-		 :base-directory ,(recker/path 'docs)
-		 :base-extension "org"
-		 :exclude ".*"
-		 :include ("journal.org")
-		 :publishing-directory ,(recker/path 'public "www.alexrecker.com")
-		 :publishing-function recker/blog-journal-publish))
-#+END_SRC
-
-
-
 * Gnus
 
 Gnus has a steep learning curve, and learning to incorporate this

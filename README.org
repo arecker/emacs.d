@@ -101,6 +101,8 @@ Alex as he disabled them.
 
   (when (display-graphic-p)
     (scroll-bar-mode -1))
+
+  (setq vc-follow-symlinks t)
 #+END_SRC
 
 Because the command =C-x C-c= is easier to type by accident than you'd

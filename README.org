@@ -59,7 +59,6 @@ Register some files I visit often.
   (set-register ?j `(file . ,(recker/path 'docs "journal.org")))
   (set-register ?l `(file . ,(recker/path 'emacs "local.el")))
   (set-register ?o `(file . ,(recker/path 'docs "opsat.org")))
-  (set-register ?w `(file . ,(recker/path 'docs "work.org")))
 #+END_SRC
 
 * Interface
@@ -780,16 +779,6 @@ Set up some custom agenda views.
 
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-custom-commands '())
-#+END_SRC
-
-Add a view to view all upcoming chores.
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'org-agenda-custom-commands
-	       '("c" "Chores View"
-		 ((agenda "")
-		  (tags-todo "chores"))
-		 ((org-agenda-tag-filter-preset (quote ("+chores"))))))
 #+END_SRC
 
 ** Babel

@@ -1070,7 +1070,8 @@ These are miscellaneous functions that I’ve written (or plagiarized).
 
   (defun recker/docs-sync ()
     (interactive)
-    (shell-command (format "git-sync.sh -d %s" (recker/path 'docs)) nil nil))
+    (save-window-excursion
+      (shell-command (format "git-sync.sh -d %s" (recker/path 'docs)) nil nil)))
 #+END_SRC
 
 ** Keybindings

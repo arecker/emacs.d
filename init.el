@@ -12,7 +12,7 @@
     (package-install 'use-package)))
 
 (defun recker/load-config ()
-  "Tangle configuration and load it"
+  "Tangle configuration and load it."
   (let ((config (concat (file-name-as-directory user-emacs-directory) "README.org")))
     (if (file-exists-p config)
 	(org-babel-load-file config)

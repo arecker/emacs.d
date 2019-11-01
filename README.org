@@ -117,6 +117,12 @@ Disable goal column warning.
   (put 'set-goal-column 'disabled nil)
 #+END_SRC
 
+Upcase
+
+#+BEGIN_SRC emacs-lisp
+(put 'upcase-region 'disabled nil)
+#+END_SRC
+
 ** Better Comments
 
 I overwrite the build-in =comment-dwim= with its superior sequel.

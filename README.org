@@ -465,6 +465,14 @@ For this to work, sbcl should be installed and in =PATH=.
     :mode "\\.d\\'")
 #+END_SRC
 
+** Dhall
+
+#+BEGIN_SRC emacs-lisp
+  (use-package dhall-mode
+    :ensure t
+    :mode "\\.dhall\\'")
+#+END_SRC
+
 ** Dockerfile
 
 #+BEGIN_SRC emacs-lisp

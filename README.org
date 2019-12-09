@@ -902,8 +902,7 @@ Use gmane and gwene to follow news, mailers, and tons of other
 syndicated things. There are even comics.
 
 #+BEGIN_SRC emacs-lisp
-  (setq gnus-secondary-select-methods '((nntp "news.gmane.org")
-					(nntp "news.gwene.org")))
+  (setq gnus-secondary-select-methods '())
 #+END_SRC
 
 ** Reading Mail
@@ -921,12 +920,6 @@ Add a personal IMAP account.
 #+END_SRC
 
 ** Sending Mail
-
-Posting styles for a personal email.
-
-#+BEGIN_SRC emacs-lisp
-  (setq gnus-posting-styles '((".*" (signature (string-join '("Alex Recker" "alex@reckerfamily.com") "\n")))))
-#+END_SRC
 
 Don't attempt to archive outbound emails to groups.
 

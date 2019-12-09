@@ -983,6 +983,20 @@ Write good.
   :init (add-hook 'org-mode-hook 'writegood-mode))
 #+END_SRC
 
+Start a server to listen for =emacsclient=.
+
+#+BEGIN_SRC emacs-lisp
+  (if (server-running-p)
+      (server-force-stop))
+  (server-start)
+#+END_SRC
+
+Mutt, for work email.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("/mutt" . mail-mode))
+#+END_SRC
+
 ** Games
 
 #+BEGIN_SRC emacs-lisp

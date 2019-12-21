@@ -745,15 +745,6 @@ Set-up org capture for quickly adding text to notes.
   (setq org-capture-templates '())
 #+END_SRC
 
-Add a capture template for ideas.
-
-#+BEGIN_SRC emacs-lisp
-  (let* ((opsat (recker/path 'docs "opsat.org"))
-	 (dest `(file+headline ,opsat "Ideas"))
-	 (template `("i" "idea" plain ,dest "%?" :empty-lines 1)))
-    (add-to-list 'org-capture-templates template))
-#+END_SRC
-
 Add a custom template for daily journaling that files entries in a
 date tree.
 

@@ -78,7 +78,7 @@ Set the font to monaco if I'm on a mac.  Otherwise, use inconsolata.
 #+BEGIN_SRC emacs-lisp
   (when (display-graphic-p)
     (if (string-equal system-type "darwin")
-	(set-frame-font "Monaco 13")
+	(set-frame-font "Monaco 16")
       (set-frame-font "Inconsolata 13")))
 #+END_SRC
 

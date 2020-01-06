@@ -1027,20 +1027,24 @@ These are miscellaneous functions that I’ve written (or plagiarized).
     (interactive "r")
     (align-regexp beg end "\\(\\s-*\\)\\ =" 1 0 t))
 
+  (setq recker/active-password-store (expand-file-name "~/.password-store"))
+
+  (defun password-store-dir ()
+    recker/active-password-store)
+
+  (defun recker/password-store-copy-work ()
+    (interactive)
+    (let ((recker/active-password-store (expand-file-name "~/.password-store-work")))
+      (funcall-interactively #'password-store-copy (password-store--completing-read))))
+
   (defun recker/pass-to-string (entry)
     "Read an entry from `pass` as a string."
     (with-temp-buffer
       (password-store-copy entry)
       (progn (yank) (buffer-string))))
 
-  (defun recker/password-store-copy-work ()
-    (interactive)
-    (setenv "PASSWORD_STORE_DIR" (expand-file-name "~/.password-store-work"))
-    (funcall-interactively #'password-store-copy (password-store--completing-read)))
-
   (defun recker/password-store-copy ()
-    (interactive)
-    (setenv "PASSWORD_STORE_DIR" (expand-file-name "~/.password-store"))
+    (interactive)  
     (funcall-interactively #'password-store-copy (password-store--completing-read)))
 
   (defun recker/encrypt-with-ssh (public-key-path)
@@ -1077,15 +1081,15 @@ These are miscellaneous functions that I’ve written (or plagiarized).
 			   #'(lambda (o) (cdr (assoc 'title o)))
 			   (request-response-data
 			    (request (concat url "/tasks")
-				     :sync t :parser 'json-read :headers headers
-				     :params `(("list_id" . ,list-id))))))
+			      :sync t :parser 'json-read :headers headers
+			      :params `(("list_id" . ,list-id))))))
 	   (new-items (or (remove-if #'(lambda (i) (member (format "%s" i) current-items)) these-items)
 			  (error "nothing to add!"))))
       (dolist (item new-items)
 	(request (concat url "/tasks")
-		 :parser 'json-read :headers headers :type "POST"
-		 :data (json-encode-alist `(("list_id" . ,list-id)
-					    ("title" . ,(format "%s" item))))))
+	  :parser 'json-read :headers headers :type "POST"
+	  :data (json-encode-alist `(("list_id" . ,list-id)
+				     ("title" . ,(format "%s" item))))))
       (message "Added to groceries: %s" new-items)))
 
   (defun recker/docs-sync ()
@@ -1107,7 +1111,7 @@ These are miscellaneous functions that I’ve written (or plagiarized).
 		  (forward-char 1)))))
       (if point
 	  (goto-char point)
-	  (message "No non-ascii characters."))))
+	(message "No non-ascii characters."))))
 #+END_SRC
 
 ** Keybindings

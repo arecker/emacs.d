@@ -379,6 +379,29 @@ Make the =*scratch*= buffer unkillable.
   (add-hook 'kill-buffer-query-functions 'recker/dont-kill-scratch)
 #+END_SRC
 
+** Better Passwords
+
+My own functions for [[https://www.passwordstore.org/][pass]].
+
+#+BEGIN_SRC emacs-lisp
+  (defun recker/pass-directory ()
+    (or (bound-and-true-p recker/active-pass-directory)
+	(expand-file-name "~/.password-store")))
+
+  (defun recker/pass--file-to-entry (path)
+    (file-name-sans-extension
+     (file-relative-name path (recker/pass-directory))))
+
+  (defun recker/pass-list-entries ()
+    (mapcar
+     #'recker/pass--file-to-entry
+     (directory-files-recursively (recker/pass-directory) ".gpg")))
+
+  (defun recker/pass-to-string (path)
+    (shell-command-to-string
+     (format "PASSWORD_STORE_DIR=\"%s\" pass \"%s\" | head -1" (recker/pass-directory) path)))
+#+END_SRC
+
 * Modes
 
 Support for [[http://editorconfig.org/][editorconfig]], no matter what the mode is.

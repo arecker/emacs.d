@@ -14,3 +14,4 @@ transient
 *.eld
 /ido.last~
 request/*
+elpy

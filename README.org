@@ -398,8 +398,21 @@ My own functions for [[https://www.passwordstore.org/][pass]].
      (directory-files-recursively (recker/pass-directory) ".gpg")))
 
   (defun recker/pass-to-string (path)
-    (shell-command-to-string
-     (format "PASSWORD_STORE_DIR=\"%s\" pass \"%s\" | head -1" (recker/pass-directory) path)))
+    (first
+     (split-string
+      (shell-command-to-string
+       (format "PASSWORD_STORE_DIR=\"%s\" pass \"%s\" | head -1" (recker/pass-directory) path))
+      "\n")))
+
+  (defun recker/pass-to-clip (path)
+    (interactive (list (completing-read "Password: " (recker/pass-list-entries) nil t)))
+    (shell-command
+     (format "PASSWORD_STORE_DIR=\"%s\" pass -c \"%s\"" (recker/pass-directory) path)))
+
+  (defun recker/pass-to-clip-work ()
+    (interactive)
+    (let ((recker/active-pass-directory (expand-file-name "~/.password-store-work")))
+      (funcall-interactively #'recker/pass-to-clip (completing-read "Password: " (recker/pass-list-entries) nil t))))
 #+END_SRC
 
 * Modes
@@ -982,8 +995,6 @@ Here's what it looks like.
 #+BEGIN_SRC emacs-lisp
   (use-package dictionary :ensure t)
 
-  (use-package pass :ensure t)
-
   (use-package request :ensure t)
 
   (use-package transmission :ensure t)
@@ -1000,6 +1011,7 @@ Write good.
 Start a server to listen for =emacsclient=.
 
 #+BEGIN_SRC emacs-lisp
+  (require 'server)
   (if (server-running-p)
       (server-force-stop))
   (server-start)
@@ -1050,26 +1062,6 @@ These are miscellaneous functions that I’ve written (or plagiarized).
     (interactive "r")
     (align-regexp beg end "\\(\\s-*\\)\\ =" 1 0 t))
 
-  (setq recker/active-password-store (expand-file-name "~/.password-store"))
-
-  (defun password-store-dir ()
-    recker/active-password-store)
-
-  (defun recker/password-store-copy-work ()
-    (interactive)
-    (let ((recker/active-password-store (expand-file-name "~/.password-store-work")))
-      (funcall-interactively #'password-store-copy (password-store--completing-read))))
-
-  (defun recker/pass-to-string (entry)
-    "Read an entry from `pass` as a string."
-    (with-temp-buffer
-      (password-store-copy entry)
-      (progn (yank) (buffer-string))))
-
-  (defun recker/password-store-copy ()
-    (interactive)  
-    (funcall-interactively #'password-store-copy (password-store--completing-read)))
-
   (defun recker/encrypt-with-ssh (public-key-path)
     (interactive "fPublic Key Path: ")
     (let* ((pem (shell-command-to-string (format "ssh-keygen -f %s -e -m PKCS8" public-key-path)))
@@ -1086,13 +1078,12 @@ These are miscellaneous functions that I’ve written (or plagiarized).
     "Sends the org mode list at point to wunderlist.  Any item not
     already captured in wunderlist (by title) is added."
     (interactive)
-    (setenv "PASSWORD_STORE_DIR" (expand-file-name "~/.password-store"))
     (let* ((these-items (if (member (first (org-element-at-point)) '(plain-list item))
 			    (mapcar #'(lambda (i) (first i)) (cdr (org-list-to-lisp)))
 			  (error "pointer not on a list")))
 	   (headers `(("Content-Type" . "application/json")
-		      ("X-Access-Token" . ,(password-store-get "wundercron/client-secret"))
-		      ("X-Client-ID" . ,(password-store-get "wundercron/client-id"))))
+		      ("X-Access-Token" . ,(recker/pass-to-string "wundercron/client-secret"))
+		      ("X-Client-ID" . ,(recker/pass-to-string "wundercron/client-id"))))
 	   (url "https://a.wunderlist.com/api/v1")
 	   (list-name "groceries")	;TODO: completing-read?
 	   (list-obj (seq-find
@@ -1149,9 +1140,8 @@ These are miscellaneous functions that I’ve written (or plagiarized).
   (global-set-key (kbd "C-x C-k k") 'kill-buffer)
   (global-set-key (kbd "C-x P") 'recker/purge-buffers)
   (global-set-key (kbd "C-x k") 'kill-this-buffer)
-  (global-set-key (kbd "C-x p") 'password-store-copy)
-  (global-set-key (kbd "C-x p") 'recker/password-store-copy)
-  (global-set-key (kbd "C-x w") 'recker/password-store-copy-work)
+  (global-set-key (kbd "C-x p") 'recker/pass-to-clip)
+  (global-set-key (kbd "C-x w") 'recker/pass-to-clip-work)
   (global-set-key (kbd "C-x |") 'recker/do-fancy-equal-thingy)
 #+END_SRC
 

@@ -535,7 +535,16 @@ This is the /really/ trendy part of my config.
   (use-package go-mode
     :ensure t
     :defer t
-    :mode "\\*.go\\'")
+    :mode "\\*.go\\'"
+    :init
+    (add-hook 'before-save-hook 'gofmt-before-save)
+    (local-set-key (kbd "M-.") 'godef-jump)
+    (add-hook 'go-mode-hook (lambda ()
+			      (set (make-local-variable 'company-backends) '(company-go))
+			      (company-mode))))
+
+  (use-package company-go
+    :ensure t)
 #+END_SRC
 
 ** Groovy

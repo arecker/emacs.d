@@ -32,6 +32,14 @@ Ensure that the system =PATH= is the one used by emacs.
     :config (exec-path-from-shell-initialize))
 #+END_SRC
 
+Helper function for sniffing OS.
+
+#+BEGIN_SRC emacs-lisp
+  (defun recker/macos-p ()
+    "Returns T if running on MacOS."
+    (string-equal system-type "darwin"))
+#+END_SRC
+
 Personal directories.
 
 #+BEGIN_SRC emacs-lisp
@@ -65,21 +73,21 @@ Register some files I visit often.
 
 ** Better Look
 
-I like my emacs /extra thicc/.
+On MacOS, I like my emacs /extra thicc/.
 
 #+BEGIN_SRC emacs-lisp
-  ;; (when (display-graphic-p)
-  ;;   (setq initial-frame-alist '((width . 99) (height . 53))
-  ;; 	default-frame-alist '((width . 99) (height . 53))))
+  (when (and (recker/macos-p) (display-graphic-p))
+    (setq initial-frame-alist '((width . 99) (height . 53))
+	  default-frame-alist '((width . 99) (height . 53))))
 #+END_SRC
 
 Set the font to monaco if I'm on a mac.  Otherwise, use inconsolata.
 
 #+BEGIN_SRC emacs-lisp
   (when (display-graphic-p)
-    (if (string-equal system-type "darwin")
-	(set-frame-font "Monaco 18")
-      (set-frame-font "Inconsolata 13")))
+    (if (recker/macos-p)
+	(set-default-font "Monaco 18" nil t)
+      (set-default-font "Inconsolata 13" nil t)))
 #+END_SRC
 
 ** Better Defaults

@@ -86,7 +86,7 @@ Set the font to monaco if I'm on a mac.  Otherwise, use inconsolata.
 #+BEGIN_SRC emacs-lisp
   (when (display-graphic-p)
     (if (recker/macos-p)
-	(set-default-font "Monaco 18" nil t)
+	(set-default-font "Monaco 20" nil t)
       (set-default-font "Inconsolata 13" nil t)))
 #+END_SRC
 

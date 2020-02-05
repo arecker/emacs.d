@@ -600,11 +600,23 @@ This is the web-scale portion of my config.
 
 ** Jsonnet
 
+Install jsonnet mode.
+
 #+BEGIN_SRC emacs-lisp
   (use-package jsonnet-mode
     :ensure t
     :defer t
-    :mode ("\\.jsonnet\\'"))
+    :mode ("\\.jsonnet\\'" "\\.libsonnet\\'"))
+#+END_SRC
+
+Add my own shim for formatting jsonnet because the language is in
+shambles and this doesn't work out of the box.
+
+#+BEGIN_SRC emacs-lisp
+  (defun jsonnet-reformat-buffer ()
+    "Reformat entire buffer using the Jsonnet format utility, except it actually works."
+    (interactive)
+    (call-process-region (point-min) (point-max) "jsonnetfmt" t t nil (buffer-file-name)))
 #+END_SRC
 
 ** Log

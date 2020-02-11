@@ -1041,9 +1041,8 @@ Start a server to listen for =emacsclient=.
 
 #+BEGIN_SRC emacs-lisp
   (require 'server)
-  (if (server-running-p)
-      (server-force-stop))
-  (server-start)
+  (unless (server-running-p)
+    (server-start))
 #+END_SRC
 
 Mutt, for work email.

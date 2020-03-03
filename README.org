@@ -51,6 +51,7 @@ Personal directories.
 		  ('docs (if macos-p "~/Documents" "~/docs"))
 		  ('pics (if macos-p "~/Pictures" "~/pics"))
 		  ('public (if macos-p "~/Public" "~/public"))
+		  ('src "~/src")
 		  ('emacs user-emacs-directory)
 		  (_ (error (format "no %s directory!" dir)))))
 	   (subdir (or subpath "")))
@@ -64,7 +65,7 @@ Register some files I visit often.
   (set-register ?d `(file . ,(recker/path 'desktop)))
   (set-register ?e `(file . ,(recker/path 'emacs "README.org")))
   (set-register ?f '(file . "/ssh:alex@archive.local:/mnt/"))
-  (set-register ?j `(file . ,(recker/path 'docs "journal.org")))
+  (set-register ?j `(file . ,(recker/path 'src "blog/journal.org")))
   (set-register ?l `(file . ,(recker/path 'emacs "local.el")))
   (set-register ?o `(file . ,(recker/path 'docs "opsat.org")))
 #+END_SRC

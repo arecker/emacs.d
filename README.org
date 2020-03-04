@@ -815,7 +815,7 @@ Add a custom template for daily journaling that files entries in a
 date tree.
 
 #+BEGIN_SRC emacs-lisp
-  (let* ((journal-path (recker/path 'docs "journal.org"))
+  (let* ((journal-path (recker/path 'src "blog/journal.org"))
 	 (dest `(file+olp+datetree ,journal-path))
 	 (template `("j" "journal" plain ,dest "%?" :empty-lines 1)))
     (add-to-list 'org-capture-templates template))

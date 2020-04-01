@@ -65,7 +65,6 @@ Register some files I visit often.
   (set-register ?d `(file . ,(recker/path 'desktop)))
   (set-register ?e `(file . ,(recker/path 'emacs "README.org")))
   (set-register ?f '(file . "/ssh:alex@archive.local:/mnt/"))
-  (set-register ?j `(file . ,(recker/path 'src "blog/journal.org")))
   (set-register ?l `(file . ,(recker/path 'emacs "local.el")))
   (set-register ?o `(file . ,(recker/path 'docs "opsat.org")))
 #+END_SRC
@@ -87,7 +86,7 @@ Set the font to monaco if I'm on a mac.  Otherwise, use inconsolata.
 #+BEGIN_SRC emacs-lisp
   (when (display-graphic-p)
     (if (recker/macos-p)
-	(set-default-font "Monaco 20" nil t)
+	(set-default-font "Monaco 16" nil t)
       (set-default-font "Inconsolata 13" nil t)))
 #+END_SRC
 
@@ -620,6 +619,9 @@ shambles and this doesn't work out of the box.
     (call-process-region (point-min) (point-max) "jsonnetfmt" t t nil (buffer-file-name)))
 #+END_SRC
 
+#+RESULTS:
+: jsonnet-reformat-buffer
+
 ** Log
 
 Taken from [[https://writequit.org/articles/working-with-logs-in-emacs.html][Working with Log Files in Emacs]].
@@ -776,6 +778,11 @@ Aliases for eshell
 
 * Org
 
+#+BEGIN_SRC emacs-lisp
+(use-package org-mode
+  :mode "\\.org$")
+#+END_SRC
+
 ** Editing
 
 Render blank lines between collapsed headings.
@@ -809,16 +816,6 @@ Set-up org capture for quickly adding text to notes.
 
 #+BEGIN_SRC emacs-lisp
   (setq org-capture-templates '())
-#+END_SRC
-
-Add a custom template for daily journaling that files entries in a
-date tree.
-
-#+BEGIN_SRC emacs-lisp
-  (let* ((journal-path (recker/path 'src "blog/journal.org"))
-	 (dest `(file+olp+datetree ,journal-path))
-	 (template `("j" "journal" plain ,dest "%?" :empty-lines 1)))
-    (add-to-list 'org-capture-templates template))
 #+END_SRC
 
 Bind =org-capture= to a fast, slick keybinding.
@@ -1155,6 +1152,13 @@ These are miscellaneous functions that I’ve written (or plagiarized).
       (if point
 	  (goto-char point)
 	(message "No non-ascii characters."))))
+
+  (defun recker/today ()
+    "Open today's journal entry."
+    (interactive)
+    (let ((target
+	   (recker/path 'src (format-time-string "blog/_posts/%Y-%m-%d-%Y-%m-%d.html.md"))))
+      (find-file target)))
 #+END_SRC
 
 ** Keybindings
@@ -1165,6 +1169,7 @@ These are miscellaneous functions that I’ve written (or plagiarized).
   (global-set-key (kbd "C-c l") 'sort-lines)
   (global-set-key (kbd "C-c n") 'recker/org-scratch)
   (global-set-key (kbd "C-c r") 'replace-string)
+  (global-set-key (kbd "C-c t") 'recker/today)
   (global-set-key (kbd "C-c w") 'recker/send-list-at-point-to-wunderlist)
   (global-set-key (kbd "C-x C-k k") 'kill-buffer)
   (global-set-key (kbd "C-x P") 'recker/purge-buffers)

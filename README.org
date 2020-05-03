@@ -1100,38 +1100,6 @@ These are miscellaneous functions that I’ve written (or plagiarized).
       (kill-new decrypt-command nil)
       (message "Decrypt command added to kill ring.")))
 
-  (defun recker/send-list-at-point-to-wunderlist ()
-    "Sends the org mode list at point to wunderlist.  Any item not
-    already captured in wunderlist (by title) is added."
-    (interactive)
-    (let* ((these-items (if (member (first (org-element-at-point)) '(plain-list item))
-			    (mapcar #'(lambda (i) (first i)) (cdr (org-list-to-lisp)))
-			  (error "pointer not on a list")))
-	   (headers `(("Content-Type" . "application/json")
-		      ("X-Access-Token" . ,(recker/pass-to-string "wundercron/client-secret"))
-		      ("X-Client-ID" . ,(recker/pass-to-string "wundercron/client-id"))))
-	   (url "https://a.wunderlist.com/api/v1")
-	   (list-name "groceries")	;TODO: completing-read?
-	   (list-obj (seq-find
-		      #'(lambda (i) (string-equal list-name (cdr (assoc 'title i))))
-		      (request-response-data
-		       (request (concat url "/lists") :sync t :parser 'json-read :headers headers))))
-	   (list-id (cdr (assoc 'id list-obj)))
-	   (current-items (mapcar
-			   #'(lambda (o) (cdr (assoc 'title o)))
-			   (request-response-data
-			    (request (concat url "/tasks")
-			      :sync t :parser 'json-read :headers headers
-			      :params `(("list_id" . ,list-id))))))
-	   (new-items (or (remove-if #'(lambda (i) (member (format "%s" i) current-items)) these-items)
-			  (error "nothing to add!"))))
-      (dolist (item new-items)
-	(request (concat url "/tasks")
-	  :parser 'json-read :headers headers :type "POST"
-	  :data (json-encode-alist `(("list_id" . ,list-id)
-				     ("title" . ,(format "%s" item))))))
-      (message "Added to groceries: %s" new-items)))
-
   (defun recker/docs-sync ()
     (interactive)
     (save-window-excursion
@@ -1170,7 +1138,6 @@ These are miscellaneous functions that I’ve written (or plagiarized).
   (global-set-key (kbd "C-c n") 'recker/org-scratch)
   (global-set-key (kbd "C-c r") 'replace-string)
   (global-set-key (kbd "C-c t") 'recker/today)
-  (global-set-key (kbd "C-c w") 'recker/send-list-at-point-to-wunderlist)
   (global-set-key (kbd "C-x C-k k") 'kill-buffer)
   (global-set-key (kbd "C-x P") 'recker/purge-buffers)
   (global-set-key (kbd "C-x k") 'kill-this-buffer)

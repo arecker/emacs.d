@@ -90,6 +90,14 @@ Set the font to monaco if I'm on a mac.  Otherwise, use inconsolata.
       (set-default-font "Inconsolata 13" nil t)))
 #+END_SRC
 
+Some functions for changing the font on the fly.
+
+#+BEGIN_SRC emacs-lisp
+(defun recker/big-font ()
+  (interactive)
+  (set-default-font "Monaco 20" nil t))
+#+END_SRC
+
 ** Better Defaults
 
 Emacs comes with some obnixious defaults.  "Not on my watch!", yelled

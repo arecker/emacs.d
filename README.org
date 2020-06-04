@@ -81,21 +81,35 @@ On MacOS, I like my emacs /extra thicc/.
 	  default-frame-alist '((width . 99) (height . 53))))
 #+END_SRC
 
-Set the font to monaco if I'm on a mac.  Otherwise, use inconsolata.
+Dynamically set the font, and define some functions for changing the
+font on the fly.
 
 #+BEGIN_SRC emacs-lisp
+  (setq-default recker/regular-font (if (recker/macos-p)
+					"Monaco 16"
+				      "Inconsolata 13"))
+
+  (setq-default recker/large-font (if (recker/macos-p)
+				      "Monaco 20"
+				    "Inconsolata 18"))
+
   (when (display-graphic-p)
-    (if (recker/macos-p)
-	(set-default-font "Monaco 16" nil t)
-      (set-default-font "Inconsolata 13" nil t)))
-#+END_SRC
+    (set-frame-font recker/regular-font nil t))
 
-Some functions for changing the font on the fly.
+  (defun recker/toggle-font-size ()
+    (interactive)
+    (unless (display-graphic-p)
+      (error "Running in -nw mode, font won't work"))
+    (let* ((current-font-obj (face-attribute 'default :font))
+	   (current-font (format "%s %s"
+				 (font-get current-font-obj :family)
+				 (font-get current-font-obj :size)))
+	   (desired-font (if (string-equal current-font recker/regular-font)
+			     recker/large-font
+			   recker/regular-font)))
+      (set-frame-font (progn (message "Changing font to %s" desired-font) desired-font))))
 
-#+BEGIN_SRC emacs-lisp
-(defun recker/big-font ()
-  (interactive)
-  (set-default-font "Monaco 20" nil t))
+  (global-set-key (kbd "C-c C-x f") 'recker/toggle-font-size)
 #+END_SRC
 
 ** Better Defaults

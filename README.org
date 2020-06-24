@@ -66,7 +66,7 @@ Register some files I visit often.
   (set-register ?e `(file . ,(recker/path 'emacs "README.org")))
   (set-register ?f '(file . "/ssh:alex@archive.local:/mnt/"))
   (set-register ?l `(file . ,(recker/path 'emacs "local.el")))
-  (set-register ?o `(file . ,(recker/path 'docs "opsat.org")))
+  (set-register ?o `(file . ,(recker/path 'docs)))
 #+END_SRC
 
 * Interface
@@ -107,7 +107,7 @@ font on the fly.
 	   (desired-font (if (string-equal current-font recker/regular-font)
 			     recker/large-font
 			   recker/regular-font)))
-      (set-frame-font (progn (message "Changing font to %s" desired-font) desired-font))))
+      (set-frame-font (progn (message "Changing font to %s" desired-font) desired-font) t t)))
 
   (global-set-key (kbd "C-c C-x f") 'recker/toggle-font-size)
 #+END_SRC

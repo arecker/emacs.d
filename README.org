@@ -783,6 +783,14 @@ Aliases for eshell
     :mode "\\.ts\\'")
 #+END_SRC
 
+** Vue
+
+#+BEGIN_SRC emacs-lisp
+(use-package vue-mode :ensure t)
+
+(add-hook 'vue-mode-hook (lambda () (setq syntax-ppss-table nil)))
+#+END_SRC
+
 ** YAML
 
 #+BEGIN_SRC emacs-lisp

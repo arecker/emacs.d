@@ -66,7 +66,8 @@ Register some files I visit often.
   (set-register ?e `(file . ,(recker/path 'emacs "README.org")))
   (set-register ?f '(file . "/ssh:alex@archive.local:/mnt/"))
   (set-register ?l `(file . ,(recker/path 'emacs "local.el")))
-  (set-register ?o `(file . ,(recker/path 'docs)))
+  (set-register ?o `(file . ,(recker/path 'docs "opsat.org")))
+  (set-register ?m `(file . ,(recker/path 'docs "mixtape.org")))
 #+END_SRC
 
 * Interface

@@ -1155,8 +1155,8 @@ These are miscellaneous functions that I’ve written (or plagiarized).
   (defun recker/today ()
     "Open today's journal entry."
     (interactive)
-    (let ((target
-	   (recker/path 'src (format-time-string "blog/_posts/%Y-%m-%d-%Y-%m-%d.html.md"))))
+    (let* ((target
+	   (recker/path 'src (format-time-string "blog/entries/%Y-%m-%d.md"))))
       (find-file target)))
 #+END_SRC
 

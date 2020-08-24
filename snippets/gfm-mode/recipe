@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: recipe
+# key: recipe
+# --
+[$0]: https://cookbook.reckerfamily.com/$1

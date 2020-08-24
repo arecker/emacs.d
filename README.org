@@ -62,12 +62,13 @@ Register some files I visit often.
 
 #+BEGIN_SRC emacs-lisp
   (set-register ?b '(file . "/ssh:bedroom:/home/alex"))
+  (set-register ?c '(file . "/ssh:console:/home/alex"))
   (set-register ?d `(file . ,(recker/path 'desktop)))
   (set-register ?e `(file . ,(recker/path 'emacs "README.org")))
   (set-register ?f '(file . "/ssh:alex@archive.local:/mnt/"))
   (set-register ?l `(file . ,(recker/path 'emacs "local.el")))
-  (set-register ?o `(file . ,(recker/path 'docs "opsat.org")))
   (set-register ?m `(file . ,(recker/path 'docs "mixtape.org")))
+  (set-register ?o `(file . ,(recker/path 'docs "opsat.org")))
 #+END_SRC
 
 * Interface
@@ -1131,11 +1132,6 @@ These are miscellaneous functions that I’ve written (or plagiarized).
       (kill-new decrypt-command nil)
       (message "Decrypt command added to kill ring.")))
 
-  (defun recker/docs-sync ()
-    (interactive)
-    (save-window-excursion
-      (async-shell-command (format "git-sync -d %s" (recker/path 'docs)) nil nil)))
-
   (defun find-first-non-ascii-char ()
     "Find the first non-ascii character from point onwards."
     (interactive)
@@ -1164,7 +1160,6 @@ These are miscellaneous functions that I’ve written (or plagiarized).
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-c b") 'browse-url)
-  (global-set-key (kbd "C-c d") 'recker/docs-sync)
   (global-set-key (kbd "C-c l") 'sort-lines)
   (global-set-key (kbd "C-c n") 'recker/org-scratch)
   (global-set-key (kbd "C-c r") 'replace-string)

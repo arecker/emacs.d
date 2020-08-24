@@ -120,20 +120,21 @@ Emacs comes with some obnixious defaults.  "Not on my watch!", yelled
 Alex as he disabled them.
 
 #+BEGIN_SRC emacs-lisp
-  (setq make-backup-files nil
-	auto-save-default nil
-	indent-tabs-mode nil
-	ns-confirm-quit 1)
+    (setq make-backup-files nil
+	  auto-save-default nil
+	  indent-tabs-mode nil
+	  ns-confirm-quit 1
+	  default-directory (expand-file-name "~"))
 
-  (global-auto-revert-mode 1)
-  (menu-bar-mode 0)
-  (delete-selection-mode t)
-  (tool-bar-mode -1)
+    (global-auto-revert-mode 1)
+    (menu-bar-mode 0)
+    (delete-selection-mode t)
+    (tool-bar-mode -1)
 
-  (when (display-graphic-p)
-    (scroll-bar-mode -1))
+    (when (display-graphic-p)
+      (scroll-bar-mode -1))
 
-  (setq vc-follow-symlinks t)
+    (setq vc-follow-symlinks t)
 #+END_SRC
 
 Because the command =C-x C-c= is easier to type by accident than you'd
@@ -204,7 +205,8 @@ of jumping to the current file in dired with =C-x C-j=.
 Add the =-h= switch to the dired output to show prettier filenames.
 
 #+BEGIN_SRC emacs-lisp
-  (setq dired-listing-switches "-alh")
+  (setq dired-listing-switches "-lh")
+  (setq dired-use-ls-dired nil)
 #+END_SRC
 
 Don't ask permission to delete the buffer of a deleted file.
@@ -494,9 +496,6 @@ obey these rules by default.
 ** Clojure
 
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package cider
-  ;;   :ensure t)
-
   (use-package clojure-mode
     :ensure t)
 #+END_SRC
@@ -513,15 +512,6 @@ For this to work, sbcl should be installed and in =PATH=.
   (use-package slime-company
     :ensure t
     :init (slime-setup '(slime-fancy slime-company)))
-#+END_SRC
-
-** Csv
-
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package csv-mode
-  ;;   :ensure t
-  ;;   :defer t
-  ;;   :mode "\\.csv\\'")
 #+END_SRC
 
 ** D
@@ -637,10 +627,10 @@ Add my own shim for formatting jsonnet because the language is in
 shambles and this doesn't work out of the box.
 
 #+BEGIN_SRC emacs-lisp
-  (defun jsonnet-reformat-buffer ()
-    "Reformat entire buffer using the Jsonnet format utility, except it actually works."
-    (interactive)
-    (call-process-region (point-min) (point-max) "jsonnetfmt" t t nil (buffer-file-name)))
+  ;; (defun jsonnet-reformat-buffer ()
+  ;;   "Reformat entire buffer using the Jsonnet format utility, except it actually works."
+  ;;   (interactive)
+  ;;   (call-process-region (point-min) (point-max) "jsonnetfmt" t t nil (buffer-file-name)))
 #+END_SRC
 
 #+RESULTS:

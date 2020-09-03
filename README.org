@@ -700,6 +700,16 @@ ruby as I know about scented candles and professional football.
     :mode "\\.rs'")
 #+END_SRC
 
+** Shell
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'sh-mode-hook
+          (lambda ()
+            (set (make-local-variable 'compile-command)
+                 (buffer-file-name (current-buffer)))
+            (local-set-key (kbd "C-c C-c") 'compile)))
+#+END_SRC
+
 ** Text
 
 Automatically "fill" text while editing.

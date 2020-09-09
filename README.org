@@ -560,13 +560,19 @@ This is the /really/ trendy part of my config.
     :mode "\\*.go\\'"
     :init
     (add-hook 'before-save-hook 'gofmt-before-save)
-    (local-set-key (kbd "M-.") 'godef-jump)
-    (add-hook 'go-mode-hook (lambda ()
-			      (set (make-local-variable 'company-backends) '(company-go))
-			      (company-mode))))
+    (local-set-key (kbd "M-.") 'godef-jump))
+#+END_SRC
 
-  (use-package company-go
-    :ensure t)
+Company mode + =gocode= were slow and they made me angry.  These
+expressions are in timeout.
+
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package company-go
+  ;;   :ensure t)
+
+  ;; (add-hook 'go-mode-hook (lambda ()
+  ;; 			  (set (make-local-variable 'company-backends) '(company-go))
+  ;; 			  (company-mode))))
 #+END_SRC
 
 ** Groovy

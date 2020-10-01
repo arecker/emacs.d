@@ -804,8 +804,10 @@ Aliases for eshell
 * Org
 
 #+BEGIN_SRC emacs-lisp
-(use-package org-mode
-  :mode "\\.org$")
+  (use-package org-mode
+    :mode "\\.org$"
+    :init (when (version<= "9.2" (org-version))
+	    (require 'org-tempo)))
 #+END_SRC
 
 ** Editing

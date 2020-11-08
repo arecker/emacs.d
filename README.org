@@ -144,6 +144,19 @@ Install idomenu as well.
 #+RESULTS:
 : idomenu
 
+Use smex as a smarter replacement for the =M-x= menu.
+
+#+begin_src emacs-lisp
+  (use-package smex
+    :ensure t
+    :init (smex-initialize)
+    :bind (("M-x" . 'smex)
+	   ("M-X" . 'smex-major-mode-commands)))
+#+end_src
+
+#+RESULTS:
+: smex-major-mode-commands
+
 By default, emacs will display the major mode as well as all active
 minor modes in the modeline.  I think it clutters up the file
 information so I use this nifty plugin to hide it all.  Only the major
@@ -155,6 +168,16 @@ mode is displayed.
   :init (rich-minority-mode 1)
   :config (setq rm-blacklist ""))
 #+END_SRC
+
+Use company mode for completion.
+
+#+begin_src emacs-lisp
+  (use-package company
+    :ensure t
+    :init (add-hook 'after-init-hook 'global-company-mode))
+#+end_src
+
+#+RESULTS:
 
 * Buffers
 

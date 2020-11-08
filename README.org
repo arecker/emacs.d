@@ -124,6 +124,26 @@ interface at first, but you grow to appreciate the consistency.
 (ido-mode 1)
 #+END_SRC
 
+Make it vertical.
+
+#+begin_src emacs-lisp
+  (use-package ido-vertical-mode
+    :ensure t
+    :config (setq ido-vertical-define-keys 'C-n-and-C-p-only)
+    :init (ido-vertical-mode))
+#+end_src
+
+Install idomenu as well.
+
+#+begin_src emacs-lisp
+(use-package idomenu
+  :ensure t
+  :bind ("C-c i" . idomenu))
+#+end_src
+
+#+RESULTS:
+: idomenu
+
 By default, emacs will display the major mode as well as all active
 minor modes in the modeline.  I think it clutters up the file
 information so I use this nifty plugin to hide it all.  Only the major

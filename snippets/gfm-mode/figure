@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: figure
-# key: figure
-# --
-{% include figure.html
-filename=''
-caption='' %}

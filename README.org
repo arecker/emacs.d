@@ -1,50 +1,44 @@
 #+TITLE: Emacs Configuration
 #+AUTHOR: Alex Recker
+#+OPTIONS: num:nil
 #+STARTUP: showall
 
-It's been said "there are many ways to skin a cat".  The same can be
-said of Emacs.  Probably.
+Welcome to my personal emacs configuration!  Feel free to re-use
+anything you'd like.  If you have any questions, send me an email at
+[[mailto:alex@reckerfamily.com][alex@reckerfamily.com]] or leave an issue with this github repository.
 
 * Personal
 
-Don't be shy - introduce yourself to emacs.  If you are copying this
-config, make sure you use your name.  We don't want to confuse my
-mother.
+Personal identifying information.  Please don't re-use anything from
+this section - we wouldn't want to confuse my mother.
 
 #+BEGIN_SRC emacs-lisp
-  (setq user-full-name "Alex Recker"
-	user-mail-address "alex@reckerfamily.com")
+(setq user-full-name "Alex Recker"
+      user-mail-address "alex@reckerfamily.com")
 #+END_SRC
 
-* Packages
+* Environment
 
-All packages are installed with the [[https://github.com/jwiegley/use-package][use-package]] library.  Sadly, this
-needs to load before org can tangle anything, so all the action is in
-[[file:init.el][init.el]].
-
-* Paths
-
-Ensure that the system =PATH= is the one used by emacs.
+Use the =exec-path-from-shell= package to sync up =PATH= between the
+shell and emacs.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package exec-path-from-shell
-    :ensure t
-    :config (exec-path-from-shell-initialize))
+(use-package exec-path-from-shell
+  :ensure t
+  :config (exec-path-from-shell-initialize))
 #+END_SRC
 
-Helper function for sniffing OS.
+The following functions are used throughout the rest of my
+configuration.
 
 #+BEGIN_SRC emacs-lisp
   (defun recker/macos-p ()
     "Returns T if running on MacOS."
     (string-equal system-type "darwin"))
-#+END_SRC
 
-Personal directories.
-
-#+BEGIN_SRC emacs-lisp
   (defun recker/path (dir &optional subpath)
-    (let* ((macos-p (string-equal system-type "darwin"))
+    "Build a path name relative to the home directory."
+    (let* ((macos-p (recker/macos-p))
 	   (dir (pcase dir
 		  ('home "~")
 		  ('desktop (if macos-p "~/Desktop" "~/desktop"))
@@ -58,33 +52,113 @@ Personal directories.
       (expand-file-name (concat (file-name-as-directory dir) subpath))))
 #+END_SRC
 
-Register some files I visit often.
+Set the default home directory.
 
-#+BEGIN_SRC emacs-lisp
-  (set-register ?b '(file . "/ssh:bedroom:/home/alex"))
-  (set-register ?c '(file . "/ssh:console:/home/alex"))
-  (set-register ?d `(file . ,(recker/path 'desktop)))
-  (set-register ?e `(file . ,(recker/path 'emacs "README.org")))
-  (set-register ?f '(file . "/ssh:alex@archive.local:/mnt/"))
-  (set-register ?l `(file . ,(recker/path 'emacs "local.el")))
-  (set-register ?m `(file . ,(recker/path 'docs "mixtape.org")))
-  (set-register ?o `(file . ,(recker/path 'docs "opsat.org")))
-#+END_SRC
+#+begin_src emacs-lisp
+(setq default-directory (recker/path 'home))
+#+end_src
+
+Source auth sources from docs.
+
+#+begin_src emacs-lisp
+(add-to-list 'auth-sources (recker/path 'docs "emacs/authinfo.gpg"))
+#+end_src
+
+Dump customize's changes to a file ignored by version control.
+
+#+begin_src emacs-lisp
+  (let ((custom-path (recker/path 'emacs "custom.el")))
+    (unless (file-exists-p custom-path)
+      (write-region ";; custom.el" nil custom-path))
+    (setq custom-file custom-path))
+#+end_src
 
 * Interface
 
-** Better Look
-
-On MacOS, I like my emacs /extra thicc/.
+Some people like the extra screen space, but personally I think they
+look kind of retro and cozy.
 
 #+BEGIN_SRC emacs-lisp
-  (when (and (recker/macos-p) (display-graphic-p))
-    (setq initial-frame-alist '((width . 99) (height . 53))
-	  default-frame-alist '((width . 99) (height . 53))))
+(menu-bar-mode t)
+(tool-bar-mode t)
+(when (display-graphic-p)
+  (scroll-bar-mode t))
 #+END_SRC
 
-Dynamically set the font, and define some functions for changing the
-font on the fly.
+#+RESULTS:
+: right
+
+Use the more mellow =*scratch*= screen at the starting buffer.
+
+#+begin_src emacs-lisp
+(setq inhibit-startup-message 't)
+#+end_src
+
+Use a custom hook on killing buffers to make =*scratch*= unkillable.
+
+#+begin_src emacs-lisp
+(defun recker/dont-kill-scratch ()
+  "Return NIL if the current buffer is the *scratch* buffer."
+  (not (equal (buffer-name (current-buffer)) "*scratch*")))
+(add-hook 'kill-buffer-query-functions 'recker/dont-kill-scratch)
+#+end_src
+
+Overwrite the selected text.
+
+#+begin_src emacs-lisp
+(delete-selection-mode t)
+#+end_src
+
+Avoid tabs.
+
+#+begin_src emacs-lisp
+(setq indent-tabs-mode nil)
+#+end_src
+
+Enable IDO mode and try to use it everywhere.  It's a strange
+interface at first, but you grow to appreciate the consistency.
+
+#+BEGIN_SRC emacs-lisp
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
+#+END_SRC
+
+By default, emacs will display the major mode as well as all active
+minor modes in the modeline.  I think it clutters up the file
+information so I use this nifty plugin to hide it all.  Only the major
+mode is displayed.
+
+#+BEGIN_SRC emacs-lisp
+(use-package rich-minority
+  :ensure t
+  :init (rich-minority-mode 1)
+  :config (setq rm-blacklist ""))
+#+END_SRC
+
+* Buffers
+
+Purge all buffers with =C-x P=.
+
+#+begin_src emacs-lisp
+  (defun recker/purge-buffers ()
+    "Delete all buffers, except for *scratch*."
+    (interactive)
+    (mapc #'(lambda (b) (unless (string= (buffer-name b) "*scratch*") (kill-buffer b))) (buffer-list)))
+(global-set-key (kbd "C-x P") 'recker/purge-buffers)
+#+end_src
+
+Kill buffers without confirming.
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-x C-k k") 'kill-buffer)
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
+#+end_src
+
+* Font
+
+I like to set aside a regular font and a larger version of the same
+font for things like screen shares.
 
 #+BEGIN_SRC emacs-lisp
   (setq-default recker/regular-font (if (recker/macos-p)
@@ -94,10 +168,19 @@ font on the fly.
   (setq-default recker/large-font (if (recker/macos-p)
 				      "Monaco 20"
 				    "Inconsolata 18"))
+#+END_SRC
 
-  (when (display-graphic-p)
-    (set-frame-font recker/regular-font nil t))
+Set the regular font if emacs is running in graphics mode.
 
+#+BEGIN_SRC emacs-lisp
+(when (display-graphic-p)
+  (set-frame-font recker/regular-font nil t))
+#+END_SRC
+
+I use a custom keybound function to toggle between my regular and
+large font.
+
+#+BEGIN_SRC emacs-lisp
   (defun recker/toggle-font-size ()
     (interactive)
     (unless (display-graphic-p)
@@ -114,225 +197,704 @@ font on the fly.
   (global-set-key (kbd "C-c C-x f") 'recker/toggle-font-size)
 #+END_SRC
 
-** Better Defaults
+* Files
 
-Emacs comes with some obnixious defaults.  "Not on my watch!", yelled
-Alex as he disabled them.
+Don't automatically make backup files.
+
+#+begin_src emacs-lisp
+(setq make-backup-files nil
+      auto-save-default nil)
+#+end_src
+
+Automatically revert buffer if file changes.
+
+#+begin_src emacs-lisp
+(global-auto-revert-mode 1)
+#+end_src
+
+Configure **dired**, the emacs file manager.
+
+#+begin_src emacs-lisp
+(require 'dired-x)
+(setq-default dired-omit-files-p t)
+(setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
+(setq dired-listing-switches "-lh")
+(setq dired-use-ls-dired nil)
+(setq dired-clean-confirm-killing-deleted-buffers nil)
+#+end_src
+
+#+RESULTS:
+
+Map a few file registers.
+
+#+begin_src emacs-lisp
+  (set-register ?b `(file . ,(recker/path 'src "blog")))
+  (set-register ?c '(file . "/ssh:console:/home/alex"))
+  (set-register ?d `(file . ,(recker/path 'desktop)))
+  (set-register ?e `(file . ,(recker/path 'emacs)))
+  (set-register ?l `(file . ,(recker/path 'emacs "local.el")))
+  (set-register ?n '(file . "/ssh:alex@nas.local:/volume1/homes/alex/"))
+  (set-register ?o `(file . ,(recker/path 'docs "opsat.org")))
+#+end_src
+
+Configure bookmarks.
+
+#+begin_src emacs-lisp
+(require 'bookmark)
+(setq bookmark-save-flag 1
+      bookmark-default-file (recker/path 'docs "emacs/bookmarks.el"))
+
+(defun recker/ido-bookmark-jump (bookmark)
+  "*Switch to bookmark BOOKMARK interactively using `ido'."
+  (interactive (list (ido-completing-read "Bookmark: " (bookmark-all-names) nil t)))
+  (bookmark-jump bookmark))
+
+(global-set-key (kbd "C-x r b") 'recker/ido-bookmark-jump)
+#+end_src
+
+#+RESULTS:
+: recker/ido-bookmark-jump
+
+Search files within a project with projectile mode.
+
+#+begin_src emacs-lisp
+(use-package projectile
+  :ensure t
+  :config
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (setq projectile-completion-system 'ivy)
+  :init (projectile-mode t))
+#+end_src
+
+* Version Control
+
+Follow symlinks.
 
 #+BEGIN_SRC emacs-lisp
-    (setq make-backup-files nil
-	  auto-save-default nil
-	  indent-tabs-mode nil
-	  ns-confirm-quit 1
-	  default-directory (expand-file-name "~"))
-
-    (global-auto-revert-mode 1)
-    (menu-bar-mode 0)
-    (delete-selection-mode t)
-    (tool-bar-mode -1)
-
-    (when (display-graphic-p)
-      (scroll-bar-mode -1))
-
-    (setq vc-follow-symlinks t)
+(setq vc-follow-symlinks t)
 #+END_SRC
 
-Because the command =C-x C-c= is easier to type by accident than you'd
-think, enable this so Emacs says "are you sure?"
+Magit is a wonderful plugin.  Honestly, it just gets it so right with
+the quick, intuitive interface.
 
 #+BEGIN_SRC emacs-lisp
-  (setq confirm-kill-emacs #'yes-or-no-p)
+(use-package magit
+  :ensure t
+  :bind
+  ("C-x g" . magit-status)
+  ("C-c m" . magit-blame))
 #+END_SRC
 
-Disable goal column warning.
+#+RESULTS:
+: magit-blame
 
-#+BEGIN_SRC emacs-lisp
-  (put 'set-goal-column 'disabled nil)
-#+END_SRC
+* Tools
 
-Upcase
+Dig
 
-#+BEGIN_SRC emacs-lisp
-(put 'upcase-region 'disabled nil)
-#+END_SRC
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-c d") 'dig)
+#+end_src
 
-** Better Comments
+#+RESULTS:
+: dig
 
-I overwrite the build-in =comment-dwim= with its superior sequel.
+Dictionary
 
-#+BEGIN_SRC emacs-lisp
-  (use-package comment-dwim-2
+#+begin_src emacs-lisp
+(use-package dictionary :ensure t)
+#+end_src
+
+_SWIPER NO SWIPING_.
+
+#+begin_src emacs-lisp
+(use-package swiper
+  :ensure t
+  :bind ("C-c s" . swiper))
+#+end_src
+
+#+RESULTS:
+: swiper
+
+Incrementally select intelligent portions of text the with
+=expand-region= shortcut.
+
+#+begin_src emacs-lisp
+(use-package expand-region
+  :ensure t
+  :bind ("C-=" . er/expand-region))
+#+end_src
+
+Flycheck for angry red squiggles.
+
+#+begin_src emacs-lisp
+(use-package flycheck
+  :ensure t
+  :init
+  (global-flycheck-mode))
+#+end_src
+
+#+RESULTS:
+
+* Passwords
+
+I use the =pass= tool for personal secret management.  It's my own
+crummy implementation.
+
+#+begin_src emacs-lisp
+(defun recker/pass-directory ()
+  (or (bound-and-true-p recker/active-pass-directory)
+      (expand-file-name "~/.password-store")))
+
+(defun recker/pass--file-to-entry (path)
+  (file-name-sans-extension
+   (file-relative-name path (recker/pass-directory))))
+
+(defun recker/pass-list-entries ()
+  (mapcar
+   #'recker/pass--file-to-entry
+   (directory-files-recursively (recker/pass-directory) ".gpg")))
+
+(defun recker/pass-to-string (path)
+  (first
+   (split-string
+    (shell-command-to-string
+     (format "PASSWORD_STORE_DIR=\"%s\" pass \"%s\" | head -1" (recker/pass-directory) path))
+    "\n")))
+
+(defun recker/pass-to-clip (path)
+  (interactive (list (completing-read "Password: " (recker/pass-list-entries) nil t)))
+  (shell-command
+   (format "PASSWORD_STORE_DIR=\"%s\" pass -c \"%s\"" (recker/pass-directory) path)))
+
+(defun recker/pass-to-clip-work ()
+  (interactive)
+  (let ((recker/active-pass-directory (expand-file-name "~/.password-store-work")))
+    (funcall-interactively #'recker/pass-to-clip (completing-read "Password: " (recker/pass-list-entries) nil t))))
+
+(global-set-key (kbd "C-x p") 'recker/pass-to-clip)
+(global-set-key (kbd "C-x w") 'recker/pass-to-clip-work)
+#+end_src
+
+* Terminal
+
+Use bash for launching a terminal and bind my custom wrapper function
+to =C-x t=.
+
+#+begin_src emacs-lisp
+(defun recker/ansi-term ()
+  (interactive)
+  (ansi-term "/bin/bash"))
+
+(global-set-key (kbd "C-x t") 'recker/ansi-term)
+#+end_src
+
+On exiting a terminal, also kill the buffer.
+
+#+begin_src emacs-lisp
+(defadvice term-handle-exit
+    (after term-kill-buffer-on-exit activate)
+  (kill-buffer))
+#+end_src
+
+Eshell too.
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-c e") 'eshell)
+#+end_src
+
+#+RESULTS:
+: eshell
+
+* Major Modes
+
+In any case, default to what's specified in the projects editorconfig.
+
+#+begin_src emacs-lisp
+(use-package editorconfig
+  :ensure t
+  :defer t
+  :config (editorconfig-mode 1))
+#+end_src
+
+#+RESULTS:
+
+** reStructuredText
+
+I intend to give [[https://docutils.sourceforge.io/rst.html][reStructuredText]] a serious try someday, it looks
+pretty cool.
+
+#+begin_src emacs-lisp
+  (use-package rst
     :ensure t
-    :bind ("M-;" . comment-dwim-2))
-#+END_SRC
+    :defer t
+    :mode (("\\.rst$" . rst-mode)))
+#+end_src
 
-** Better Modeline
+#+RESULTS:
+: ((\.rst$ . rst-mode) (\.yaml\' . yaml-mode) (\.yml\' . yaml-mode) (\.tf\' . terraform-mode) (\.p8\' . lua-mode) (\.hs\' . haskell-mode) (\.groovy\' . groovy-mode) (\Jenkinsfile\' . groovy-mode) (\.dockerfile\' . dockerfile-mode) (\Dockerfile\' . dockerfile-mode) (\.d\' . d-mode) (\.gpg\(~\|\.~[0-9]+~\)?\' nil epa-file) (\.d[i]?\' . d-mode) (Dockerfile\(?:\..*\)?\' . dockerfile-mode) (go\.mod\' . go-dot-mod-mode) (\.go\' . go-mode) (Jenkinsfile . groovy-mode) (\.g\(?:ant\|roovy\|radle\)\' . groovy-mode) (\.hsc\' . haskell-mode) (\.l[gh]s\' . haskell-literate-mode) (\.hsig\' . haskell-mode) (\.[gh]s\' . haskell-mode) (\.cabal\'\|/cabal\.project\|/\.cabal/config\' . haskell-cabal-mode) (\.chs\' . haskell-c2hs-mode) (\.ghci\' . ghci-script-mode) (\.dump-simpl\' . ghc-core-mode) (\.hcr\' . ghc-core-mode) (\.libsonnet\' . jsonnet-mode) (\.jsonnet\' . jsonnet-mode) (\.lua\' . lua-mode) (/git-rebase-todo\' . git-rebase-mode) (\.tf\(vars\)?\' . terraform-mode) (\.nomad\' . hcl-mode) (\.hcl\' . hcl-mode) (\.\(e?ya?\|ra\)ml\' . yaml-mode) (\.elc\' . elisp-byte-code-mode) (\.zst\' nil jka-compr) (\.dz\' nil jka-compr) (\.xz\' nil jka-compr) (\.lzma\' nil jka-compr) (\.lz\' nil jka-compr) (\.g?z\' nil jka-compr) (\.bz2\' nil jka-compr) (\.Z\' nil jka-compr) (\.vr[hi]?\' . vera-mode) (\(?:\.\(?:rbw?\|ru\|rake\|thor\|jbuilder\|rabl\|gemspec\|podspec\)\|/\(?:Gem\|Rake\|Cap\|Thor\|Puppet\|Berks\|Vagrant\|Guard\|Pod\)file\)\' . ruby-mode) (\.re?st\' . rst-mode) (\.py[iw]?\' . python-mode) (\.m\' . octave-maybe-mode) (\.less\' . less-css-mode) (\.scss\' . scss-mode) (\.awk\' . awk-mode) (\.\(u?lpc\|pike\|pmod\(\.in\)?\)\' . pike-mode) (\.idl\' . idl-mode) (\.java\' . java-mode) (\.m\' . objc-mode) (\.ii\' . c++-mode) (\.i\' . c-mode) (\.lex\' . c-mode) (\.y\(acc\)?\' . c-mode) (\.h\' . c-or-c++-mode) (\.c\' . c-mode) (\.\(CC?\|HH?\)\' . c++-mode) (\.[ch]\(pp\|xx\|\+\+\)\' . c++-mode) (\.\(cc\|hh\)\' . c++-mode) (\.\(bat\|cmd\)\' . bat-mode) (\.[sx]?html?\(\.[a-zA-Z_]+\)?\' . mhtml-mode) (\.svgz?\' . image-mode) (\.svgz?\' . xml-mode) (\.x[bp]m\' . image-mode) (\.x[bp]m\' . c-mode) (\.p[bpgn]m\' . image-mode) (\.tiff?\' . image-mode) (\.gif\' . image-mode) (\.png\' . image-mode) (\.jpe?g\' . image-mode) (\.te?xt\' . text-mode) (\.[tT]e[xX]\' . tex-mode) (\.ins\' . tex-mode) (\.ltx\' . latex-mode) (\.dtx\' . doctex-mode) (\.org\' . org-mode) (\.el\' . emacs-lisp-mode) (Project\.ede\' . emacs-lisp-mode) (\.\(scm\|stk\|ss\|sch\)\' . scheme-mode) (\.l\' . lisp-mode) (\.li?sp\' . lisp-mode) (\.[fF]\' . fortran-mode) (\.for\' . fortran-mode) (\.p\' . pascal-mode) (\.pas\' . pascal-mode) (\.\(dpr\|DPR\)\' . delphi-mode) (\.ad[abs]\' . ada-mode) (\.ad[bs]\.dg\' . ada-mode) (\.\([pP]\([Llm]\|erl\|od\)\|al\)\' . perl-mode) (Imakefile\' . makefile-imake-mode) (Makeppfile\(?:\.mk\)?\' . makefile-makepp-mode) (\.makepp\' . makefile-makepp-mode) (\.mk\' . makefile-bsdmake-mode) (\.make\' . makefile-bsdmake-mode) (GNUmakefile\' . makefile-gmake-mode) ([Mm]akefile\' . makefile-bsdmake-mode) (\.am\' . makefile-automake-mode) (\.texinfo\' . texinfo-mode) (\.te?xi\' . texinfo-mode) (\.[sS]\' . asm-mode) (\.asm\' . asm-mode) (\.css\' . css-mode) (\.mixal\' . mixal-mode) (\.gcov\' . compilation-mode) (/\.[a-z0-9-]*gdbinit . gdb-script-mode) (-gdb\.gdb . gdb-script-mode) ([cC]hange\.?[lL]og?\' . change-log-mode) ([cC]hange[lL]og[-.][0-9]+\' . change-log-mode) (\$CHANGE_LOG\$\.TXT . change-log-mode) (\.scm\.[0-9]*\' . scheme-mode) (\.[ckz]?sh\'\|\.shar\'\|/\.z?profile\' . sh-mode) (\.bash\' . sh-mode) (\(/\|\`\)\.\(bash_\(profile\|history\|log\(in\|out\)\)\|z?log\(in\|out\)\)\' . sh-mode) (\(/\|\`\)\.\(shrc\|zshrc\|m?kshrc\|bashrc\|t?cshrc\|esrc\)\' . sh-mode) (\(/\|\`\)\.\([kz]shenv\|xinitrc\|startxrc\|xsession\)\' . sh-mode) (\.m?spec\' . sh-mode) (\.m[mes]\' . nroff-mode) (\.man\' . nroff-mode) (\.sty\' . latex-mode) (\.cl[so]\' . latex-mode) (\.bbl\' . latex-mode) (\.bib\' . bibtex-mode) (\.bst\' . bibtex-style-mode) (\.sql\' . sql-mode) (\(acinclude\|aclocal\|acsite\)\.m4\' . autoconf-mode) (\.m[4c]\' . m4-mode) (\.mf\' . metafont-mode) (\.mp\' . metapost-mode) (\.vhdl?\' . vhdl-mode) (\.article\' . text-mode) (\.letter\' . text-mode) (\.i?tcl\' . tcl-mode) (\.exp\' . tcl-mode) (\.itk\' . tcl-mode) (\.icn\' . icon-mode) (\.sim\' . simula-mode) (\.mss\' . scribe-mode) (\.f9[05]\' . f90-mode) (\.f0[38]\' . f90-mode) (\.indent\.pro\' . fundamental-mode) (\.\(pro\|PRO\)\' . idlwave-mode) (\.srt\' . srecode-template-mode) (\.prolog\' . prolog-mode) (\.tar\' . tar-mode) (\.\(arc\|zip\|lzh\|lha\|zoo\|[jew]ar\|xpi\|rar\|cbr\|7z\|ARC\|ZIP\|LZH\|LHA\|ZOO\|[JEW]AR\|XPI\|RAR\|CBR\|7Z\)\' . archive-mode) (\.oxt\' . archive-mode) (\.\(deb\|[oi]pk\)\' . archive-mode) (\`/tmp/Re . text-mode) (/Message[0-9]*\' . text-mode) (\`/tmp/fol/ . text-mode) (\.oak\' . scheme-mode) (\.sgml?\' . sgml-mode) (\.x[ms]l\' . xml-mode) (\.dbk\' . xml-mode) (\.dtd\' . sgml-mode) (\.ds\(ss\)?l\' . dsssl-mode) (\.js[mx]?\' . javascript-mode) (\.har\' . javascript-mode) (\.json\' . javascript-mode) (\.[ds]?va?h?\' . verilog-mode) (\.by\' . bovine-grammar-mode) (\.wy\' . wisent-grammar-mode) ([:/\]\..*\(emacs\|gnus\|viper\)\' . emacs-lisp-mode) (\`\..*emacs\' . emacs-lisp-mode) ([:/]_emacs\' . emacs-lisp-mode) (/crontab\.X*[0-9]+\' . shell-script-mode) (\.ml\' . lisp-mode) (\.ld[si]?\' . ld-script-mode) (ld\.?script\' . ld-script-mode) (\.xs\' . c-mode) (\.x[abdsru]?[cnw]?\' . ld-script-mode) (\.zone\' . dns-mode) (\.soa\' . dns-mode) (\.asd\' . lisp-mode) (\.\(asn\|mib\|smi\)\' . snmp-mode) (\.\(as\|mi\|sm\)2\' . snmpv2-mode) (\.\(diffs?\|patch\|rej\)\' . diff-mode) (\.\(dif\|pat\)\' . diff-mode) (\.[eE]?[pP][sS]\' . ps-mode) (\.\(?:PDF\|DVI\|OD[FGPST]\|DOCX\|XLSX?\|PPTX?\|pdf\|djvu\|dvi\|od[fgpst]\|docx\|xlsx?\|pptx?\)\' . doc-view-mode-maybe) (configure\.\(ac\|in\)\' . autoconf-mode) (\.s\(v\|iv\|ieve\)\' . sieve-mode) (BROWSE\' . ebrowse-tree-mode) (\.ebrowse\' . ebrowse-tree-mode) (#\*mail\* . mail-mode) (\.g\' . antlr-mode) (\.mod\' . m2-mode) (\.ses\' . ses-mode) (\.docbook\' . sgml-mode) (\.com\' . dcl-mode) (/config\.\(?:bat\|log\)\' . fundamental-mode) (/\.\(authinfo\|netrc\)\' . authinfo-mode) (\.\(?:[iI][nN][iI]\|[lL][sS][tT]\|[rR][eE][gG]\|[sS][yY][sS]\)\' . conf-mode) (\.la\' . conf-unix-mode) (\.ppd\' . conf-ppd-mode) (java.+\.conf\' . conf-javaprop-mode) (\.properties\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-javaprop-mode) (\.toml\' . conf-toml-mode) (\.desktop\' . conf-desktop-mode) (/\.redshift\.conf\' . conf-windows-mode) (\`/etc/\(?:DIR_COLORS\|ethers\|.?fstab\|.*hosts\|lesskey\|login\.?de\(?:fs\|vperm\)\|magic\|mtab\|pam\.d/.*\|permissions\(?:\.d/.+\)?\|protocols\|rpc\|services\)\' . conf-space-mode) (\`/etc/\(?:acpid?/.+\|aliases\(?:\.d/.+\)?\|default/.+\|group-?\|hosts\..+\|inittab\|ksysguarddrc\|opera6rc\|passwd-?\|shadow-?\|sysconfig/.+\)\' . conf-mode) ([cC]hange[lL]og[-.][-0-9a-z]+\' . change-log-mode) (/\.?\(?:gitconfig\|gnokiirc\|hgrc\|kde.*rc\|mime\.types\|wgetrc\)\' . conf-mode) (/\.\(?:asound\|enigma\|fetchmail\|gltron\|gtk\|hxplayer\|mairix\|mbsync\|msmtp\|net\|neverball\|nvidia-settings-\|offlineimap\|qt/.+\|realplayer\|reportbug\|rtorrent\.\|screen\|scummvm\|sversion\|sylpheed/.+\|xmp\)rc\' . conf-mode) (/\.\(?:gdbtkinit\|grip\|mpdconf\|notmuch-config\|orbital/.+txt\|rhosts\|tuxracer/options\)\' . conf-mode) (/\.?X\(?:default\|resource\|re\)s\> . conf-xdefaults-mode) (/X11.+app-defaults/\|\.ad\' . conf-xdefaults-mode) (/X11.+locale/.+/Compose\' . conf-colon-mode) (/X11.+locale/compose\.dir\' . conf-javaprop-mode) (\.~?[0-9]+\.[0-9][-.0-9]*~?\' nil t) (\.\(?:orig\|in\|[bB][aA][kK]\)\' nil t) ([/.]c\(?:on\)?f\(?:i?g\)?\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-mode-maybe) (\.[1-9]\' . nroff-mode) (\.art\' . image-mode) (\.avs\' . image-mode) (\.bmp\' . image-mode) (\.cmyk\' . image-mode) (\.cmyka\' . image-mode) (\.crw\' . image-mode) (\.dcr\' . image-mode) (\.dcx\' . image-mode) (\.dng\' . image-mode) (\.dpx\' . image-mode) (\.fax\' . image-mode) (\.hrz\' . image-mode) (\.icb\' . image-mode) (\.icc\' . image-mode) (\.icm\' . image-mode) (\.ico\' . image-mode) (\.icon\' . image-mode) (\.jbg\' . image-mode) (\.jbig\' . image-mode) (\.jng\' . image-mode) (\.jnx\' . image-mode) (\.miff\' . image-mode) (\.mng\' . image-mode) (\.mvg\' . image-mode) (\.otb\' . image-mode) (\.p7\' . image-mode) (\.pcx\' . image-mode) (\.pdb\' . image-mode) (\.pfa\' . image-mode) (\.pfb\' . image-mode) (\.picon\' . image-mode) (\.pict\' . image-mode) (\.rgb\' . image-mode) (\.rgba\' . image-mode) (\.tga\' . image-mode) (\.wbmp\' . image-mode) (\.webp\' . image-mode) (\.wmf\' . image-mode) (\.wpg\' . image-mode) (\.xcf\' . image-mode) (\.xmp\' . image-mode) (\.xwd\' . image-mode) (\.yuv\' . image-mode) (\.tgz\' . tar-mode) (\.tbz2?\' . tar-mode) (\.txz\' . tar-mode) (\.tzst\' . tar-mode))
 
-Hide all minor modes from the modeline (since there are usually like a
-hundred).
+** C
 
-#+BEGIN_SRC emacs-lisp
-  (use-package rich-minority
+This is a snippet adapted from the [[https://www.kernel.org/doc/html/v4.10/process/coding-style.html][Linux kernel coding style]] - a
+surpisingly good and funny read.
+
+#+begin_src emacs-lisp
+(defun c-lineup-arglist-tabs-only (ignored)
+  "Line up argument lists by tabs, not spaces"
+  (let* ((anchor (c-langelem-pos c-syntactic-element))
+	 (column (c-langelem-2nd-pos c-syntactic-element))
+	 (offset (- (1+ column) anchor))
+	 (steps (floor offset c-basic-offset)))
+    (* (max steps 1)
+       c-basic-offset)))
+
+(add-hook 'c-mode-common-hook
+	  (lambda ()
+	    (c-add-style
+	     "linux-tabs-only"
+	     '("linux" (c-offsets-alist
+			(arglist-cont-nonempty
+			 c-lineup-gcc-asm-reg
+			 c-lineup-arglist-tabs-only))))))
+
+(add-hook 'c-mode-hook (lambda ()
+			 (setq indent-tabs-mode t)
+			 (setq show-trailing-whitespace t)
+			 (c-set-style "linux-tabs-only")))
+#+end_src
+
+** Common Lisp
+
+Set up the slime common lisp developing environment.
+
+#+begin_src emacs-lisp
+   (use-package slime
+     :ensure t
+     :defer t
+     :config (setq inferior-lisp-program (executable-find "sbcl")))
+#+end_src
+
+#+RESULTS:
+: t
+
+** D
+
+Yeah, there's a D language apparently.
+
+#+begin_src emacs-lisp
+(use-package d-mode
+  :ensure t
+  :defer t
+  :mode "\\.d\\'")
+#+end_src
+
+** Dockerfile
+
+Yes, there's even a mode for editing dockerfiles.
+
+#+begin_src emacs-lisp
+(use-package dockerfile-mode
+  :ensure t
+  :defer t
+  :mode ("\\Dockerfile\\'" "\\.dockerfile\\'"))
+#+end_src
+
+** HTML
+
+Use emmet mode to crank out the HTML tags.
+
+#+begin_src emacs-lisp
+(use-package emmet-mode
+  :ensure t
+  :defer t
+  :init (setq emmet-preview-default nil)
+  :config (add-hook 'sgml-mode-hook 'emmet-mode))   
+#+end_src
+
+#+RESULTS:
+
+Some custom HTML writing functions.  I'll probably move them to
+yasnippet once I can figure it out.
+
+#+begin_src emacs-lisp
+(defun recker/filename-to-alt (filename)
+  "Convert a filepath to an HTML alt attribute."
+  (let ((name (file-name-sans-extension filename))
+	(chars '(?_ ?- ?/)))
+    (dolist (char chars)
+      (setf name (subst-char-in-string char ?\s name)))
+    name))
+
+(defun recker/insert-figure (filename caption)
+  "Insert an HTML figure and caption."
+  (interactive "sFilename: 
+sCaption: ")
+  (message "%s" caption)
+  (let* ((src (format "/images/%s" filename))
+	 (alt (recker/filename-to-alt filename))
+	 (img (format "<a href=\"%s\">\n<img alt=\"%s\" src=\"%s\"/>\n</a>" src alt src))
+	 (figcaption (if (not (string-equal caption ""))
+			 (format "<figcaption>\n<p>%s</p>\n</figcaption>" caption))))
+    (insert
+     (if (string-equal caption "")
+	 (format "<figure>\n%s\n</figure>" img)
+       (format "<figure>\n%s\n%s\n</figure>" img figcaption)))))
+#+end_src
+
+** Go
+
+Haven't really gotten into go, but I have to work on Kubernetes
+operators sometimes.
+
+#+begin_src emacs-lisp
+(use-package go-mode
+  :ensure t
+  :defer t
+  :config (let ((govet (flycheck-checker-get 'go-vet 'command)))
+	    (when (equal (cadr govet) "tool")
+	      (setf (cdr govet) (cddr govet)))))   
+#+end_src
+
+** Groovy
+
+Mostly for editing Jenkinsfiles at work.
+
+#+begin_src emacs-lisp
+(use-package groovy-mode
+  :ensure t
+  :defer t
+  :mode ("\\Jenkinsfile\\'" "\\.groovy\\'"))
+#+end_src
+
+** Haskell
+
+Haskell mode, in case I ever decide to grow my neckbeard out.
+
+#+begin_src emacs-lisp
+(use-package haskell-mode
+  :ensure t
+  :defer t
+  :mode "\\.hs\\'")
+#+end_src
+
+** Lua
+
+For pico8 games and pandoc extensions.
+
+#+begin_src emacs-lisp
+(use-package lua-mode
+  :ensure t
+  :defer t
+  :mode ("\\.lua\\'" "\\.p8\\'"))
+#+end_src
+
+** Javascript
+
+As you can tell I write a lot of Javascript.  Just look at all these
+options I've collected over the years.
+
+#+begin_src emacs-lisp
+(setq js-indent-level 2)
+#+end_src
+
+** Jsonnet
+
+For working with the [[https://jsonnet.org/][Jsonnet]] configuration language.
+
+#+begin_src emacs-lisp
+(use-package jsonnet-mode
+  :ensure t
+  :defer t
+  :mode ("\\.jsonnet\\'" "\\.libsonnet\\'"))
+#+end_src
+
+** Ruby
+
+I like ruby, I just strangely don't have a lot of customizations for
+working with it.
+
+#+begin_src emacs-lisp
+  (setq ruby-deep-indent-paren nil)
+#+end_src
+
+** Terraform
+
+Package for working with [[https://www.terraform.io/][terraform]].
+
+#+begin_src emacs-lisp
+  (use-package terraform-mode
     :ensure t
-    :init (rich-minority-mode 1)
-    :config (setq rm-blacklist ""))
-#+END_SRC
+    :defer t
+    :mode "\\.tf\\'")
+#+end_src
 
-** Better Bookmarks
+** Text
 
-Automatically save the bookmark file each time it is modified.  This
-prevents losing bookmarks created in separate emacs clients.
+Configure spelling.
 
-#+BEGIN_SRC emacs-lisp
-  (setq bookmark-save-flag 1
-	bookmark-default-file (recker/path 'docs "emacs/bookmarks.el"))
-#+END_SRC
-
-** Better File Manager
-
-By default, hide dot files.  They can be shown by disabling
-=dired-omit-mode= with =C-x M-o=.
-
-Another nice side effect of =dired-x= is suddenly gaining the ability
-of jumping to the current file in dired with =C-x C-j=.
-
-#+BEGIN_SRC emacs-lisp
-  (require 'dired-x)
-  (setq-default dired-omit-files-p t)
-  (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
-#+END_SRC
-
-Add the =-h= switch to the dired output to show prettier filenames.
-
-#+BEGIN_SRC emacs-lisp
-  (setq dired-listing-switches "-lh")
-  (setq dired-use-ls-dired nil)
-#+END_SRC
-
-Don't ask permission to delete the buffer of a deleted file.
-
-#+BEGIN_SRC emacs-lisp
-  (setq dired-clean-confirm-killing-deleted-buffers nil)
-#+END_SRC
-
-** Better Text Selection
-
-I use =expand-region= to incrementally grab larger portions of text
-based on where the cursor is. It’s a brilliant tool.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package expand-region
-    :ensure t
-    :bind ("C-=" . er/expand-region))
-#+END_SRC
-
-** Better Completion
-
-Company mode.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package company
-    :ensure t
-    :init (global-company-mode)
-    :config (setq company-tooltip-align-annotations t
-		  company-dabbrev-downcase nil))
-
-  (use-package company-quickhelp
-    :ensure t
-    :init (company-quickhelp-mode))
-#+END_SRC
-
-Yasnippet - I don't use this nearly as much as I should be.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package yasnippet
-    :ensure t
-    :init (yas-global-mode 1))
-#+END_SRC
-
-Completion and filtering with ivy, supported by counsel.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package ivy
-    :ensure t
-    :config (setq ivy-use-selectable-prompt t)
-    :init (ivy-mode 1))
-
-  (use-package counsel
-    :ensure t
-    :bind
-    ("C-c i" . counsel-imenu)
-    ("C-c s" . swiper)
-    ("C-c g" . counsel-git-grep)
-    ("C-x C-y" . counsel-yank-pop))
-#+END_SRC
-
-Use projectile for finding things within projects.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    :ensure t
-    :config
-    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-    (setq projectile-completion-system 'ivy)
-    :init
-    (projectile-mode t))
-#+END_SRC
-
-** Better Git
-
-Magit.  Seriously.  Just try it you heathen.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :ensure t
-    :bind
-    ("C-x g" . magit-status)
-    ("C-c m" . magit-blame)
-    :config (magit-add-section-hook 'magit-status-sections-hook
-				    'magit-insert-unpushed-to-upstream
-				    'magit-insert-unpushed-to-upstream-or-recent
-				    'replace))
-#+END_SRC
-
-** Better Spellcheck.
-
-Use personal dictionary from docs for ispell.
-
-#+BEGIN_SRC emacs-lisp
-  (setq ispell-personal-dictionary (recker/path 'docs "emacs/ispell.dict"))
-#+END_SRC
-
-Use =ispell= explicitly, so it doesn't accidentally pick up a
-different program like =aspell= on a mac.
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
+(setq ispell-personal-dictionary (recker/path 'docs "emacs/ispell.dict"))
 (setq ispell-program-name (executable-find "ispell"))
-#+END_SRC
+(add-hook 'text-mode-hook #'(lambda () (flyspell-mode t)))
+#+end_src
 
-Flycheck mode.
+Auto-fill text while writing, and check spelling of course.
 
-#+BEGIN_SRC emacs-lisp
-  (use-package flycheck
-    :ensure t
-    :init
-    (global-flycheck-mode))
-#+END_SRC
+#+begin_src emacs-lisp
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+#+end_src
 
-** Better Scratch
+The =write-good= package so I can learn to write more gooder.
 
-The slash screen displayed on startup is a little too noisy for
-me. The =*scratch*= buffer is a lot more low key.
+#+begin_src emacs-lisp
+(use-package writegood-mode
+  :ensure t
+  :defer t
+  :init
+  (add-hook 'text-mode-hook 'writegood-mode))
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
-  (setq inhibit-startup-message 't)
-#+END_SRC
+#+RESULTS:
 
-Here is a collection of pithy quotes I like to display on my scratch
-screen.
+** Markdown
 
-#+NAME: scratch-quotes
-| Quote                                                                                                                      | Attribution               |
+Markdown, bleh.
+
+#+begin_src emacs-lisp
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
+#+end_src
+
+** YAML
+
+I hate being a YAML engineer it's awesome.
+
+#+begin_src emacs-lisp
+(use-package yaml-mode
+  :ensure t
+  :defer t
+  :mode ("\\.yml\\'" "\\.yaml\\'"))   
+#+end_src
+
+* Org
+
+Make sure =org-tempo= is loaded so shortcuts work for code blocks, I
+guess.  This is a recent workaround.
+
+#+begin_src emacs-lisp
+(require 'org-tempo)
+#+end_src
+
+#+RESULTS:
+: org-tempo
+
+Use =C-c n= to open a scratch buffer for playing around in org mode.
+
+#+begin_src emacs-lisp
+(defun recker/org-scratch ()
+  "Open a org mode scratch pad."
+  (interactive)
+  (switch-to-buffer "*org scratch*")
+  (org-mode)
+  (insert "#+TITLE: Org Scratch\n\n"))
+
+(global-set-key (kbd "C-c n") 'recker/org-scratch)
+#+end_src
+
+Run **code blocks** interactively without the confirmation prompt each
+time.  Set up some languages.
+
+#+begin_src emacs-lisp
+  (setq org-confirm-babel-evaluate nil)
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((java . t)
+     (perl . t)
+     (python . t)
+     (ruby . t)
+     (shell . t)))
+#+end_src
+
+Space out headlines when in collapsed view, and add a space after headers.
+
+#+begin_src emacs-lisp
+(setq org-cycle-separator-lines 1)
+(setq org-blank-before-new-entry '((heading . t) (plain-list-item . auto)))
+#+end_src
+
+Configure **capture templates** and map the selector to =C-c c=.
+
+#+begin_src emacs-lisp
+(setq org-capture-templates '())
+(global-set-key (kbd "C-c c") 'org-capture)
+#+end_src
+
+Configure **agenda** and set up and map the view to =C-c a=.
+
+#+begin_src emacs-lisp
+(setq org-agenda-files (list (recker/path 'docs)))
+(setq org-agenda-start-with-follow-mode t)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(setq org-agenda-custom-commands '())
+(setq org-agenda-tag-filter-preset '("-ARCHIVE"))
+#+end_src
+
+Configure **attachments**.
+
+#+begin_src emacs-lisp
+(setq org-attach-directory (recker/path 'docs "attachments/"))
+(setq org-attach-archive-delete 't)
+#+end_src
+
+Configure **publish projects**.
+
+#+begin_src emacs-lisp
+(setq org-publish-project-alist '())
+#+end_src
+
+Install htmlize for sweet snyntax highlighting on HTML exports.
+
+#+begin_src emacs-lisp
+(use-package htmlize :ensure t)
+#+end_src
+
+#+RESULTS:
+
+Open up a new blog post.
+
+#+begin_src emacs-lisp
+(defun recker/today ()
+  "Open today's journal entry."
+  (interactive)
+  (let* ((target
+	  (recker/path 'src (format-time-string "blog/entries/%Y-%m-%d.md")))
+	 (frontmatter
+	  (format-time-string "---\ntitle:\nbanner: %Y-%m-%d.jpg\n---\n\n")))
+    (if (file-exists-p target)
+	(find-file target)
+      (progn (find-file target)
+	     (insert frontmatter)))))
+(global-set-key (kbd "C-c t") 'recker/today)
+#+end_src
+
+#+RESULTS:
+: recker/today
+
+* Gnus
+
+Odd, but fulfilling.  Here is my sordid configuration.  Set up some
+empty primary and secondary methods.
+
+#+begin_src emacs-lisp
+(setq gnus-select-method '(nnml ""))
+(setq gnus-secondary-select-methods '())
+#+end_src
+
+Use topic mode by default.
+
+#+begin_src emacs-lisp
+(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+#+end_src
+
+Hide startup files and directories in my documents.
+
+#+begin_src emacs-lisp
+(setq gnus-startup-file (recker/path 'docs "emacs/newsrc"))
+(setq gnus-home-directory (recker/path 'docs "emacs/gnus")
+      nnfolder-directory (recker/path 'docs "emacs/gnus/Mail/archive")
+      message-directory (recker/path 'docs "emacs/gnus/Mail")
+      nndraft-directory (recker/path 'docs "emacs/gnus/Drafts")
+      gnus-cache-directory (recker/path 'docs "emacs/gnus/cache"))
+#+end_src
+
+Enable the powerful placebo options.
+
+#+begin_src emacs-lisp
+(setq gnus-asynchronous t)
+(setq gnus-use-cache t)
+#+end_src
+
+Don't dribble anywhere, that's gross.
+
+#+begin_src emacs-lisp
+(setq gnus-use-dribble-file nil)
+#+end_src
+
+Don't move archived messages anywhere.
+
+#+begin_src emacs-lisp
+(setq gnus-message-archive-group nil)
+#+end_src
+
+Use bbdb to store addresses.
+
+#+begin_src emacs-lisp
+(use-package bbdb
+  :ensure t
+  :config (setq bbdb-file (recker/path 'docs "emacs/bbdb.el"))
+  :init
+  (bbdb-mua-auto-update-init 'message)
+  (setq bbdb-mua-auto-update-p 'query)
+  (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
+#+end_src
+
+#+RESULTS:
+: t
+
+Configure **imap** settings.
+
+#+begin_src emacs-lisp
+(add-to-list 'gnus-secondary-select-methods
+	     '(nnimap "personal"
+		      (nnimap-address "imap.gmail.com")
+		      (nnimap-server-port "imaps")
+		      (nnimap-stream ssl)
+		      (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
+		      (nnmail-expiry-wait immediate)))
+#+end_src
+
+Configure **smtp** settings.
+
+#+begin_src emacs-lisp
+(setq smtpmail-smtp-service 587
+      smtpmail-smtp-user "alex@reckerfamily.com"
+      smtpmail-smtp-server "smtp.gmail.com"
+      send-mail-function 'smtpmail-send-it)
+#+end_src
+
+* Functions
+
+Rebind keys to some helpful existing functions.
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-c r") 'replace-string)
+(global-set-key (kbd "C-c l") 'sort-lines)
+#+end_src
+
+#+RESULTS:
+: sort-lines
+
+Some other helpful functions.
+
+#+begin_src emacs-lisp
+(defun recker/unfill-region (beg end)
+  "Unfill the region, joining text paragraphs into a single logical line."
+  (interactive "*r")
+  (let ((fill-column (point-max)))
+    (fill-region beg end)))
+#+end_src
+
+* Quotes
+
+Display random quotes in the scratch buffer as an elisp comment.
+
+#+name: scratch-quotes
 |----------------------------------------------------------------------------------------------------------------------------+---------------------------|
 | Sanity and happiness are an impossible combination.                                                                        | Mark Twain                |
 | Trust thyself only, and another shall not betray thee.                                                                     | Thomas Fuller             |
@@ -353,10 +915,8 @@ screen.
 | Guilt: the gift that keeps on giving.                                                                                      | Erma Bombeck              |
 | Be here now.                                                                                                               | Ram Dass                  |
 | The master understands that the universe is forever out of control.                                                        | Lao Tzu                   |
-| Our biggest problems arise from the avoidance of smaller ones.                                                             | Jeremy Caulfield          |
-| The truth will set you free, but first it will make you miserable                                                          | James A. Garfield         |
-| The thing that lies at the foundation of positive change is service to a fellow human being                                | Lee Iacocca               |
-| Honesty and transparency make you vulnerable. Be honest and transparent anyway                                             | Mother Teresa             |
+| Our biggest problems arise from the avoidance of smaller ones.                                                             | James A. Lee Iacocca      |
+| Honesty and transparency make you vulnerable.                                                                              | Mother Teresa             |
 | If you do not ask the right questions, you do not get the right answers.                                                   | Edward Hodnett            |
 | Resentment is like taking poison and waiting for the other person to die.                                                  | Malachy McCourt           |
 | If we knew each other's  secrets, what comfort should we find.                                                             | John Churton Collins      |
@@ -385,810 +945,34 @@ screen.
 | Happiness does not depend on outward things, but on the way we see them.                                                   | Leo Tolstoy               |
 | Being president is like being a jackass in a hailstorm.  There's nothing to do but to stand there and take it.             | Lyndon Johnson            |
 
-Pick a random one on startup, wrap it in a lisp comment box, and
-assign it to the scratch message variable.
+#+begin_src emacs-lisp :var scratch-quotes=scratch-quotes
+  (setq recker/scratch-quotes scratch-quotes)
 
-#+BEGIN_SRC emacs-lisp :var quotes=scratch-quotes
-  (setq initial-scratch-message (let* ((choice (nth (random (length quotes)) quotes))
-				       (text (car choice))
-				       (attribution (car (cdr choice))))
-				  (with-temp-buffer
-				    (lisp-mode)
-				    (newline)
-				    (insert (format "\"%s\"\n" text))
-				    (fill-region (point-min) (point-max))
-				    (insert (format "-- %s" attribution))
-				    (comment-region (point-min) (point-max))
-				    (dotimes (_ 2) (newline))
-				    (buffer-string))))
-#+END_SRC
-
-Make the =*scratch*= buffer unkillable.
-
-#+BEGIN_SRC emacs-lisp
-  (defun recker/dont-kill-scratch ()
-    "Return NIL if the current buffer is the *scratch* buffer."
-    (not (equal (buffer-name (current-buffer)) "*scratch*")))
-
-  (add-hook 'kill-buffer-query-functions 'recker/dont-kill-scratch)
-#+END_SRC
-
-** Better Passwords
-
-My own functions for [[https://www.passwordstore.org/][pass]].
-
-#+BEGIN_SRC emacs-lisp
-  (defun recker/pass-directory ()
-    (or (bound-and-true-p recker/active-pass-directory)
-	(expand-file-name "~/.password-store")))
-
-  (defun recker/pass--file-to-entry (path)
-    (file-name-sans-extension
-     (file-relative-name path (recker/pass-directory))))
-
-  (defun recker/pass-list-entries ()
-    (mapcar
-     #'recker/pass--file-to-entry
-     (directory-files-recursively (recker/pass-directory) ".gpg")))
-
-  (defun recker/pass-to-string (path)
-    (first
-     (split-string
-      (shell-command-to-string
-       (format "PASSWORD_STORE_DIR=\"%s\" pass \"%s\" | head -1" (recker/pass-directory) path))
-      "\n")))
-
-  (defun recker/pass-to-clip (path)
-    (interactive (list (completing-read "Password: " (recker/pass-list-entries) nil t)))
-    (shell-command
-     (format "PASSWORD_STORE_DIR=\"%s\" pass -c \"%s\"" (recker/pass-directory) path)))
-
-  (defun recker/pass-to-clip-work ()
+  (defun recker/random-scratch-quote ()
     (interactive)
-    (let ((recker/active-pass-directory (expand-file-name "~/.password-store-work")))
-      (funcall-interactively #'recker/pass-to-clip (completing-read "Password: " (recker/pass-list-entries) nil t))))
-#+END_SRC
-
-* Modes
-
-Support for [[http://editorconfig.org/][editorconfig]], no matter what the mode is.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package editorconfig
-    :ensure t
-    :config (editorconfig-mode 1))
-#+END_SRC
-
-** C
-
-Taken from [[https://www.kernel.org/doc/html/v4.10/process/coding-style.html#you-ve-made-a-mess-of-it][The Linux Kernel Coding Style]], which was a way better read
-than you'd think.
-
-I slightly modified the provided snippet so that all of my C would
-obey these rules by default.
-
-#+BEGIN_SRC emacs-lisp
-  (defun c-lineup-arglist-tabs-only (ignored)
-    "Line up argument lists by tabs, not spaces"
-    (let* ((anchor (c-langelem-pos c-syntactic-element))
-	   (column (c-langelem-2nd-pos c-syntactic-element))
-	   (offset (- (1+ column) anchor))
-	   (steps (floor offset c-basic-offset)))
-      (* (max steps 1)
-	 c-basic-offset)))
-
-  (add-hook 'c-mode-common-hook
-	    (lambda ()
-	      ;; Add kernel style
-	      (c-add-style
-	       "linux-tabs-only"
-	       '("linux" (c-offsets-alist
-			  (arglist-cont-nonempty
-			   c-lineup-gcc-asm-reg
-			   c-lineup-arglist-tabs-only))))))
-
-  (add-hook 'c-mode-hook (lambda ()
-			   (setq indent-tabs-mode t)
-			   (setq show-trailing-whitespace t)
-			   (c-set-style "linux-tabs-only")))
-#+END_SRC
-
-** Clojure
-
-#+BEGIN_SRC emacs-lisp
-  (use-package clojure-mode
-    :ensure t)
-#+END_SRC
-
-** Commmon Lisp
-
-For this to work, sbcl should be installed and in =PATH=.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package slime
-    :ensure t
-    :config (setq inferior-lisp-program (executable-find "sbcl")))
-
-  (use-package slime-company
-    :ensure t
-    :init (slime-setup '(slime-fancy slime-company)))
-#+END_SRC
-
-** D
-
-#+BEGIN_SRC emacs-lisp
-  (use-package d-mode
-    :ensure t
-    :defer t
-    :mode "\\.d\\'")
-#+END_SRC
-
-** Dhall
-
-#+BEGIN_SRC emacs-lisp
-  (use-package dhall-mode
-    :ensure t
-    :mode "\\.dhall\\'")
-#+END_SRC
-
-** Dockerfile
-
-#+BEGIN_SRC emacs-lisp
-  (use-package dockerfile-mode
-    :ensure t
-    :defer t
-    :mode "\\Dockerfile\\'")
-#+END_SRC
-
-** Elisp
-
-Disable those silly docstring warnings when editing elisp.
-
-#+BEGIN_SRC emacs-lisp
-  (with-eval-after-load 'flycheck
-    (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-checkdoc))
-#+END_SRC
-
-** Go
-
-This is the /really/ trendy part of my config.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package go-mode
-    :ensure t
-    :defer t
-    :mode "\\*.go\\'"
-    :init
-    (add-hook 'before-save-hook 'gofmt-before-save)
-    (local-set-key (kbd "M-.") 'godef-jump))
-#+END_SRC
-
-Company mode + =gocode= were slow and they made me angry.  These
-expressions are in timeout.
-
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package company-go
-  ;;   :ensure t)
-
-  ;; (add-hook 'go-mode-hook (lambda ()
-  ;; 			  (set (make-local-variable 'company-backends) '(company-go))
-  ;; 			  (company-mode))))
-#+END_SRC
-
-** Groovy
-
-Pretty much just for Jenkins files.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package groovy-mode
-    :ensure t
-    :defer t
-    :mode "\\Jenkinsfile\\'")
-#+END_SRC
-
-** Haskell
-
-#+BEGIN_SRC emacs-lisp
-  (use-package haskell-mode
-    :ensure t
-    :defer t
-    :mode "\\.hs\\'")
-#+END_SRC
-
-** HTML
-
-#+BEGIN_SRC emacs-lisp
-  (use-package web-mode
-    :ensure t
-    :defer t
-    :mode ("\\.html\\'" "\\.jinja\\'")
-    :config (setq web-mode-markup-indent-offset 2
-		  web-mode-code-indent-offset 2))
-
-  (use-package emmet-mode
-    :ensure t
-    :config (add-hook 'web-mode-hook 'emmet-mode))
-#+END_SRC
-
-** JavaScript
-
-This is the web-scale portion of my config.
-
-#+BEGIN_SRC emacs-lisp
-  (setq js-indent-level 2)
-#+END_SRC
-
-** Jsonnet
-
-Install jsonnet mode.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package jsonnet-mode
-    :ensure t
-    :defer t
-    :mode ("\\.jsonnet\\'" "\\.libsonnet\\'"))
-#+END_SRC
-
-** Log
-
-Taken from [[https://writequit.org/articles/working-with-logs-in-emacs.html][Working with Log Files in Emacs]].
-
-#+BEGIN_SRC emacs-lisp
-  (use-package vlf :ensure t)
-
-  (use-package log4j-mode
-    :ensure t
-    :defer t
-    :mode "\\.log\\'")
-#+END_SRC
-
-** Lua
-
-#+BEGIN_SRC emacs-lisp
-  (use-package lua-mode
-    :ensure t
-    :defer t
-    :mode ("\\.lua\\'" "\\.p8\\'"))
-#+END_SRC
-
-** Markdown
-
-#+BEGIN_SRC emacs-lisp
-  (use-package markdown-mode
-    :ensure t
-    :commands (gfm-mode)
-    :mode (("\\.md\\'" . gfm-mode)
-	   ("\\.gfm\\'" . gfm-mode))
-    :config (setq markdown-command "multimarkdown"
-		  markdown-fontify-code-blocks-natively t))
-#+END_SRC
-
-** Nginx
-
-#+BEGIN_SRC emacs-lisp
-  (use-package nginx-mode
-    :ensure t
-    :defer t)
-#+END_SRC
-
-** Python
-
-Install virtualenvwrapper support.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package virtualenvwrapper
-    :ensure t)
-#+END_SRC
-
-Let elpy do its thing.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package elpy
-    :ensure t
-    :init (elpy-enable))
-#+END_SRC
-
-** Ruby
-   
-These are very much a work in progress.  I know about as much about
-ruby as I know about scented candles and professional football.
-
-#+BEGIN_SRC emacs-lisp
-  (setq ruby-deep-indent-paren nil)
-#+END_SRC
-
-** Rust
-
-#+BEGIN_SRC emacs-lisp
-  (use-package rust-mode
-    :ensure t
-    :defer t
-    :mode "\\.rs'")
-#+END_SRC
-
-** Shell
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'sh-mode-hook
-          (lambda ()
-            (set (make-local-variable 'compile-command)
-                 (buffer-file-name (current-buffer)))
-            (local-set-key (kbd "C-c C-c") 'compile)))
-#+END_SRC
-
-** Text
-
-Automatically "fill" text while editing.
-
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'text-mode-hook 'turn-on-auto-fill)
-#+END_SRC
-
-Turn on spell check.
-
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'text-mode-hook #'(lambda () (flyspell-mode t)))
-#+END_SRC
-
-** Terraform
-
-#+BEGIN_SRC emacs-lisp
-  (use-package terraform-mode
-    :ensure t
-    :defer t
-    :mode "\\.tf\\'")
-
-  (use-package company-terraform
-    :ensure t
-    :init (company-terraform-init))
-#+END_SRC
-
-** Terminal
-
-I'm a simple man, and I use a simple shell.
-
-#+BEGIN_SRC emacs-lisp
-  (defun recker/ansi-term ()
-    (interactive)
-    (ansi-term "/bin/bash"))
-  (global-set-key (kbd "C-c e") 'eshell)
-  (global-set-key (kbd "C-x t") 'recker/ansi-term)
-#+END_SRC
-
-The terminal buffer should be killed on exit.
-   
-#+BEGIN_SRC emacs-lisp
-  (defadvice term-handle-exit
-      (after term-kill-buffer-on-exit activate)
-    (kill-buffer))
-#+END_SRC
-
-Aliases for eshell
-
-#+BEGIN_SRC emacs-lisp
-  (defalias 'ff #'find-file)
-#+END_SRC
-
-** Typescript
-
-#+BEGIN_SRC emacs-lisp
-  (use-package typescript-mode
-    :ensure t
-    :defer t
-    :mode "\\.ts\\'")
-#+END_SRC
-
-** Vue
-
-#+BEGIN_SRC emacs-lisp
-(use-package vue-mode :ensure t)
-
-(add-hook 'vue-mode-hook (lambda () (setq syntax-ppss-table nil)))
-#+END_SRC
-
-** YAML
-
-#+BEGIN_SRC emacs-lisp
-  (use-package indent-guide
-    :ensure t
-    :init (add-hook 'yaml-mode-hook 'indent-guide-mode))
-
-  (use-package yaml-mode
-    :ensure t
-    :defer t
-    :mode ("\\.yml\\'" "\\.sls\\'" "\\.yml.j2\\'")
-    :init
-    (add-hook 'yaml-mode-hook 'turn-off-auto-fill))
-#+END_SRC
-
-* Org
-
-#+BEGIN_SRC emacs-lisp
-  (use-package org-mode
-    :mode "\\.org$"
-    :init (when (version<= "9.2" (org-version))
-	    (require 'org-tempo)))
-#+END_SRC
-
-** Editing
-
-Render blank lines between collapsed headings.
-
-#+BEGIN_SRC emacs-lisp
-  (setq org-cycle-separator-lines 1)
-#+END_SRC
-
-Insert blank lines between headings by default.
-
-#+BEGIN_SRC emacs-lisp
-  (setq org-blank-before-new-entry '((heading . t) (plain-list-item . auto)))
-#+END_SRC
-
-Set attachments directory.
-
-#+BEGIN_SRC emacs-lisp
-  (setq org-attach-directory (recker/path 'docs "attachments/"))
-#+END_SRC
-
-Delete attachments when archiving something, since everything is
-stored in git anyway.
-
-#+BEGIN_SRC emacs-lisp
-  (setq org-attach-archive-delete 't)
-#+END_SRC
-
-** Capture
-
-Set-up org capture for quickly adding text to notes.
-
-#+BEGIN_SRC emacs-lisp
-  (setq org-capture-templates '())
-#+END_SRC
-
-Bind =org-capture= to a fast, slick keybinding.
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-c c") 'org-capture)
-#+END_SRC
-
-** Agenda
-
-Use the local documents folder as the agenda root.
-
-#+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files (list (recker/path 'docs)))
-#+END_SRC
-
-Give =org-agenda= a slick keybinding so I can quickly check it while
-working on something else.
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-c a") 'org-agenda)
-#+END_SRC
-
-While browsing the agenda, default to follow mode - which higlights
-the item in your notes while you scan through the agenda.
-
-#+BEGIN_SRC emacs-lisp
-  (setq org-agenda-start-with-follow-mode t)
-#+END_SRC
-
-By default, exclude anything that was archived.
-
-#+BEGIN_SRC emacs-lisp
-  (setq org-agenda-tag-filter-preset '("-ARCHIVE"))
-#+END_SRC
-
-Set up some custom agenda views.
-
-#+BEGIN_SRC emacs-lisp
-  (setq org-agenda-custom-commands '())
-#+END_SRC
-
-** Babel
-
-Live dangerously.  Tell org to run code blocks without confirmation.
-
-#+BEGIN_SRC emacs-lisp
-  (setq org-confirm-babel-evaluate nil)
-#+END_SRC
-
-Add some languages!
-
-#+BEGIN_SRC emacs-lisp
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((python . t)
-     (ruby . t)
-     (shell . t)))
-#+END_SRC
-
-** Exporting
-
-Set up some publishing projects.
-
-#+BEGIN_SRC emacs-lisp
-  (setq org-publish-project-alist '())
-#+END_SRC
-
-* Gnus
-
-Gnus has a steep learning curve, and learning to incorporate this
-mysterious program has proven to be an emotional roller coaster. I’m
-not even sure I know enough about it to say “it’s worth it”, but
-hopefully this will help you with your own journey.
-
-** Better Startup
-
-Gnus requires a “primary method” from which you obtain
-news. Unfortunately, the program kind of explodes if this isn’t set,
-which proves to be kind of a pain when you want to poke around and set
-up things interactively.
-
-Here’s my workaround - set the primary method to a dummy protocol that
-will immediately come back. In our case, this is a blank nnml stream.
-
-#+BEGIN_SRC emacs-lisp
-  (setq gnus-select-method '(nnml ""))
-#+END_SRC
-
-Default on topic mode, since it’s more helpful.
-
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
-#+END_SRC
-
-Change path to =newsrc= config file.
-
-#+BEGIN_SRC emacs-lisp
-  (setq gnus-startup-file (recker/path 'docs "emacs/newsrc"))
-#+END_SRC
-
-Don't keep a dribble file.
-
-#+BEGIN_SRC emacs-lisp
-  (setq gnus-use-dribble-file nil)
-#+END_SRC
-
-Enable the asynchronous flag.
-
-#+BEGIN_SRC emacs-lisp
-  (setq gnus-asynchronous t)
-#+END_SRC
-
-More possible placebo code to make gnus feel faster - use the cache.
-
-#+BEGIN_SRC emacs-lisp
-  (setq gnus-use-cache t)
-#+END_SRC
-
-** Better Folders
-
-Gnus creates a bunch of folders in your home directory that, as far as
-I can tell, are not needed outside of gnus. I've finally managed to
-wrangle enough variables to tell gnus to save everything in the gnus
-folder.  I save mine off in a version controlled "docs" directory.
-
-#+BEGIN_SRC emacs-lisp
-  (setq gnus-home-directory (recker/path 'docs "emacs/gnus")
-	nnfolder-directory (recker/path 'docs "emacs/gnus/Mail/archive")
-	message-directory (recker/path 'docs "emacs/gnus/Mail")
-	nndraft-directory (recker/path 'docs "emacs/gnus/Drafts")
-	gnus-cache-directory (recker/path 'docs "emacs/gnus/cache"))
-#+END_SRC
-
-** Reading News
-
-Use gmane and gwene to follow news, mailers, and tons of other
-syndicated things. There are even comics.
-
-#+BEGIN_SRC emacs-lisp
-  (setq gnus-secondary-select-methods '())
-#+END_SRC
-
-** Reading Mail
-
-Add a personal IMAP account.
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'gnus-secondary-select-methods
-	       '(nnimap "personal"
-			(nnimap-address "imap.gmail.com")
-			(nnimap-server-port "imaps")
-			(nnimap-stream ssl)
-			(nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
-			(nnmail-expiry-wait immediate)))
-#+END_SRC
-
-** Sending Mail
-
-Don't attempt to archive outbound emails to groups.
-
-#+BEGIN_SRC emacs-lisp
-  (setq gnus-message-archive-group nil)
-#+END_SRC
-
-Keep addresses locally using =bbdb=.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package bbdb
-    :ensure t
-    :config (setq bbdb-file (recker/path 'docs "emacs/bbdb.el"))
-    :init
-    (bbdb-mua-auto-update-init 'message)
-    (setq bbdb-mua-auto-update-p 'query)
-    (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
-#+END_SRC
-
-SMTP settings.
-
-#+BEGIN_SRC emacs-lisp
-  (setq smtpmail-smtp-service 587
-	smtpmail-smtp-user "alex@reckerfamily.com"
-	smtpmail-smtp-server "smtp.gmail.com"
-	send-mail-function 'smtpmail-send-it)
-#+END_SRC
-
-I keep an encrypted authinfo in my docs under version control.
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'auth-sources (recker/path 'docs "emacs/authinfo.gpg"))
-#+END_SRC
-
-Here's what it looks like.
-
-#+BEGIN_EXAMPLE
-  machine imap.gmail.com login alex@reckerfamily.com password <password> port imaps
-  machine smtp.gmail.com login alex@reckerfamily.com password <password> port 587
-#+END_EXAMPLE
-
-* Miscellaneous
-
-** Tools
-
-#+BEGIN_SRC emacs-lisp
-  (use-package dictionary :ensure t)
-
-  (use-package request :ensure t)
-
-  (use-package transmission :ensure t)
-#+END_SRC
-
-Write good.
-
-#+BEGIN_SRC emacs-lisp
-(use-package writegood-mode
-  :ensure t
-  :init (add-hook 'org-mode-hook 'writegood-mode))
-#+END_SRC
-
-Start a server to listen for =emacsclient=.
-
-#+BEGIN_SRC emacs-lisp
-  (require 'server)
-  (unless (server-running-p)
-    (server-start))
-#+END_SRC
-
-Mutt, for work email.
-
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'auto-mode-alist '("/mutt" . mail-mode))
-#+END_SRC
-
-** Games
-
-#+BEGIN_SRC emacs-lisp
-  (setq tetris-score-file (recker/path 'docs "emacs/tetris-scores"))
-#+END_SRC
-
-** Functions
-
-These are miscellaneous functions that I’ve written (or plagiarized).
-
-#+BEGIN_SRC emacs-lisp
-  (defun recker/purge-buffers ()
-    "Delete all buffers, except for *scratch*."
-    (interactive)
-    (mapc #'(lambda (b) (unless (string= (buffer-name b) "*scratch*") (kill-buffer b))) (buffer-list)))
-
-  (defun recker/unfill-region (beg end)
-    "Unfill the region, joining text paragraphs into a single logical line."
-    (interactive "*r")
-    (let ((fill-column (point-max)))
-      (fill-region beg end)))
-
-  (defun recker/org-scratch ()
-    "Open a org mode *scratch* pad."
-    (interactive)
-    (switch-to-buffer "*org scratch*")
-    (org-mode)
-    (insert "#+TITLE: Org Scratch\n\n"))
-
-  (defun recker/sudo (file-name)
-    "find-file, as sudo."
-    (interactive "Fsudo Find file:")
-    (let ((tramp-file-name (concat "/sudo::" (expand-file-name file-name))))
-      (find-file tramp-file-name)))
-
-  (defun recker/do-fancy-equal-thingy (beg end)
-    (interactive "r")
-    (align-regexp beg end "\\(\\s-*\\)\\ =" 1 0 t))
-
-  (defun recker/encrypt-with-ssh (public-key-path)
-    (interactive "fPublic Key Path: ")
-    (let* ((pem (shell-command-to-string (format "ssh-keygen -f %s -e -m PKCS8" public-key-path)))
-	   (secret (read-passwd "Secret String: "))
-	   (encrypt-command
-	    (format "openssl rsautl -ssl -encrypt -pubin -inkey <(echo \"%s\") -ssl -in <(echo \"%s\") | base64" pem secret))
-	   (hash (shell-command-to-string encrypt-command))
-	   (decrypt-command
-	    (format "echo \"%s\" | base64 -D | openssl rsautl -decrypt -inkey ~/.ssh/id_rsa" hash)))
-      (kill-new decrypt-command nil)
-      (message "Decrypt command added to kill ring.")))
-
-  (defun find-first-non-ascii-char ()
-    "Find the first non-ascii character from point onwards."
-    (interactive)
-    (let (point)
-      (save-excursion
-	(setq point
-	      (catch 'non-ascii
-		(while (not (eobp))
-		  (or (eq (char-charset (following-char))
-			  'ascii)
-		      (throw 'non-ascii (point)))
-		  (forward-char 1)))))
-      (if point
-	  (goto-char point)
-	(message "No non-ascii characters."))))
-
-  (defun recker/today ()
-    "Open today's journal entry."
-    (interactive)
-    (let* ((target
-	   (recker/path 'src (format-time-string "blog/entries/%Y-%m-%d.md"))))
-      (find-file target)))
-#+END_SRC
-
-** Keybindings
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-c b") 'browse-url)
-  (global-set-key (kbd "C-c l") 'sort-lines)
-  (global-set-key (kbd "C-c n") 'recker/org-scratch)
-  (global-set-key (kbd "C-c r") 'replace-string)
-  (global-set-key (kbd "C-c t") 'recker/today)
-  (global-set-key (kbd "C-x C-k k") 'kill-buffer)
-  (global-set-key (kbd "C-x P") 'recker/purge-buffers)
-  (global-set-key (kbd "C-x k") 'kill-this-buffer)
-  (global-set-key (kbd "C-x p") 'recker/pass-to-clip)
-  (global-set-key (kbd "C-x w") 'recker/pass-to-clip-work)
-  (global-set-key (kbd "C-x |") 'recker/do-fancy-equal-thingy)
-#+END_SRC
-
-** Local
-
-Emacs sometimes dumps things in =init.el=.  It means well, but I would
-rather this be in a different file ignored by git.
-
-#+BEGIN_SRC emacs-lisp
-  (let ((custom (recker/path 'emacs "custom.el")))
-    (unless (file-exists-p custom)
+    (let* ((quotes recker/scratch-quotes)
+	   (choice (nth (random (length quotes)) quotes))
+	   (text (car choice))
+	   (attribution (car (cdr choice))))
       (with-temp-buffer
-	(write-file custom)))
-    (setq custom-file custom))
-#+END_SRC
+	(lisp-mode)
+	(newline)
+	(insert (format "\"%s\"\n" text))
+	(fill-region (point-min) (point-max))
+	(insert (format "-- %s" attribution))
+	(comment-region (point-min) (point-max))
+	(dotimes (_ 2) (newline))
+	(buffer-string))))
 
-I also like to keep a file around for miscellaneous elisp that should
-run on startup.  This is for machine specific settings or things I am
-still tinkering with.
+  (setq initial-scratch-message (recker/random-scratch-quote))
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
-  (let ((local (recker/path 'emacs "local.el")))
-    (unless (file-exists-p local)
-      (with-temp-buffer
-	(insert ";; This file is for local changes")
-	(write-file local)))
-    (load local))
-#+END_SRC
+* Local
+
+Finally, load any local overrides if they exist..
+
+#+begin_src emacs-lisp
+  (let ((local-path (recker/path 'emacs "local.el")))
+    (if (file-exists-p local-path)
+	(load-file local-path)))
+#+end_src

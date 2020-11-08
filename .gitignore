@@ -8,3 +8,4 @@ projectile-bookmarks.eld
 transient
 local.el
 auto-save-list
+smex-items

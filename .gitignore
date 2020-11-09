@@ -9,3 +9,4 @@ transient
 local.el
 auto-save-list
 smex-items
+tramp

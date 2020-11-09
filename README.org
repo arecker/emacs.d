@@ -379,6 +379,13 @@ Flycheck for angry red squiggles.
 
 #+RESULTS:
 
+Install yasnippet.
+
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :ensure t)
+#+end_src
+
 * Passwords
 
 I use the =pass= tool for personal secret management.  It's my own

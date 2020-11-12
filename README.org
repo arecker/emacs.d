@@ -555,7 +555,7 @@ operators sometimes.
   :defer t
   :config (let ((govet (flycheck-checker-get 'go-vet 'command)))
 	    (when (equal (cadr govet) "tool")
-	      (setf (cdr govet) (cddr govet)))))   
+	      (setf (cdr govet) (cddr govet)))))
 #+end_src
 
 ** Groovy
@@ -589,7 +589,7 @@ Use emmet mode to crank out the HTML tags.
   :ensure t
   :defer t
   :init (setq emmet-preview-default nil)
-  :config (add-hook 'sgml-mode-hook 'emmet-mode))   
+  :config (add-hook 'sgml-mode-hook 'emmet-mode))
 #+end_src
 
 #+RESULTS:
@@ -608,7 +608,7 @@ yasnippet once I can figure it out.
 
 (defun recker/insert-figure (filename caption)
   "Insert an HTML figure and caption."
-  (interactive "sFilename: 
+  (interactive "sFilename:
 sCaption: ")
   (message "%s" caption)
   (let* ((src (format "/images/%s" filename))
@@ -662,8 +662,8 @@ Markdown, bleh.
   :ensure t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
+	 ("\\.md\\'" . markdown-mode)
+	 ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
 #+end_src
 
@@ -718,7 +718,13 @@ Package for working with [[https://www.terraform.io/][terraform]].
 
 ** Text
 
-Configure spelling.
+Clean up white space on save.
+
+#+begin_src emacs-lisp
+(add-hook 'before-save-hook 'whitespace-cleanup)
+#+end_src
+
+Configure spellcheck.
 
 #+begin_src emacs-lisp
 (setq ispell-personal-dictionary (recker/path 'docs "emacs/ispell.dict"))
@@ -758,7 +764,7 @@ I hate being a YAML engineer it's awesome.
 (use-package yaml-mode
   :ensure t
   :defer t
-  :mode ("\\.yml\\'" "\\.yaml\\'"))   
+  :mode ("\\.yml\\'" "\\.yaml\\'"))
 #+end_src
 
 * Org

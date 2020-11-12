@@ -383,8 +383,11 @@ Install yasnippet.
 
 #+begin_src emacs-lisp
   (use-package yasnippet
-    :ensure t)
+    :ensure t
+    :init (add-hook 'prog-mode-hook #'yas-minor-mode))
 #+end_src
+
+#+RESULTS:
 
 * Passwords
 

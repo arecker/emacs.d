@@ -871,6 +871,12 @@ Open up a new blog post.
 #+RESULTS:
 : recker/today
 
+Archive to a single file.
+
+#+begin_src emacs-lisp
+  (setq org-archive-location "archive.org::")
+#+end_src
+
 * Gnus
 
 Odd, but fulfilling.  Here is my sordid configuration.  Set up some

@@ -854,18 +854,18 @@ Install htmlize for sweet snyntax highlighting on HTML exports.
 Open up a new blog post.
 
 #+begin_src emacs-lisp
-(defun recker/today ()
-  "Open today's journal entry."
-  (interactive)
-  (let* ((target
-	  (recker/path 'src (format-time-string "blog/entries/%Y-%m-%d.md")))
-	 (frontmatter
-	  (format-time-string "---\ntitle:\nbanner: %Y-%m-%d.jpg\n---\n\n")))
-    (if (file-exists-p target)
-	(find-file target)
-      (progn (find-file target)
-	     (insert frontmatter)))))
-(global-set-key (kbd "C-c t") 'recker/today)
+  (defun recker/today ()
+    "Open today's journal entry."
+    (interactive)
+    (let* ((target
+	    (recker/path 'src (format-time-string "blog/_posts/%Y-%m-%d-entry.md")))
+	   (frontmatter
+	    (format-time-string "---\ntitle:\nbanner: %Y-%m-%d.jpg\n---\n\n")))
+      (if (file-exists-p target)
+	  (find-file target)
+	(progn (find-file target)
+	       (insert frontmatter)))))
+  (global-set-key (kbd "C-c t") 'recker/today)
 #+end_src
 
 #+RESULTS:

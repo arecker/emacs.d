@@ -550,13 +550,24 @@ Haven't really gotten into go, but I have to work on Kubernetes
 operators sometimes.
 
 #+begin_src emacs-lisp
-(use-package go-mode
-  :ensure t
-  :defer t
-  :config (let ((govet (flycheck-checker-get 'go-vet 'command)))
-	    (when (equal (cadr govet) "tool")
-	      (setf (cdr govet) (cddr govet)))))
+  (use-package go-mode
+    :ensure t
+    :defer t
+    :config (let ((govet (flycheck-checker-get 'go-vet 'command)))
+	      (when (equal (cadr govet) "tool")
+		(setf (cdr govet) (cddr govet))))
+    :init (add-hook 'go-mode-hook
+		    (lambda ()
+		      (set (make-local-variable 'company-backends) '(company-go))
+		      (company-mode))))
+
+  (use-package company-go
+    :ensure t
+    :defer t
+    :after (company))
 #+end_src
+
+#+RESULTS:
 
 ** Groovy
 
@@ -876,6 +887,16 @@ Archive to a single file.
 #+begin_src emacs-lisp
   (setq org-archive-location "archive.org::")
 #+end_src
+
+Don't show archived or done items in the agenda.
+
+#+begin_src emacs-lisp
+  (setq org-agenda-skip-scheduled-if-done t
+	org-agenda-skip-deadline-if-done  t
+	org-agenda-archives-mode nil)
+#+end_src
+
+#+RESULTS:
 
 * Gnus
 

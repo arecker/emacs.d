@@ -20,3 +20,4 @@
 
 (recker/package-init)
 (recker/load-config)
+(put 'upcase-region 'disabled nil)

@@ -600,7 +600,7 @@ Use emmet mode to crank out the HTML tags.
   :ensure t
   :defer t
   :init (setq emmet-preview-default nil)
-  :config (add-hook 'sgml-mode-hook 'emmet-mode))
+  :config (add-hook 'html-mode-hook 'emmet-mode))
 #+end_src
 
 #+RESULTS:

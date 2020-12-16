@@ -39,16 +39,16 @@ configuration.
   (defun recker/path (dir &optional subpath)
     "Build a path name relative to the home directory."
     (let* ((macos-p (recker/macos-p))
-	   (dir (pcase dir
-		  ('home "~")
-		  ('desktop (if macos-p "~/Desktop" "~/desktop"))
-		  ('docs (if macos-p "~/Documents" "~/docs"))
-		  ('pics (if macos-p "~/Pictures" "~/pics"))
-		  ('public (if macos-p "~/Public" "~/public"))
-		  ('src "~/src")
-		  ('emacs user-emacs-directory)
-		  (_ (error (format "no %s directory!" dir)))))
-	   (subdir (or subpath "")))
+           (dir (pcase dir
+                  ('home "~")
+                  ('desktop (if macos-p "~/Desktop" "~/desktop"))
+                  ('docs (if macos-p "~/Documents" "~/docs"))
+                  ('pics (if macos-p "~/Pictures" "~/pics"))
+                  ('public (if macos-p "~/Public" "~/public"))
+                  ('src "~/src")
+                  ('emacs user-emacs-directory)
+                  (_ (error (format "no %s directory!" dir)))))
+           (subdir (or subpath "")))
       (expand-file-name (concat (file-name-as-directory dir) subpath))))
 #+END_SRC
 
@@ -112,7 +112,7 @@ Overwrite the selected text.
 Avoid tabs.
 
 #+begin_src emacs-lisp
-(setq indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil)
 #+end_src
 
 Enable IDO mode and try to use it everywhere.  It's a strange
@@ -151,7 +151,7 @@ Use smex as a smarter replacement for the =M-x= menu.
     :ensure t
     :init (smex-initialize)
     :bind (("M-x" . 'smex)
-	   ("M-X" . 'smex-major-mode-commands)))
+           ("M-X" . 'smex-major-mode-commands)))
 #+end_src
 
 #+RESULTS:
@@ -205,12 +205,12 @@ font for things like screen shares.
 
 #+BEGIN_SRC emacs-lisp
   (setq-default recker/regular-font (if (recker/macos-p)
-					"Monaco 16"
-				      "Inconsolata 13"))
+                                        "Monaco 16"
+                                      "Inconsolata 13"))
 
   (setq-default recker/large-font (if (recker/macos-p)
-				      "Monaco 20"
-				    "Inconsolata 18"))
+                                      "Monaco 20"
+                                    "Inconsolata 18"))
 #+END_SRC
 
 Set the regular font if emacs is running in graphics mode.
@@ -229,12 +229,12 @@ large font.
     (unless (display-graphic-p)
       (error "Running in -nw mode, font won't work"))
     (let* ((current-font-obj (face-attribute 'default :font))
-	   (current-font (format "%s %s"
-				 (font-get current-font-obj :family)
-				 (font-get current-font-obj :size)))
-	   (desired-font (if (string-equal current-font recker/regular-font)
-			     recker/large-font
-			   recker/regular-font)))
+           (current-font (format "%s %s"
+                                 (font-get current-font-obj :family)
+                                 (font-get current-font-obj :size)))
+           (desired-font (if (string-equal current-font recker/regular-font)
+                             recker/large-font
+                           recker/regular-font)))
       (set-frame-font (progn (message "Changing font to %s" desired-font) desired-font) t t)))
 
   (global-set-key (kbd "C-c C-x f") 'recker/toggle-font-size)
@@ -481,25 +481,25 @@ surpisingly good and funny read.
 (defun c-lineup-arglist-tabs-only (ignored)
   "Line up argument lists by tabs, not spaces"
   (let* ((anchor (c-langelem-pos c-syntactic-element))
-	 (column (c-langelem-2nd-pos c-syntactic-element))
-	 (offset (- (1+ column) anchor))
-	 (steps (floor offset c-basic-offset)))
+         (column (c-langelem-2nd-pos c-syntactic-element))
+         (offset (- (1+ column) anchor))
+         (steps (floor offset c-basic-offset)))
     (* (max steps 1)
        c-basic-offset)))
 
 (add-hook 'c-mode-common-hook
-	  (lambda ()
-	    (c-add-style
-	     "linux-tabs-only"
-	     '("linux" (c-offsets-alist
-			(arglist-cont-nonempty
-			 c-lineup-gcc-asm-reg
-			 c-lineup-arglist-tabs-only))))))
+          (lambda ()
+            (c-add-style
+             "linux-tabs-only"
+             '("linux" (c-offsets-alist
+                        (arglist-cont-nonempty
+                         c-lineup-gcc-asm-reg
+                         c-lineup-arglist-tabs-only))))))
 
 (add-hook 'c-mode-hook (lambda ()
-			 (setq indent-tabs-mode t)
-			 (setq show-trailing-whitespace t)
-			 (c-set-style "linux-tabs-only")))
+                         (setq indent-tabs-mode t)
+                         (setq show-trailing-whitespace t)
+                         (c-set-style "linux-tabs-only")))
 #+end_src
 
 ** Common Lisp
@@ -516,7 +516,7 @@ Set up the slime common lisp developing environment.
     :ensure t
     :after (slime company)
     :config (setq slime-company-completion 'fuzzy
-		  slime-company-after-completion 'slime-company-just-one-space))
+                  slime-company-after-completion 'slime-company-just-one-space))
 #+end_src
 
 #+RESULTS:
@@ -554,12 +554,12 @@ operators sometimes.
     :ensure t
     :defer t
     :config (let ((govet (flycheck-checker-get 'go-vet 'command)))
-	      (when (equal (cadr govet) "tool")
-		(setf (cdr govet) (cddr govet))))
+              (when (equal (cadr govet) "tool")
+                (setf (cdr govet) (cddr govet))))
     :init (add-hook 'go-mode-hook
-		    (lambda ()
-		      (set (make-local-variable 'company-backends) '(company-go))
-		      (company-mode))))
+                    (lambda ()
+                      (set (make-local-variable 'company-backends) '(company-go))
+                      (company-mode))))
 
   (use-package company-go
     :ensure t
@@ -612,7 +612,7 @@ yasnippet once I can figure it out.
 (defun recker/filename-to-alt (filename)
   "Convert a filepath to an HTML alt attribute."
   (let ((name (file-name-sans-extension filename))
-	(chars '(?_ ?- ?/)))
+        (chars '(?_ ?- ?/)))
     (dolist (char chars)
       (setf name (subst-char-in-string char ?\s name)))
     name))
@@ -623,13 +623,13 @@ yasnippet once I can figure it out.
 sCaption: ")
   (message "%s" caption)
   (let* ((src (format "/images/%s" filename))
-	 (alt (recker/filename-to-alt filename))
-	 (img (format "<a href=\"%s\">\n<img alt=\"%s\" src=\"%s\"/>\n</a>" src alt src))
-	 (figcaption (if (not (string-equal caption ""))
-			 (format "<figcaption>\n<p>%s</p>\n</figcaption>" caption))))
+         (alt (recker/filename-to-alt filename))
+         (img (format "<a href=\"%s\">\n<img alt=\"%s\" src=\"%s\"/>\n</a>" src alt src))
+         (figcaption (if (not (string-equal caption ""))
+                         (format "<figcaption>\n<p>%s</p>\n</figcaption>" caption))))
     (insert
      (if (string-equal caption "")
-	 (format "<figure>\n%s\n</figure>" img)
+         (format "<figure>\n%s\n</figure>" img)
        (format "<figure>\n%s\n%s\n</figure>" img figcaption)))))
 #+end_src
 
@@ -673,8 +673,8 @@ Markdown, bleh.
   :ensure t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
-	 ("\\.md\\'" . markdown-mode)
-	 ("\\.markdown\\'" . markdown-mode))
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
 #+end_src
 
@@ -869,13 +869,13 @@ Open up a new blog post.
     "Open today's journal entry."
     (interactive)
     (let* ((target
-	    (recker/path 'src (format-time-string "blog/_posts/%Y-%m-%d-entry.md")))
-	   (frontmatter
-	    (format-time-string "---\ntitle:\nbanner: %Y-%m-%d.jpg\n---\n\n")))
+            (recker/path 'src (format-time-string "blog/_posts/%Y-%m-%d-entry.md")))
+           (frontmatter
+            (format-time-string "---\ntitle:\nbanner: %Y-%m-%d.jpg\n---\n\n")))
       (if (file-exists-p target)
-	  (find-file target)
-	(progn (find-file target)
-	       (insert frontmatter)))))
+          (find-file target)
+        (progn (find-file target)
+               (insert frontmatter)))))
   (global-set-key (kbd "C-c t") 'recker/today)
 #+end_src
 
@@ -892,8 +892,8 @@ Don't show archived or done items in the agenda.
 
 #+begin_src emacs-lisp
   (setq org-agenda-skip-scheduled-if-done t
-	org-agenda-skip-deadline-if-done  t
-	org-agenda-archives-mode nil)
+        org-agenda-skip-deadline-if-done  t
+        org-agenda-archives-mode nil)
 #+end_src
 
 #+RESULTS:
@@ -963,12 +963,12 @@ Configure **imap** settings.
 
 #+begin_src emacs-lisp
 (add-to-list 'gnus-secondary-select-methods
-	     '(nnimap "personal"
-		      (nnimap-address "imap.gmail.com")
-		      (nnimap-server-port "imaps")
-		      (nnimap-stream ssl)
-		      (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
-		      (nnmail-expiry-wait immediate)))
+             '(nnimap "personal"
+                      (nnimap-address "imap.gmail.com")
+                      (nnimap-server-port "imaps")
+                      (nnimap-stream ssl)
+                      (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
+                      (nnmail-expiry-wait immediate)))
 #+end_src
 
 Configure **smtp** settings.
@@ -1063,18 +1063,18 @@ Display random quotes in the scratch buffer as an elisp comment.
   (defun recker/random-scratch-quote ()
     (interactive)
     (let* ((quotes recker/scratch-quotes)
-	   (choice (nth (random (length quotes)) quotes))
-	   (text (car choice))
-	   (attribution (car (cdr choice))))
+           (choice (nth (random (length quotes)) quotes))
+           (text (car choice))
+           (attribution (car (cdr choice))))
       (with-temp-buffer
-	(lisp-mode)
-	(newline)
-	(insert (format "\"%s\"\n" text))
-	(fill-region (point-min) (point-max))
-	(insert (format "-- %s" attribution))
-	(comment-region (point-min) (point-max))
-	(dotimes (_ 2) (newline))
-	(buffer-string))))
+        (lisp-mode)
+        (newline)
+        (insert (format "\"%s\"\n" text))
+        (fill-region (point-min) (point-max))
+        (insert (format "-- %s" attribution))
+        (comment-region (point-min) (point-max))
+        (dotimes (_ 2) (newline))
+        (buffer-string))))
 
   (setq initial-scratch-message (recker/random-scratch-quote))
 #+end_src
@@ -1086,5 +1086,5 @@ Finally, load any local overrides if they exist..
 #+begin_src emacs-lisp
   (let ((local-path (recker/path 'emacs "local.el")))
     (if (file-exists-p local-path)
-	(load-file local-path)))
+        (load-file local-path)))
 #+end_src

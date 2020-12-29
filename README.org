@@ -830,17 +830,21 @@ Configure **capture templates** and map the selector to =C-c c=.
                `("m" "mixtape notes" plain (file+headline ,(recker/path 'docs "opsat.org") "Mixtape") nil))
 
   (add-to-list 'org-capture-templates
-               `("w" "writing idea" entry (file+headline ,(recker/path 'docs "opsat.org") "Writing") "* TODO %?\n"))
+               `("i" "writing idea" entry (file+headline ,(recker/path 'docs "opsat.org") "Writing") "* TODO %?\n"))
+
+  (add-to-list 'org-capture-templates
+               `("w" "work task" entry (file+headline ,(recker/path 'docs "opsat.org") "Work") "* TODO %?\n"))
 
   (add-to-list 'org-capture-templates
                `("t" "to-do item for today" checkitem (file+headline ,(recker/path 'docs "opsat.org") "Today")))
 #+end_src
 
 #+RESULTS:
-| t | to-do item for today | checkitem | (file+headline /home/alex/docs/opsat.org Today)       |           |
-| w | writing idea         | entry     | (file+headline /home/alex/docs/opsat.org Writing)     | * TODO %? |
-| m | mixtape notes        | plain     | (file+headline /home/alex/docs/opsat.org Mixtape)     | nil       |
-| j | journal entry        | plain     | (file+olp+datetree /home/alex/docs/opsat.org Journal) | nil       |
+| t | to-do item for today | checkitem | (file+headline /Users/arecker/Documents/opsat.org Today)       |           |
+| w | work task            | entry     | (file+headline /Users/arecker/Documents/opsat.org Work)        | * TODO %? |
+| i | writing idea         | entry     | (file+headline /Users/arecker/Documents/opsat.org Writing)     | * TODO %? |
+| m | mixtape notes        | plain     | (file+headline /Users/arecker/Documents/opsat.org Mixtape)     | nil       |
+| j | journal entry        | plain     | (file+olp+datetree /Users/arecker/Documents/opsat.org Journal) | nil       |
 
 Configure **agenda** and set up and map the view to =C-c a=.
 
@@ -877,7 +881,8 @@ Configure some custom agenda views.
 
 #+begin_src emacs-lisp
   (setq org-agenda-custom-commands '())
-  (add-to-list 'org-agenda-custom-commands '("ow" "writing ideas" tags-todo "+writing"))
+  (add-to-list 'org-agenda-custom-commands '("oi" "writing ideas" tags-todo "+writing"))
+  (add-to-list 'org-agenda-custom-commands '("ow" "work tasks" tags-todo "+work"))
   (add-to-list 'org-agenda-custom-commands `("om" "mixtape notes" ,(lambda (n) (recker/opsat-jump "Mixtape"))))
   (add-to-list 'org-agenda-custom-commands `("ot" "today's items" ,(lambda (n) (recker/opsat-jump "Today"))))
 #+end_src
@@ -885,7 +890,8 @@ Configure some custom agenda views.
 #+RESULTS:
 | ot | today's items | (lambda (n) (recker/opsat-jump Today))   |          |
 | om | mixtape notes | (lambda (n) (recker/opsat-jump Mixtape)) |          |
-| ow | writing ideas | tags-todo                                | +writing |
+| ow | work tasks    | tags-todo                                | +work    |
+| oi | writing ideas | tags-todo                                | +writing |
 
 Configure **attachments**.
 

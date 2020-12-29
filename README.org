@@ -827,9 +827,24 @@ Space out headlines when in collapsed view, and add a space after headers.
 Configure **capture templates** and map the selector to =C-c c=.
 
 #+begin_src emacs-lisp
-(setq org-capture-templates '())
-(global-set-key (kbd "C-c c") 'org-capture)
+  (setq org-capture-templates '())
+  (global-set-key (kbd "C-c c") 'org-capture)
+
+  (add-to-list 'org-capture-templates
+               `("m" "mixtape notes" plain (file+headline ,(recker/path 'docs "opsat.org") "Mixtape") nil :empty-lines 1))
+
+  (add-to-list 'org-capture-templates
+               `("w" "writing idea" entry (file+headline ,(recker/path 'docs "opsat.org") "Writing") "* TODO %?\n" :empty-lines 1))
+
+  (add-to-list 'org-capture-templates
+               `("t" "to-do item for today" checkitem (file+headline ,(recker/path 'docs "opsat.org") "Today")))
 #+end_src
+
+#+RESULTS:
+| t            | to-do item for today | checkitem | (file+headline /home/alex/docs/opsat.org Today)   |           |              |   |
+| w            | writing idea         | entry     | (file+headline /home/alex/docs/opsat.org Writing) | * TODO %? |              |   |
+| :empty-lines | 1                    |           |                                                   |           |              |   |
+| m            | mixtape notes        | plain     | (file+headline /home/alex/docs/opsat.org Mixtape) | nil       | :empty-lines | 1 |
 
 Configure **agenda** and set up and map the view to =C-c a=.
 
@@ -840,6 +855,16 @@ Configure **agenda** and set up and map the view to =C-c a=.
 (setq org-agenda-custom-commands '())
 (setq org-agenda-tag-filter-preset '("-ARCHIVE"))
 #+end_src
+
+Configure some custom agenda views.
+
+#+begin_src emacs-lisp
+  (setq org-agenda-custom-commands '())
+  (add-to-list 'org-agenda-custom-commands '("w" tags-todo "+writing"))
+#+end_src
+
+#+RESULTS:
+| w | tags-todo | +writing |
 
 Configure **attachments**.
 

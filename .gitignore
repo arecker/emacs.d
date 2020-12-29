@@ -10,3 +10,4 @@ local.el
 auto-save-list
 smex-items
 tramp
+/custom.el~

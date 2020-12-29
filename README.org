@@ -817,13 +817,6 @@ time.  Set up some languages.
      (shell . t)))
 #+end_src
 
-Space out headlines when in collapsed view, and add a space after headers.
-
-#+begin_src emacs-lisp
-(setq org-cycle-separator-lines 1)
-(setq org-blank-before-new-entry '((heading . t) (plain-list-item . auto)))
-#+end_src
-
 Configure **capture templates** and map the selector to =C-c c=.
 
 #+begin_src emacs-lisp
@@ -831,20 +824,23 @@ Configure **capture templates** and map the selector to =C-c c=.
   (global-set-key (kbd "C-c c") 'org-capture)
 
   (add-to-list 'org-capture-templates
-               `("m" "mixtape notes" plain (file+headline ,(recker/path 'docs "opsat.org") "Mixtape") nil :empty-lines 1))
+               `("j" "journal entry" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Journal") nil))
 
   (add-to-list 'org-capture-templates
-               `("w" "writing idea" entry (file+headline ,(recker/path 'docs "opsat.org") "Writing") "* TODO %?\n" :empty-lines 1))
+               `("m" "mixtape notes" plain (file+headline ,(recker/path 'docs "opsat.org") "Mixtape") nil))
+
+  (add-to-list 'org-capture-templates
+               `("w" "writing idea" entry (file+headline ,(recker/path 'docs "opsat.org") "Writing") "* TODO %?\n"))
 
   (add-to-list 'org-capture-templates
                `("t" "to-do item for today" checkitem (file+headline ,(recker/path 'docs "opsat.org") "Today")))
 #+end_src
 
 #+RESULTS:
-| t            | to-do item for today | checkitem | (file+headline /home/alex/docs/opsat.org Today)   |           |              |   |
-| w            | writing idea         | entry     | (file+headline /home/alex/docs/opsat.org Writing) | * TODO %? |              |   |
-| :empty-lines | 1                    |           |                                                   |           |              |   |
-| m            | mixtape notes        | plain     | (file+headline /home/alex/docs/opsat.org Mixtape) | nil       | :empty-lines | 1 |
+| t | to-do item for today | checkitem | (file+headline /home/alex/docs/opsat.org Today)       |           |
+| w | writing idea         | entry     | (file+headline /home/alex/docs/opsat.org Writing)     | * TODO %? |
+| m | mixtape notes        | plain     | (file+headline /home/alex/docs/opsat.org Mixtape)     | nil       |
+| j | journal entry        | plain     | (file+olp+datetree /home/alex/docs/opsat.org Journal) | nil       |
 
 Configure **agenda** and set up and map the view to =C-c a=.
 
@@ -852,19 +848,44 @@ Configure **agenda** and set up and map the view to =C-c a=.
 (setq org-agenda-files (list (recker/path 'docs)))
 (setq org-agenda-start-with-follow-mode t)
 (global-set-key (kbd "C-c a") 'org-agenda)
-(setq org-agenda-custom-commands '())
 (setq org-agenda-tag-filter-preset '("-ARCHIVE"))
 #+end_src
+
+Custom function for jumping to narrowed headings.
+
+#+begin_src emacs-lisp
+  (defun recker/org-jump (file heading)
+    "Jump to a heading in an org file."
+    (interactive "fFile: \nsHeading: ")
+    (message "Jumping to %s::%s" file heading)
+    (find-file file)
+    (beginning-of-buffer)
+    (goto-char (search-forward heading))
+    (org-narrow-to-subtree)
+    (org-show-all)
+    (beginning-of-buffer))
+
+  (defun recker/opsat-jump (heading)
+    (let ((opsat (recker/path 'docs "opsat.org")))
+      (recker/org-jump opsat (format "* %s" heading))))
+#+end_src
+
+#+RESULTS:
+: recker/opsat-jump
 
 Configure some custom agenda views.
 
 #+begin_src emacs-lisp
   (setq org-agenda-custom-commands '())
-  (add-to-list 'org-agenda-custom-commands '("w" tags-todo "+writing"))
+  (add-to-list 'org-agenda-custom-commands '("ow" "writing ideas" tags-todo "+writing"))
+  (add-to-list 'org-agenda-custom-commands `("om" "mixtape notes" ,(lambda (n) (recker/opsat-jump "Mixtape"))))
+  (add-to-list 'org-agenda-custom-commands `("ot" "today's items" ,(lambda (n) (recker/opsat-jump "Today"))))
 #+end_src
 
 #+RESULTS:
-| w | tags-todo | +writing |
+| ot | today's items | (lambda (n) (recker/opsat-jump Today))   |          |
+| om | mixtape notes | (lambda (n) (recker/opsat-jump Mixtape)) |          |
+| ow | writing ideas | tags-todo                                | +writing |
 
 Configure **attachments**.
 
@@ -907,18 +928,20 @@ Open up a new blog post.
 #+RESULTS:
 : recker/today
 
-Archive to a single file.
-
-#+begin_src emacs-lisp
-  (setq org-archive-location "archive.org::")
-#+end_src
-
 Don't show archived or done items in the agenda.
 
 #+begin_src emacs-lisp
   (setq org-agenda-skip-scheduled-if-done t
         org-agenda-skip-deadline-if-done  t
         org-agenda-archives-mode nil)
+#+end_src
+
+#+RESULTS:
+
+Don't automatically search in =org-goto=.
+
+#+begin_src emacs-lisp
+  (setq org-goto-auto-isearch nil)
 #+end_src
 
 #+RESULTS:

@@ -885,19 +885,19 @@ Configure some custom agenda views.
 
 #+begin_src emacs-lisp
   (setq org-agenda-custom-commands '())
-  (add-to-list 'org-agenda-custom-commands '("oi" "writing ideas" tags-todo "+writing"))
-  (add-to-list 'org-agenda-custom-commands '("ow" "work tasks" tags-todo "+work"))
-  (add-to-list 'org-agenda-custom-commands '("op" "productivity tasks" tags-todo "+productivity"))
+  (add-to-list 'org-agenda-custom-commands `("oi" "writing ideas" ,(lambda (n) (recker/opsat-jump "Writing"))))
+  (add-to-list 'org-agenda-custom-commands `("ow" "work tasks" ,(lambda (n) (recker/opsat-jump "Work"))))
+  (add-to-list 'org-agenda-custom-commands `("op" "productivity tasks" ,(lambda (n) (recker/opsat-jump "Productivity"))))
   (add-to-list 'org-agenda-custom-commands `("om" "mixtape notes" ,(lambda (n) (recker/opsat-jump "Mixtape"))))
   (add-to-list 'org-agenda-custom-commands `("ot" "today's items" ,(lambda (n) (recker/opsat-jump "Today"))))
 #+end_src
 
 #+RESULTS:
-| ot | today's items      | (lambda (n) (recker/opsat-jump Today))   |               |
-| om | mixtape notes      | (lambda (n) (recker/opsat-jump Mixtape)) |               |
-| op | productivity tasks | tags-todo                                | +productivity |
-| ow | work tasks         | tags-todo                                | +work         |
-| oi | writing ideas      | tags-todo                                | +writing      |
+| ot | today's items      | (lambda (n) (recker/opsat-jump Today))        |
+| om | mixtape notes      | (lambda (n) (recker/opsat-jump Mixtape))      |
+| op | productivity tasks | (lambda (n) (recker/opsat-jump Productivity)) |
+| ow | work tasks         | (lambda (n) (recker/opsat-jump Work))         |
+| oi | writing ideas      | (lambda (n) (recker/opsat-jump Writing))      |
 
 Configure **attachments**.
 

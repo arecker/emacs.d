@@ -333,15 +333,6 @@ the quick, intuitive interface.
 
 * Tools
 
-Dig
-
-#+begin_src emacs-lisp
-(global-set-key (kbd "C-c d") 'dig)
-#+end_src
-
-#+RESULTS:
-: dig
-
 Dictionary
 
 #+begin_src emacs-lisp
@@ -1058,11 +1049,17 @@ Rebind keys to some helpful existing functions.
 Some other helpful functions.
 
 #+begin_src emacs-lisp
-(defun recker/unfill-region (beg end)
-  "Unfill the region, joining text paragraphs into a single logical line."
-  (interactive "*r")
-  (let ((fill-column (point-max)))
-    (fill-region beg end)))
+  (defun recker/unfill-region (beg end)
+    "Unfill the region, joining text paragraphs into a single logical line."
+    (interactive "*r")
+    (let ((fill-column (point-max)))
+      (fill-region beg end)))
+
+  (defun recker/docs-sync ()
+    (interactive)
+    (let ((command (format "git-sync -9d %s" (recker/path 'docs))))
+      (async-shell-command command)))
+  (global-set-key (kbd "C-c d") 'recker/docs-sync)
 #+end_src
 
 * Quotes

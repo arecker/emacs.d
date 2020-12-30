@@ -1028,12 +1028,12 @@ Configure **imap** settings.
                         (nnimap-address "imap.gmail.com")
                         (nnimap-server-port "imaps")
                         (nnimap-stream ssl)
-                        (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
+                        (nnmail-expiry-target "nnimap+gmail:[Gmail]/All Mail")
                         (nnmail-expiry-wait immediate)))
 #+end_src
 
 #+RESULTS:
-| nnimap | alex@reckerfamily.com | (nnimap-address imap.gmail.com) | (nnimap-server-port imaps) | (nnimap-stream ssl) | (nnmail-expiry-target nnimap+gmail:[Gmail]/Trash) | (nnmail-expiry-wait immediate) |
+| nnimap | alex@reckerfamily.com | (nnimap-address imap.gmail.com) | (nnimap-server-port imaps) | (nnimap-stream ssl) | (nnmail-expiry-target nnimap+gmail:[Gmail]/All Mail) | (nnmail-expiry-wait immediate) |
 
 Configure **smtp** settings.
 

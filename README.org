@@ -978,9 +978,21 @@ Hide startup files and directories in my documents.
 Enable the powerful placebo options.
 
 #+begin_src emacs-lisp
-(setq gnus-asynchronous t)
-(setq gnus-use-cache t)
+  (setq gnus-asynchronous t)
+  (setq gnus-use-cache t)
+  (setq gnus-check-new-newsgroups nil
+        gnus-check-bogus-newsgroups nil)
+  (setq gnus-show-threads nil
+        gnus-use-cross-reference nil
+        gnus-nov-is-evil nil)
+  (setq gnus-check-new-newsgroups nil
+        gnus-use-adaptive-scoring nil)
+  (setq gnus-summary-line-format "%U%R%z%I%(%[%4L: %-23,23f%]%) %s
+")
 #+end_src
+
+#+RESULTS:
+: %U%R%z%I%(%[%4L: %-23,23f%]%) %s
 
 Don't dribble anywhere, that's gross.
 
@@ -1020,10 +1032,19 @@ Configure **imap** settings.
                         (nnimap-stream ssl)
                         (nnmail-expiry-target "nnimap+gmail:[Gmail]/All Mail")
                         (nnmail-expiry-wait immediate)))
+  (add-to-list 'gnus-secondary-select-methods
+               '(nnimap "arecker@zendesk.com"
+                        (nnimap-user "arecker@zendesk.com")
+                        (nnimap-address "imap.gmail.com")
+                        (nnimap-server-port "imaps")
+                        (nnimap-stream ssl)
+                        (nnmail-expiry-target "nnimap+gmail:[Gmail]/All Mail")
+                        (nnmail-expiry-wait immediate)))
 #+end_src
 
 #+RESULTS:
-| nnimap | alex@reckerfamily.com | (nnimap-address imap.gmail.com) | (nnimap-server-port imaps) | (nnimap-stream ssl) | (nnmail-expiry-target nnimap+gmail:[Gmail]/All Mail) | (nnmail-expiry-wait immediate) |
+| nnimap | arecker@zendesk.com   | (nnimap-user arecker@zendesk.com) | (nnimap-address imap.gmail.com) | (nnimap-server-port imaps) | (nnimap-stream ssl)                                  | (nnmail-expiry-target nnimap+gmail:[Gmail]/All Mail) | (nnmail-expiry-wait immediate) |
+| nnimap | alex@reckerfamily.com | (nnimap-address imap.gmail.com)   | (nnimap-server-port imaps)      | (nnimap-stream ssl)        | (nnmail-expiry-target nnimap+gmail:[Gmail]/All Mail) | (nnmail-expiry-wait immediate)                       |                                |
 
 Configure **smtp** settings.
 

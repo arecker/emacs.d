@@ -865,7 +865,6 @@ Custom function for jumping to narrowed headings.
   (defun recker/org-jump (file heading)
     "Jump to a heading in an org file."
     (interactive "fFile: \nsHeading: ")
-    (message "Jumping to %s::%s" file heading)
     (find-file file)
     (beginning-of-buffer)
     (goto-char (search-forward heading))

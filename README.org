@@ -272,7 +272,7 @@ Map a few file registers.
 
 #+begin_src emacs-lisp
   (set-register ?b `(file . ,(recker/path 'src "blog")))
-  (set-register ?c '(file . "/ssh:console:/home/alex"))
+  (set-register ?c '(file . "/ssh:laptop:/home/alex"))
   (set-register ?d `(file . ,(recker/path 'desktop)))
   (set-register ?e `(file . ,(recker/path 'emacs "README.org")))
   (set-register ?l `(file . ,(recker/path 'emacs "local.el")))

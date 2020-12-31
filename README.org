@@ -1078,10 +1078,13 @@ Some other helpful functions.
 
   (defun recker/docs-sync ()
     (interactive)
-    (let ((command (format "git-sync -9d %s" (recker/path 'docs))))
+    (let ((command (format "git-sync -d %s" (recker/path 'docs))))
       (async-shell-command command)))
   (global-set-key (kbd "C-c d") 'recker/docs-sync)
 #+end_src
+
+#+RESULTS:
+: recker/docs-sync
 
 * Quotes
 

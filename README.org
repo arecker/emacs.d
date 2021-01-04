@@ -815,6 +815,9 @@ Configure **capture templates** and map the selector to =C-c c=.
   (global-set-key (kbd "C-c c") 'org-capture)
 
   (add-to-list 'org-capture-templates
+               `("o" "opsat topic" entry (file ,(recker/path 'docs "opsat.org")) "* %?"))
+
+  (add-to-list 'org-capture-templates
                `("j" "journal entry" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Journal") nil))
 
   (add-to-list 'org-capture-templates
@@ -834,12 +837,13 @@ Configure **capture templates** and map the selector to =C-c c=.
 #+end_src
 
 #+RESULTS:
-| t | to-do item for today | checkitem | (file+headline /Users/arecker/Documents/opsat.org Today)        |           |
-| w | work task            | entry     | (file+headline /Users/arecker/Documents/opsat.org Work)         | * TODO %? |
-| p | productivity task    | entry     | (file+headline /Users/arecker/Documents/opsat.org Productivity) | * TODO %? |
-| i | writing idea         | entry     | (file+headline /Users/arecker/Documents/opsat.org Writing)      | * TODO %? |
-| m | mixtape notes        | plain     | (file+headline /Users/arecker/Documents/opsat.org Mixtape)      | nil       |
-| j | journal entry        | plain     | (file+olp+datetree /Users/arecker/Documents/opsat.org Journal)  | nil       |
+| t | to-do item for today | checkitem | (file+headline /home/alex/docs/opsat.org Today)        |           |
+| w | work task            | entry     | (file+headline /home/alex/docs/opsat.org Work)         | * TODO %? |
+| p | productivity task    | entry     | (file+headline /home/alex/docs/opsat.org Productivity) | * TODO %? |
+| i | writing idea         | entry     | (file+headline /home/alex/docs/opsat.org Writing)      | * TODO %? |
+| m | mixtape notes        | plain     | (file+headline /home/alex/docs/opsat.org Mixtape)      | nil       |
+| j | journal entry        | plain     | (file+olp+datetree /home/alex/docs/opsat.org Journal)  | nil       |
+| o | opsat topic          | entry     | (file /home/alex/docs/opsat.org)                       | * %?      |
 
 Configure **agenda** and set up and map the view to =C-c a=.
 

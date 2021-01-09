@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: log
-# key: log
-# --
-log() {
-    echo "$1: $@" 1>&2;
-}

@@ -1034,7 +1034,7 @@ Configure **imap** settings.
                         (nnimap-address "imap.gmail.com")
                         (nnimap-server-port "imaps")
                         (nnimap-stream ssl)
-                        (nnmail-expiry-target "nnimap+gmail:[Gmail]/All Mail")
+                        (nnmail-expiry-target "nnimap+alex@reckerfamily.com:[Gmail]/All Mail")
                         (nnmail-expiry-wait immediate)))
   (add-to-list 'gnus-secondary-select-methods
                '(nnimap "arecker@zendesk.com"
@@ -1042,13 +1042,13 @@ Configure **imap** settings.
                         (nnimap-address "imap.gmail.com")
                         (nnimap-server-port "imaps")
                         (nnimap-stream ssl)
-                        (nnmail-expiry-target "nnimap+gmail:[Gmail]/All Mail")
+                        (nnmail-expiry-target "nnimap+arecker@zendesk.com:[Gmail]/All Mail")
                         (nnmail-expiry-wait immediate)))
 #+end_src
 
 #+RESULTS:
-| nnimap | arecker@zendesk.com   | (nnimap-user arecker@zendesk.com) | (nnimap-address imap.gmail.com) | (nnimap-server-port imaps) | (nnimap-stream ssl)                                  | (nnmail-expiry-target nnimap+gmail:[Gmail]/All Mail) | (nnmail-expiry-wait immediate) |
-| nnimap | alex@reckerfamily.com | (nnimap-address imap.gmail.com)   | (nnimap-server-port imaps)      | (nnimap-stream ssl)        | (nnmail-expiry-target nnimap+gmail:[Gmail]/All Mail) | (nnmail-expiry-wait immediate)                       |                                |
+| nnimap | arecker@zendesk.com   | (nnimap-user arecker@zendesk.com) | (nnimap-address imap.gmail.com) | (nnimap-server-port imaps) | (nnimap-stream ssl)                                                  | (nnmail-expiry-target nnimap+arecker@zendesk.com:[Gmail]/All Mail) | (nnmail-expiry-wait immediate) |
+| nnimap | alex@reckerfamily.com | (nnimap-address imap.gmail.com)   | (nnimap-server-port imaps)      | (nnimap-stream ssl)        | (nnmail-expiry-target nnimap+alex@reckerfamily.com:[Gmail]/All Mail) | (nnmail-expiry-wait immediate)                                     |                                |
 
 Configure **smtp** settings.
 

@@ -821,7 +821,7 @@ Configure **capture templates** and map the selector to =C-c c=.
                `("j" "journal entry" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Journal") nil))
 
   (add-to-list 'org-capture-templates
-               `("m" "mixtape notes" plain (file+headline ,(recker/path 'docs "opsat.org") "Mixtape") nil))
+               `("m" "mixtape notes" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Mixtape") nil))
 
   (add-to-list 'org-capture-templates
                `("i" "writing idea" entry (file+headline ,(recker/path 'docs "opsat.org") "Writing") "* TODO %?\n"))
@@ -837,13 +837,13 @@ Configure **capture templates** and map the selector to =C-c c=.
 #+end_src
 
 #+RESULTS:
-| t | to-do item for today | checkitem | (file+headline /home/alex/docs/opsat.org Today)        |           |
-| w | work task            | entry     | (file+headline /home/alex/docs/opsat.org Work)         | * TODO %? |
-| p | productivity task    | entry     | (file+headline /home/alex/docs/opsat.org Productivity) | * TODO %? |
-| i | writing idea         | entry     | (file+headline /home/alex/docs/opsat.org Writing)      | * TODO %? |
-| m | mixtape notes        | plain     | (file+headline /home/alex/docs/opsat.org Mixtape)      | nil       |
-| j | journal entry        | plain     | (file+olp+datetree /home/alex/docs/opsat.org Journal)  | nil       |
-| o | opsat topic          | entry     | (file /home/alex/docs/opsat.org)                       | * %?      |
+| t | to-do item for today | checkitem | (file+headline /Users/arecker/Documents/opsat.org Today)        |           |
+| w | work task            | entry     | (file+headline /Users/arecker/Documents/opsat.org Work)         | * TODO %? |
+| p | productivity task    | entry     | (file+headline /Users/arecker/Documents/opsat.org Productivity) | * TODO %? |
+| i | writing idea         | entry     | (file+headline /Users/arecker/Documents/opsat.org Writing)      | * TODO %? |
+| m | mixtape notes        | plain     | (file+olp+datetree /Users/arecker/Documents/opsat.org Mixtape)  | nil       |
+| j | journal entry        | plain     | (file+olp+datetree /Users/arecker/Documents/opsat.org Journal)  | nil       |
+| o | opsat topic          | entry     | (file /Users/arecker/Documents/opsat.org)                       | * %?      |
 
 Configure **agenda** and set up and map the view to =C-c a=.
 
@@ -1083,7 +1083,8 @@ Some other helpful functions.
   (defun recker/docs-sync ()
     (interactive)
     (let ((command (format "git-sync -d %s" (recker/path 'docs))))
-      (async-shell-command command)))
+      (call-process-shell-command command nil "*docs-sync*" t))
+    (message "docs-sync: successful"))
   (global-set-key (kbd "C-c d") 'recker/docs-sync)
 #+end_src
 

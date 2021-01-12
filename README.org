@@ -866,32 +866,18 @@ Custom function for jumping to narrowed headings.
     (org-narrow-to-subtree)
     (org-show-all)
     (beginning-of-buffer))
-
-  (defun recker/opsat-jump (heading)
-    (let ((opsat (recker/path 'docs "opsat.org")))
-      (recker/org-jump opsat (format "* %s" heading))))
 #+end_src
 
 #+RESULTS:
-: recker/opsat-jump
+: recker/org-jump
 
-Configure some custom agenda views.
+Custom agenda commands (if I ever end up using these).
 
 #+begin_src emacs-lisp
   (setq org-agenda-custom-commands '())
-  (add-to-list 'org-agenda-custom-commands `("oi" "writing ideas" ,(lambda (n) (recker/opsat-jump "Writing"))))
-  (add-to-list 'org-agenda-custom-commands `("ow" "work tasks" ,(lambda (n) (recker/opsat-jump "Work"))))
-  (add-to-list 'org-agenda-custom-commands `("op" "productivity tasks" ,(lambda (n) (recker/opsat-jump "Productivity"))))
-  (add-to-list 'org-agenda-custom-commands `("om" "mixtape notes" ,(lambda (n) (recker/opsat-jump "Mixtape"))))
-  (add-to-list 'org-agenda-custom-commands `("ot" "today's items" ,(lambda (n) (recker/opsat-jump "Today"))))
 #+end_src
 
 #+RESULTS:
-| ot | today's items      | (lambda (n) (recker/opsat-jump Today))        |
-| om | mixtape notes      | (lambda (n) (recker/opsat-jump Mixtape))      |
-| op | productivity tasks | (lambda (n) (recker/opsat-jump Productivity)) |
-| ow | work tasks         | (lambda (n) (recker/opsat-jump Work))         |
-| oi | writing ideas      | (lambda (n) (recker/opsat-jump Writing))      |
 
 Configure **attachments**.
 

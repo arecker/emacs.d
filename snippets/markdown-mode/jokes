@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: jokes
+# key: jokes
+# --
+---
+
+Send me your jokes!  If you'd like _your_ joke featured on the next
+Friday journal, please send an email to [alex@reckerfamily.com] with
+the word "joke" in the subject line.
+
+[alex@reckerfamily.com]: mailto:alex@reckerfamily.com

@@ -875,9 +875,11 @@ Custom agenda commands (if I ever end up using these).
 
 #+begin_src emacs-lisp
   (setq org-agenda-custom-commands '())
+  (add-to-list 'org-agenda-custom-commands '("w" "Work Items" tags-todo "work"))
 #+end_src
 
 #+RESULTS:
+| w | Work Items | tags-todo | work |
 
 Configure **attachments**.
 

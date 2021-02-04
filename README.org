@@ -801,21 +801,20 @@ Configure **agenda** and set up and map the view to =C-c a=.
 Custom agenda commands (if I ever end up using these).
 
 #+begin_src emacs-lisp
-  (setq org-agenda-custom-commands '())
-
   (setq recker/tag-agenda-todos
-        '("work" "triage" "resolutions" "productivity" "grandpa"))
+        '("work" "triage" "resolutions" "productivity" "grandpa" "media"))
 
   (defun recker/tag-to-custom-command (tag)
     (let ((key (nth 1 (split-string tag ""))))
       `(,key ,tag
-        ((agenda "" ((org-agenda-span 1)))
-        (tags-todo ,tag)))))
+             ((agenda "" ((org-agenda-span 3)
+                          (org-agenda-tag-filter-preset (quote (,(format "-%s" tag))))
+                          (org-agenda-sorting-strategy
+                           (quote ((agenda time-up priority-down tag-up))))
+                          (org-deadline-warning-days 0)))
+              (tags-todo ,tag)))))
 
-  (recker/tag-to-custom-command "work")
-
-  (dolist (tag recker/tag-agenda-todos)
-    (add-to-list 'org-agenda-custom-commands (recker/tag-to-custom-command tag)))
+  (setq org-agenda-custom-commands (mapcar #'recker/tag-to-custom-command recker/tag-agenda-todos))
 #+end_src
 
 Configure **attachments**.

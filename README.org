@@ -818,13 +818,16 @@ Configure **capture templates** and map the selector to =C-c c=.
                `("o" "opsat topic" entry (file ,(recker/path 'docs "opsat.org")) "* %?"))
 
   (add-to-list 'org-capture-templates
-               `("j" "journal entry" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Journal") nil))
+               `("j" "journal entry" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Journal") nil
+                 :empty-lines-before 1 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates
-               `("m" "mixtape notes" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Mixtape") nil))
+               `("m" "mixtape notes" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Mixtape") nil
+                 :empty-lines-before 1 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates
-               `("i" "writing idea" entry (file+olp+datetree ,(recker/path 'docs "opsat.org") "Writing") nil))
+               `("i" "idea" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Ideas") nil
+                 :empty-lines-before 1 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates
                `("p" "productivity task" entry (file+headline ,(recker/path 'docs "opsat.org") "Productivity") "* TODO %?\n"))
@@ -833,17 +836,17 @@ Configure **capture templates** and map the selector to =C-c c=.
                `("w" "work task" entry (file+headline ,(recker/path 'docs "opsat.org") "Work") "* TODO %?\n"))
 
   (add-to-list 'org-capture-templates
-               `("t" "to-do item for today" checkitem (file+headline ,(recker/path 'docs "opsat.org") "Today")))
+               `("t" "triage" entry (file+headline ,(recker/path 'docs "opsat.org") "Triage") "* TODO %?\n"))
 #+end_src
 
 #+RESULTS:
-| t | to-do item for today | checkitem | (file+headline /home/alex/docs/opsat.org Today)        |           |
-| w | work task            | entry     | (file+headline /home/alex/docs/opsat.org Work)         | * TODO %? |
-| p | productivity task    | entry     | (file+headline /home/alex/docs/opsat.org Productivity) | * TODO %? |
-| i | writing idea         | entry     | (file+olp+datetree /home/alex/docs/opsat.org Writing)  | nil       |
-| m | mixtape notes        | plain     | (file+olp+datetree /home/alex/docs/opsat.org Mixtape)  | nil       |
-| j | journal entry        | plain     | (file+olp+datetree /home/alex/docs/opsat.org Journal)  | nil       |
-| o | opsat topic          | entry     | (file /home/alex/docs/opsat.org)                       | * %?      |
+| t | triage            | entry | (file+headline /home/alex/docs/opsat.org Triage)       | * TODO %? |                     |   |                    |   |
+| w | work task         | entry | (file+headline /home/alex/docs/opsat.org Work)         | * TODO %? |                     |   |                    |   |
+| p | productivity task | entry | (file+headline /home/alex/docs/opsat.org Productivity) | * TODO %? |                     |   |                    |   |
+| i | idea              | plain | (file+olp+datetree /home/alex/docs/opsat.org Ideas)    | nil       | :empty-lines-before | 1 | :empty-lines-after | 1 |
+| m | mixtape notes     | plain | (file+olp+datetree /home/alex/docs/opsat.org Mixtape)  | nil       | :empty-lines-before | 1 | :empty-lines-after | 1 |
+| j | journal entry     | plain | (file+olp+datetree /home/alex/docs/opsat.org Journal)  | nil       | :empty-lines-before | 1 | :empty-lines-after | 1 |
+| o | opsat topic       | entry | (file /home/alex/docs/opsat.org)                       | * %?      |                     |   |                    |   |
 
 Configure **agenda** and set up and map the view to =C-c a=.
 
@@ -853,23 +856,6 @@ Configure **agenda** and set up and map the view to =C-c a=.
 (global-set-key (kbd "C-c a") 'org-agenda)
 (setq org-agenda-tag-filter-preset '("-ARCHIVE"))
 #+end_src
-
-Custom function for jumping to narrowed headings.
-
-#+begin_src emacs-lisp
-  (defun recker/org-jump (file heading)
-    "Jump to a heading in an org file."
-    (interactive "fFile: \nsHeading: ")
-    (find-file file)
-    (beginning-of-buffer)
-    (goto-char (search-forward heading))
-    (org-narrow-to-subtree)
-    (org-show-all)
-    (beginning-of-buffer))
-#+end_src
-
-#+RESULTS:
-: recker/org-jump
 
 Custom agenda commands (if I ever end up using these).
 

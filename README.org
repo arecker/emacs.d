@@ -2,6 +2,7 @@
 #+AUTHOR: Alex Recker
 #+OPTIONS: num:nil
 #+STARTUP: showall
+#+PROPERTY: header-args :results none
 
 Welcome to my personal emacs configuration!  Feel free to re-use
 anything you'd like.  If you have any questions, send me an email at
@@ -85,9 +86,6 @@ look kind of retro and cozy.
   (scroll-bar-mode t))
 #+END_SRC
 
-#+RESULTS:
-: right
-
 Use the more mellow =*scratch*= screen at the starting buffer.
 
 #+begin_src emacs-lisp
@@ -141,9 +139,6 @@ Install idomenu as well.
   :bind ("C-c i" . idomenu))
 #+end_src
 
-#+RESULTS:
-: idomenu
-
 Use smex as a smarter replacement for the =M-x= menu.
 
 #+begin_src emacs-lisp
@@ -153,9 +148,6 @@ Use smex as a smarter replacement for the =M-x= menu.
     :bind (("M-x" . 'smex)
            ("M-X" . 'smex-major-mode-commands)))
 #+end_src
-
-#+RESULTS:
-: smex-major-mode-commands
 
 By default, emacs will display the major mode as well as all active
 minor modes in the modeline.  I think it clutters up the file
@@ -176,8 +168,6 @@ Use company mode for completion.
     :ensure t
     :init (add-hook 'after-init-hook 'global-company-mode))
 #+end_src
-
-#+RESULTS:
 
 * Buffers
 
@@ -266,8 +256,6 @@ Configure **dired**, the emacs file manager.
 (setq dired-clean-confirm-killing-deleted-buffers nil)
 #+end_src
 
-#+RESULTS:
-
 Map a few file registers.
 
 #+begin_src emacs-lisp
@@ -294,9 +282,6 @@ Configure bookmarks.
 
 (global-set-key (kbd "C-x r b") 'recker/ido-bookmark-jump)
 #+end_src
-
-#+RESULTS:
-: recker/ido-bookmark-jump
 
 Search files within a project with projectile mode.
 
@@ -328,9 +313,6 @@ the quick, intuitive interface.
   ("C-c m" . magit-blame))
 #+END_SRC
 
-#+RESULTS:
-: magit-blame
-
 * Tools
 
 Dictionary
@@ -346,9 +328,6 @@ _SWIPER NO SWIPING_.
   :ensure t
   :bind ("C-c s" . swiper))
 #+end_src
-
-#+RESULTS:
-: swiper
 
 Incrementally select intelligent portions of text the with
 =expand-region= shortcut.
@@ -368,8 +347,6 @@ Flycheck for angry red squiggles.
   (global-flycheck-mode))
 #+end_src
 
-#+RESULTS:
-
 Install yasnippet.
 
 #+begin_src emacs-lisp
@@ -377,8 +354,6 @@ Install yasnippet.
     :ensure t
     :init (add-hook 'prog-mode-hook #'yas-minor-mode))
 #+end_src
-
-#+RESULTS:
 
 * Passwords
 
@@ -447,9 +422,6 @@ Eshell too.
 (global-set-key (kbd "C-c e") 'eshell)
 #+end_src
 
-#+RESULTS:
-: eshell
-
 * Major Modes
 
 In any case, default to what's specified in the projects editorconfig.
@@ -460,8 +432,6 @@ In any case, default to what's specified in the projects editorconfig.
   :defer t
   :config (editorconfig-mode 1))
 #+end_src
-
-#+RESULTS:
 
 ** C
 
@@ -510,9 +480,6 @@ Set up the slime common lisp developing environment.
                   slime-company-after-completion 'slime-company-just-one-space))
 #+end_src
 
-#+RESULTS:
-: t
-
 ** D
 
 Yeah, there's a D language apparently.
@@ -558,8 +525,6 @@ operators sometimes.
     :after (company))
 #+end_src
 
-#+RESULTS:
-
 ** Groovy
 
 Mostly for editing Jenkinsfiles at work.
@@ -593,8 +558,6 @@ Use emmet mode to crank out the HTML tags.
   :init (setq emmet-preview-default nil)
   :config (add-hook 'html-mode-hook 'emmet-mode))
 #+end_src
-
-#+RESULTS:
 
 Some custom HTML writing functions.  I'll probably move them to
 yasnippet once I can figure it out.
@@ -681,8 +644,6 @@ Elpy is pretty full featured, just let it do its thing.
     :init (advice-add 'python-mode :before 'elpy-enable))
 #+end_src
 
-#+RESULTS:
-
 ** reStructuredText
 
 I intend to give [[https://docutils.sourceforge.io/rst.html][reStructuredText]] a serious try someday, it looks
@@ -694,9 +655,6 @@ pretty cool.
     :defer t
     :mode (("\\.rst$" . rst-mode)))
 #+end_src
-
-#+RESULTS:
-: ((\.rst$ . rst-mode) (\.yaml\' . yaml-mode) (\.yml\' . yaml-mode) (\.tf\' . terraform-mode) (\.p8\' . lua-mode) (\.hs\' . haskell-mode) (\.groovy\' . groovy-mode) (\Jenkinsfile\' . groovy-mode) (\.dockerfile\' . dockerfile-mode) (\Dockerfile\' . dockerfile-mode) (\.d\' . d-mode) (\.gpg\(~\|\.~[0-9]+~\)?\' nil epa-file) (\.d[i]?\' . d-mode) (Dockerfile\(?:\..*\)?\' . dockerfile-mode) (go\.mod\' . go-dot-mod-mode) (\.go\' . go-mode) (Jenkinsfile . groovy-mode) (\.g\(?:ant\|roovy\|radle\)\' . groovy-mode) (\.hsc\' . haskell-mode) (\.l[gh]s\' . haskell-literate-mode) (\.hsig\' . haskell-mode) (\.[gh]s\' . haskell-mode) (\.cabal\'\|/cabal\.project\|/\.cabal/config\' . haskell-cabal-mode) (\.chs\' . haskell-c2hs-mode) (\.ghci\' . ghci-script-mode) (\.dump-simpl\' . ghc-core-mode) (\.hcr\' . ghc-core-mode) (\.libsonnet\' . jsonnet-mode) (\.jsonnet\' . jsonnet-mode) (\.lua\' . lua-mode) (/git-rebase-todo\' . git-rebase-mode) (\.tf\(vars\)?\' . terraform-mode) (\.nomad\' . hcl-mode) (\.hcl\' . hcl-mode) (\.\(e?ya?\|ra\)ml\' . yaml-mode) (\.elc\' . elisp-byte-code-mode) (\.zst\' nil jka-compr) (\.dz\' nil jka-compr) (\.xz\' nil jka-compr) (\.lzma\' nil jka-compr) (\.lz\' nil jka-compr) (\.g?z\' nil jka-compr) (\.bz2\' nil jka-compr) (\.Z\' nil jka-compr) (\.vr[hi]?\' . vera-mode) (\(?:\.\(?:rbw?\|ru\|rake\|thor\|jbuilder\|rabl\|gemspec\|podspec\)\|/\(?:Gem\|Rake\|Cap\|Thor\|Puppet\|Berks\|Vagrant\|Guard\|Pod\)file\)\' . ruby-mode) (\.re?st\' . rst-mode) (\.py[iw]?\' . python-mode) (\.m\' . octave-maybe-mode) (\.less\' . less-css-mode) (\.scss\' . scss-mode) (\.awk\' . awk-mode) (\.\(u?lpc\|pike\|pmod\(\.in\)?\)\' . pike-mode) (\.idl\' . idl-mode) (\.java\' . java-mode) (\.m\' . objc-mode) (\.ii\' . c++-mode) (\.i\' . c-mode) (\.lex\' . c-mode) (\.y\(acc\)?\' . c-mode) (\.h\' . c-or-c++-mode) (\.c\' . c-mode) (\.\(CC?\|HH?\)\' . c++-mode) (\.[ch]\(pp\|xx\|\+\+\)\' . c++-mode) (\.\(cc\|hh\)\' . c++-mode) (\.\(bat\|cmd\)\' . bat-mode) (\.[sx]?html?\(\.[a-zA-Z_]+\)?\' . mhtml-mode) (\.svgz?\' . image-mode) (\.svgz?\' . xml-mode) (\.x[bp]m\' . image-mode) (\.x[bp]m\' . c-mode) (\.p[bpgn]m\' . image-mode) (\.tiff?\' . image-mode) (\.gif\' . image-mode) (\.png\' . image-mode) (\.jpe?g\' . image-mode) (\.te?xt\' . text-mode) (\.[tT]e[xX]\' . tex-mode) (\.ins\' . tex-mode) (\.ltx\' . latex-mode) (\.dtx\' . doctex-mode) (\.org\' . org-mode) (\.el\' . emacs-lisp-mode) (Project\.ede\' . emacs-lisp-mode) (\.\(scm\|stk\|ss\|sch\)\' . scheme-mode) (\.l\' . lisp-mode) (\.li?sp\' . lisp-mode) (\.[fF]\' . fortran-mode) (\.for\' . fortran-mode) (\.p\' . pascal-mode) (\.pas\' . pascal-mode) (\.\(dpr\|DPR\)\' . delphi-mode) (\.ad[abs]\' . ada-mode) (\.ad[bs]\.dg\' . ada-mode) (\.\([pP]\([Llm]\|erl\|od\)\|al\)\' . perl-mode) (Imakefile\' . makefile-imake-mode) (Makeppfile\(?:\.mk\)?\' . makefile-makepp-mode) (\.makepp\' . makefile-makepp-mode) (\.mk\' . makefile-bsdmake-mode) (\.make\' . makefile-bsdmake-mode) (GNUmakefile\' . makefile-gmake-mode) ([Mm]akefile\' . makefile-bsdmake-mode) (\.am\' . makefile-automake-mode) (\.texinfo\' . texinfo-mode) (\.te?xi\' . texinfo-mode) (\.[sS]\' . asm-mode) (\.asm\' . asm-mode) (\.css\' . css-mode) (\.mixal\' . mixal-mode) (\.gcov\' . compilation-mode) (/\.[a-z0-9-]*gdbinit . gdb-script-mode) (-gdb\.gdb . gdb-script-mode) ([cC]hange\.?[lL]og?\' . change-log-mode) ([cC]hange[lL]og[-.][0-9]+\' . change-log-mode) (\$CHANGE_LOG\$\.TXT . change-log-mode) (\.scm\.[0-9]*\' . scheme-mode) (\.[ckz]?sh\'\|\.shar\'\|/\.z?profile\' . sh-mode) (\.bash\' . sh-mode) (\(/\|\`\)\.\(bash_\(profile\|history\|log\(in\|out\)\)\|z?log\(in\|out\)\)\' . sh-mode) (\(/\|\`\)\.\(shrc\|zshrc\|m?kshrc\|bashrc\|t?cshrc\|esrc\)\' . sh-mode) (\(/\|\`\)\.\([kz]shenv\|xinitrc\|startxrc\|xsession\)\' . sh-mode) (\.m?spec\' . sh-mode) (\.m[mes]\' . nroff-mode) (\.man\' . nroff-mode) (\.sty\' . latex-mode) (\.cl[so]\' . latex-mode) (\.bbl\' . latex-mode) (\.bib\' . bibtex-mode) (\.bst\' . bibtex-style-mode) (\.sql\' . sql-mode) (\(acinclude\|aclocal\|acsite\)\.m4\' . autoconf-mode) (\.m[4c]\' . m4-mode) (\.mf\' . metafont-mode) (\.mp\' . metapost-mode) (\.vhdl?\' . vhdl-mode) (\.article\' . text-mode) (\.letter\' . text-mode) (\.i?tcl\' . tcl-mode) (\.exp\' . tcl-mode) (\.itk\' . tcl-mode) (\.icn\' . icon-mode) (\.sim\' . simula-mode) (\.mss\' . scribe-mode) (\.f9[05]\' . f90-mode) (\.f0[38]\' . f90-mode) (\.indent\.pro\' . fundamental-mode) (\.\(pro\|PRO\)\' . idlwave-mode) (\.srt\' . srecode-template-mode) (\.prolog\' . prolog-mode) (\.tar\' . tar-mode) (\.\(arc\|zip\|lzh\|lha\|zoo\|[jew]ar\|xpi\|rar\|cbr\|7z\|ARC\|ZIP\|LZH\|LHA\|ZOO\|[JEW]AR\|XPI\|RAR\|CBR\|7Z\)\' . archive-mode) (\.oxt\' . archive-mode) (\.\(deb\|[oi]pk\)\' . archive-mode) (\`/tmp/Re . text-mode) (/Message[0-9]*\' . text-mode) (\`/tmp/fol/ . text-mode) (\.oak\' . scheme-mode) (\.sgml?\' . sgml-mode) (\.x[ms]l\' . xml-mode) (\.dbk\' . xml-mode) (\.dtd\' . sgml-mode) (\.ds\(ss\)?l\' . dsssl-mode) (\.js[mx]?\' . javascript-mode) (\.har\' . javascript-mode) (\.json\' . javascript-mode) (\.[ds]?va?h?\' . verilog-mode) (\.by\' . bovine-grammar-mode) (\.wy\' . wisent-grammar-mode) ([:/\]\..*\(emacs\|gnus\|viper\)\' . emacs-lisp-mode) (\`\..*emacs\' . emacs-lisp-mode) ([:/]_emacs\' . emacs-lisp-mode) (/crontab\.X*[0-9]+\' . shell-script-mode) (\.ml\' . lisp-mode) (\.ld[si]?\' . ld-script-mode) (ld\.?script\' . ld-script-mode) (\.xs\' . c-mode) (\.x[abdsru]?[cnw]?\' . ld-script-mode) (\.zone\' . dns-mode) (\.soa\' . dns-mode) (\.asd\' . lisp-mode) (\.\(asn\|mib\|smi\)\' . snmp-mode) (\.\(as\|mi\|sm\)2\' . snmpv2-mode) (\.\(diffs?\|patch\|rej\)\' . diff-mode) (\.\(dif\|pat\)\' . diff-mode) (\.[eE]?[pP][sS]\' . ps-mode) (\.\(?:PDF\|DVI\|OD[FGPST]\|DOCX\|XLSX?\|PPTX?\|pdf\|djvu\|dvi\|od[fgpst]\|docx\|xlsx?\|pptx?\)\' . doc-view-mode-maybe) (configure\.\(ac\|in\)\' . autoconf-mode) (\.s\(v\|iv\|ieve\)\' . sieve-mode) (BROWSE\' . ebrowse-tree-mode) (\.ebrowse\' . ebrowse-tree-mode) (#\*mail\* . mail-mode) (\.g\' . antlr-mode) (\.mod\' . m2-mode) (\.ses\' . ses-mode) (\.docbook\' . sgml-mode) (\.com\' . dcl-mode) (/config\.\(?:bat\|log\)\' . fundamental-mode) (/\.\(authinfo\|netrc\)\' . authinfo-mode) (\.\(?:[iI][nN][iI]\|[lL][sS][tT]\|[rR][eE][gG]\|[sS][yY][sS]\)\' . conf-mode) (\.la\' . conf-unix-mode) (\.ppd\' . conf-ppd-mode) (java.+\.conf\' . conf-javaprop-mode) (\.properties\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-javaprop-mode) (\.toml\' . conf-toml-mode) (\.desktop\' . conf-desktop-mode) (/\.redshift\.conf\' . conf-windows-mode) (\`/etc/\(?:DIR_COLORS\|ethers\|.?fstab\|.*hosts\|lesskey\|login\.?de\(?:fs\|vperm\)\|magic\|mtab\|pam\.d/.*\|permissions\(?:\.d/.+\)?\|protocols\|rpc\|services\)\' . conf-space-mode) (\`/etc/\(?:acpid?/.+\|aliases\(?:\.d/.+\)?\|default/.+\|group-?\|hosts\..+\|inittab\|ksysguarddrc\|opera6rc\|passwd-?\|shadow-?\|sysconfig/.+\)\' . conf-mode) ([cC]hange[lL]og[-.][-0-9a-z]+\' . change-log-mode) (/\.?\(?:gitconfig\|gnokiirc\|hgrc\|kde.*rc\|mime\.types\|wgetrc\)\' . conf-mode) (/\.\(?:asound\|enigma\|fetchmail\|gltron\|gtk\|hxplayer\|mairix\|mbsync\|msmtp\|net\|neverball\|nvidia-settings-\|offlineimap\|qt/.+\|realplayer\|reportbug\|rtorrent\.\|screen\|scummvm\|sversion\|sylpheed/.+\|xmp\)rc\' . conf-mode) (/\.\(?:gdbtkinit\|grip\|mpdconf\|notmuch-config\|orbital/.+txt\|rhosts\|tuxracer/options\)\' . conf-mode) (/\.?X\(?:default\|resource\|re\)s\> . conf-xdefaults-mode) (/X11.+app-defaults/\|\.ad\' . conf-xdefaults-mode) (/X11.+locale/.+/Compose\' . conf-colon-mode) (/X11.+locale/compose\.dir\' . conf-javaprop-mode) (\.~?[0-9]+\.[0-9][-.0-9]*~?\' nil t) (\.\(?:orig\|in\|[bB][aA][kK]\)\' nil t) ([/.]c\(?:on\)?f\(?:i?g\)?\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-mode-maybe) (\.[1-9]\' . nroff-mode) (\.art\' . image-mode) (\.avs\' . image-mode) (\.bmp\' . image-mode) (\.cmyk\' . image-mode) (\.cmyka\' . image-mode) (\.crw\' . image-mode) (\.dcr\' . image-mode) (\.dcx\' . image-mode) (\.dng\' . image-mode) (\.dpx\' . image-mode) (\.fax\' . image-mode) (\.hrz\' . image-mode) (\.icb\' . image-mode) (\.icc\' . image-mode) (\.icm\' . image-mode) (\.ico\' . image-mode) (\.icon\' . image-mode) (\.jbg\' . image-mode) (\.jbig\' . image-mode) (\.jng\' . image-mode) (\.jnx\' . image-mode) (\.miff\' . image-mode) (\.mng\' . image-mode) (\.mvg\' . image-mode) (\.otb\' . image-mode) (\.p7\' . image-mode) (\.pcx\' . image-mode) (\.pdb\' . image-mode) (\.pfa\' . image-mode) (\.pfb\' . image-mode) (\.picon\' . image-mode) (\.pict\' . image-mode) (\.rgb\' . image-mode) (\.rgba\' . image-mode) (\.tga\' . image-mode) (\.wbmp\' . image-mode) (\.webp\' . image-mode) (\.wmf\' . image-mode) (\.wpg\' . image-mode) (\.xcf\' . image-mode) (\.xmp\' . image-mode) (\.xwd\' . image-mode) (\.yuv\' . image-mode) (\.tgz\' . tar-mode) (\.tbz2?\' . tar-mode) (\.txz\' . tar-mode) (\.tzst\' . tar-mode))
 
 ** Ruby
 
@@ -742,9 +700,6 @@ Auto-fill text while writing, and check spelling of course.
 (add-hook 'rst-mode-hook 'turn-on-auto-fill)
 #+end_src
 
-#+RESULTS:
-| turn-on-auto-fill |
-
 The =write-good= package so I can learn to write more gooder.
 
 #+begin_src emacs-lisp
@@ -755,8 +710,6 @@ The =write-good= package so I can learn to write more gooder.
   (add-hook 'org-mode-hook 'writegood-mode)
   (add-hook 'gfm-mode-hook 'writegood-mode))
 #+end_src
-
-#+RESULTS:
 
 ** YAML
 
@@ -777,9 +730,6 @@ guess.  This is a recent workaround.
 #+begin_src emacs-lisp
 (require 'org-tempo)
 #+end_src
-
-#+RESULTS:
-: org-tempo
 
 Use =C-c n= to open a scratch buffer for playing around in org mode.
 
@@ -839,15 +789,6 @@ Configure **capture templates** and map the selector to =C-c c=.
                `("t" "triage" entry (file+headline ,(recker/path 'docs "opsat.org") "Triage") "* TODO %?\n"))
 #+end_src
 
-#+RESULTS:
-| t | triage            | entry | (file+headline /home/alex/docs/opsat.org Triage)       | * TODO %? |                     |   |                    |   |
-| w | work task         | entry | (file+headline /home/alex/docs/opsat.org Work)         | * TODO %? |                     |   |                    |   |
-| p | productivity task | entry | (file+headline /home/alex/docs/opsat.org Productivity) | * TODO %? |                     |   |                    |   |
-| i | idea              | plain | (file+olp+datetree /home/alex/docs/opsat.org Ideas)    | nil       | :empty-lines-before | 1 | :empty-lines-after | 1 |
-| m | mixtape notes     | plain | (file+olp+datetree /home/alex/docs/opsat.org Mixtape)  | nil       | :empty-lines-before | 1 | :empty-lines-after | 1 |
-| j | journal entry     | plain | (file+olp+datetree /home/alex/docs/opsat.org Journal)  | nil       | :empty-lines-before | 1 | :empty-lines-after | 1 |
-| o | opsat topic       | entry | (file /home/alex/docs/opsat.org)                       | * %?      |                     |   |                    |   |
-
 Configure **agenda** and set up and map the view to =C-c a=.
 
 #+begin_src emacs-lisp
@@ -865,11 +806,17 @@ Custom agenda commands (if I ever end up using these).
   (setq recker/tag-agenda-todos
         '("work" "triage" "resolutions" "productivity" "grandpa"))
 
-  (dolist (tag recker/tag-agenda-todos)
-    (add-to-list 'org-agenda-custom-commands `(,(nth 1 (split-string tag "")) ,tag tags-todo ,tag)))
-#+end_src
+  (defun recker/tag-to-custom-command (tag)
+    (let ((key (nth 1 (split-string tag ""))))
+      `(,key ,tag
+        ((agenda "" ((org-agenda-span 1)))
+        (tags-todo ,tag)))))
 
-#+RESULTS:
+  (recker/tag-to-custom-command "work")
+
+  (dolist (tag recker/tag-agenda-todos)
+    (add-to-list 'org-agenda-custom-commands (recker/tag-to-custom-command tag)))
+#+end_src
 
 Configure **attachments**.
 
@@ -890,8 +837,6 @@ Install htmlize for sweet snyntax highlighting on HTML exports.
 (use-package htmlize :ensure t)
 #+end_src
 
-#+RESULTS:
-
 Open up a new blog post.
 
 #+begin_src emacs-lisp
@@ -909,9 +854,6 @@ Open up a new blog post.
   (global-set-key (kbd "C-c t") 'recker/today)
 #+end_src
 
-#+RESULTS:
-: recker/today
-
 Don't show archived or done items in the agenda.
 
 #+begin_src emacs-lisp
@@ -920,15 +862,11 @@ Don't show archived or done items in the agenda.
         org-agenda-archives-mode nil)
 #+end_src
 
-#+RESULTS:
-
 Don't automatically search in =org-goto=.
 
 #+begin_src emacs-lisp
   (setq org-goto-auto-isearch nil)
 #+end_src
-
-#+RESULTS:
 
 * Gnus
 
@@ -973,9 +911,6 @@ Enable the powerful placebo options.
 ")
 #+end_src
 
-#+RESULTS:
-: %U%R%z%I%(%[%4L: %-23,23f%]%) %s
-
 Don't dribble anywhere, that's gross.
 
 #+begin_src emacs-lisp
@@ -1000,9 +935,6 @@ Use bbdb to store addresses.
   (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
 #+end_src
 
-#+RESULTS:
-: t
-
 Configure **imap** settings.
 
 #+begin_src emacs-lisp
@@ -1024,10 +956,6 @@ Configure **imap** settings.
                         (nnmail-expiry-wait immediate)))
 #+end_src
 
-#+RESULTS:
-| nnimap | arecker@zendesk.com   | (nnimap-user arecker@zendesk.com) | (nnimap-address imap.gmail.com) | (nnimap-server-port imaps) | (nnimap-stream ssl)                                                  | (nnmail-expiry-target nnimap+arecker@zendesk.com:[Gmail]/All Mail) | (nnmail-expiry-wait immediate) |
-| nnimap | alex@reckerfamily.com | (nnimap-address imap.gmail.com)   | (nnimap-server-port imaps)      | (nnimap-stream ssl)        | (nnmail-expiry-target nnimap+alex@reckerfamily.com:[Gmail]/All Mail) | (nnmail-expiry-wait immediate)                                     |                                |
-
 Configure **smtp** settings.
 
 #+begin_src emacs-lisp
@@ -1046,9 +974,6 @@ Rebind keys to some helpful existing functions.
 (global-set-key (kbd "C-c l") 'sort-lines)
 #+end_src
 
-#+RESULTS:
-: sort-lines
-
 Some other helpful functions.
 
 #+begin_src emacs-lisp
@@ -1065,9 +990,6 @@ Some other helpful functions.
     (message "docs-sync: successful"))
   (global-set-key (kbd "C-c d") 'recker/docs-sync)
 #+end_src
-
-#+RESULTS:
-: recker/docs-sync
 
 * Quotes
 

@@ -251,7 +251,7 @@ Configure **dired**, the emacs file manager.
 (require 'dired-x)
 (setq-default dired-omit-files-p t)
 (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
-(setq dired-listing-switches "-lh")
+(setq dired-listing-switches "-lah")
 (setq dired-use-ls-dired nil)
 (setq dired-clean-confirm-killing-deleted-buffers nil)
 #+end_src

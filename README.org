@@ -861,11 +861,15 @@ Custom agenda commands (if I ever end up using these).
 
 #+begin_src emacs-lisp
   (setq org-agenda-custom-commands '())
-  (add-to-list 'org-agenda-custom-commands '("w" "Work Items" tags-todo "work"))
+
+  (setq recker/tag-agenda-todos
+        '("work" "triage" "resolutions" "productivity" "grandpa"))
+
+  (dolist (tag recker/tag-agenda-todos)
+    (add-to-list 'org-agenda-custom-commands `(,(nth 1 (split-string tag "")) ,tag tags-todo ,tag)))
 #+end_src
 
 #+RESULTS:
-| w | Work Items | tags-todo | work |
 
 Configure **attachments**.
 

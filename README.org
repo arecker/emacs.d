@@ -768,15 +768,15 @@ Configure **capture templates** and map the selector to =C-c c=.
                `("o" "opsat topic" entry (file ,(recker/path 'docs "opsat.org")) "* %?"))
 
   (add-to-list 'org-capture-templates
-               `("j" "journal entry" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Journal") nil
+               `("j" "journal entry" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Journal") "%?\n"
                  :empty-lines-before 1 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates
-               `("m" "mixtape notes" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Mixtape") nil
+               `("m" "mixtape notes" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Mixtape") "%?\n"
                  :empty-lines-before 1 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates
-               `("i" "idea" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Ideas") nil
+               `("i" "idea" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Ideas") "%?\n"
                  :empty-lines-before 1 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates

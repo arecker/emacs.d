@@ -262,6 +262,10 @@ Map a few file registers.
   (set-register ?b `(file . ,(recker/path 'src "blog")))
   (set-register ?c '(file . "/ssh:laptop:/home/alex"))
   (set-register ?d `(file . ,(recker/path 'desktop)))
+  (set-register ?a `(file . ,(recker/path 'docs "archive.org")))
+  (set-register ?j `(file . ,(recker/path 'docs "journal.org")))
+  (set-register ?j `(file . ,(recker/path 'docs "ideas.org")))
+  (set-register ?j `(file . ,(recker/path 'docs "mixtape.org")))
   (set-register ?e `(file . ,(recker/path 'emacs "README.org")))
   (set-register ?l `(file . ,(recker/path 'emacs "local.el")))
   (set-register ?n '(file . "/ssh:alex@nas.local:/volume1/homes/alex/"))
@@ -768,7 +772,7 @@ Configure **capture templates** and map the selector to =C-c c=.
                `("o" "opsat topic" entry (file ,(recker/path 'docs "opsat.org")) "* %?"))
 
   (add-to-list 'org-capture-templates
-               `("j" "journal entry" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Journal") "%?\n"
+               `("j" "journal entry" plain (file+olp+datetree ,(recker/path 'docs "journal.org")) "%?\n"
                  :empty-lines-before 1 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates
@@ -776,7 +780,7 @@ Configure **capture templates** and map the selector to =C-c c=.
                  :empty-lines-before 1 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates
-               `("i" "idea" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Ideas") "%?\n"
+               `("i" "idea" plain (file+olp+datetree ,(recker/path 'docs "ideas.org")) "%?\n"
                  :empty-lines-before 1 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates

@@ -264,7 +264,7 @@ Map a few file registers.
   (set-register ?d `(file . ,(recker/path 'desktop)))
   (set-register ?a `(file . ,(recker/path 'docs "archive.org")))
   (set-register ?j `(file . ,(recker/path 'docs "journal.org")))
-  (set-register ?j `(file . ,(recker/path 'docs "ideas.org")))
+  (set-register ?i `(file . ,(recker/path 'docs "ideas.org")))
   (set-register ?j `(file . ,(recker/path 'docs "mixtape.org")))
   (set-register ?e `(file . ,(recker/path 'emacs "README.org")))
   (set-register ?l `(file . ,(recker/path 'emacs "local.el")))

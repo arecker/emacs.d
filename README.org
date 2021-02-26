@@ -776,7 +776,7 @@ Configure **capture templates** and map the selector to =C-c c=.
                  :empty-lines-before 1 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates
-               `("m" "mixtape notes" plain (file+olp+datetree ,(recker/path 'docs "opsat.org") "Mixtape") "%?\n"
+               `("m" "mixtape notes" plain (file+olp+datetree ,(recker/path 'docs "mixtape.org")) "%?\n"
                  :empty-lines-before 1 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates

@@ -188,48 +188,6 @@ Kill buffers without confirming.
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 #+end_src
 
-* Font
-
-I like to set aside a regular font and a larger version of the same
-font for things like screen shares.
-
-#+BEGIN_SRC emacs-lisp
-  (setq-default recker/regular-font (if (recker/macos-p)
-                                        "Monaco 16"
-                                      "Inconsolata 13"))
-
-  (setq-default recker/large-font (if (recker/macos-p)
-                                      "Monaco 20"
-                                    "Inconsolata 18"))
-#+END_SRC
-
-Set the regular font if emacs is running in graphics mode.
-
-#+BEGIN_SRC emacs-lisp
-(when (display-graphic-p)
-  (set-frame-font recker/regular-font nil t))
-#+END_SRC
-
-I use a custom keybound function to toggle between my regular and
-large font.
-
-#+BEGIN_SRC emacs-lisp
-  (defun recker/toggle-font-size ()
-    (interactive)
-    (unless (display-graphic-p)
-      (error "Running in -nw mode, font won't work"))
-    (let* ((current-font-obj (face-attribute 'default :font))
-           (current-font (format "%s %s"
-                                 (font-get current-font-obj :family)
-                                 (font-get current-font-obj :size)))
-           (desired-font (if (string-equal current-font recker/regular-font)
-                             recker/large-font
-                           recker/regular-font)))
-      (set-frame-font (progn (message "Changing font to %s" desired-font) desired-font) t t)))
-
-  (global-set-key (kbd "C-c C-x f") 'recker/toggle-font-size)
-#+END_SRC
-
 * Files
 
 Don't automatically make backup files.

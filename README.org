@@ -720,6 +720,18 @@ time.  Set up some languages.
      (shell . t)))
 #+end_src
 
+[[https://plantuml.com/emacs][Plantuml]] integration.  Make sure you download the [[https://plantuml.com/download][JAR file]] and save it
+to =~/.plantuml/plantuml.jar=.
+
+#+begin_src emacs-lisp
+  (use-package plantuml-mode
+    :ensure t
+    :config (setq org-plantuml-jar-path (recker/path 'home ".plantuml/plantuml.jar"))
+    :init
+    (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+    (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
+#+end_src
+
 Configure **capture templates** and map the selector to =C-c c=.
 
 #+begin_src emacs-lisp

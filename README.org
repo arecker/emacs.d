@@ -732,6 +732,15 @@ to =~/.plantuml/plantuml.jar=.
     (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
 #+end_src
 
+Re-render images after executing code blocks.
+
+#+begin_src emacs-lisp
+(add-hook 'org-babel-after-execute-hook
+          (lambda ()
+            (when org-inline-image-overlays
+              (org-redisplay-inline-images))))
+#+end_src
+
 Configure **capture templates** and map the selector to =C-c c=.
 
 #+begin_src emacs-lisp

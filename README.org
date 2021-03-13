@@ -221,13 +221,13 @@ Map a few file registers.
   (set-register ?c '(file . "/ssh:laptop:/home/alex"))
   (set-register ?d `(file . ,(recker/path 'desktop)))
   (set-register ?a `(file . ,(recker/path 'docs "archive.org")))
+  (set-register ?w `(file . ,(recker/path 'docs "work.org")))
   (set-register ?j `(file . ,(recker/path 'docs "journal.org")))
   (set-register ?i `(file . ,(recker/path 'docs "ideas.org")))
   (set-register ?j `(file . ,(recker/path 'docs "mixtape.org")))
   (set-register ?e `(file . ,(recker/path 'emacs "README.org")))
   (set-register ?l `(file . ,(recker/path 'emacs "local.el")))
   (set-register ?n '(file . "/ssh:alex@nas.local:/volume1/homes/alex/"))
-  (set-register ?o `(file . ,(recker/path 'docs "opsat.org")))
 #+end_src
 
 Configure bookmarks.
@@ -771,9 +771,6 @@ Configure **capture templates** and map the selector to =C-c c=.
   (global-set-key (kbd "C-c c") 'org-capture)
 
   (add-to-list 'org-capture-templates
-               `("o" "opsat topic" entry (file ,(recker/path 'docs "opsat.org")) "* %?"))
-
-  (add-to-list 'org-capture-templates
                `("j" "journal entry" plain (file+olp+datetree ,(recker/path 'docs "journal.org")) "%?\n"
                  :empty-lines-before 1 :empty-lines-after 1))
 
@@ -789,16 +786,14 @@ Configure **capture templates** and map the selector to =C-c c=.
                `("p" "productivity task" entry (file+headline ,(recker/path 'docs "opsat.org") "Productivity") "* TODO %?\n"))
 
   (add-to-list 'org-capture-templates
-               `("w" "work task" entry (file+headline ,(recker/path 'docs "opsat.org") "Work") "* TODO %?\n"))
-
-  (add-to-list 'org-capture-templates
-               `("t" "triage" entry (file+headline ,(recker/path 'docs "opsat.org") "Triage") "* TODO %?\n"))
+               `("w" "work task" entry (file ,(recker/path 'docs "work.org")) "* TODO %?\n"))
 #+end_src
 
 Configure **agenda** and set up and map the view to =C-c a=.
 
 #+begin_src emacs-lisp
 (setq org-agenda-files (list (recker/path 'docs)))
+(setq org-directory (list (recker/path 'docs)))
 (setq org-agenda-start-with-follow-mode t)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (setq org-agenda-tag-filter-preset '("-ARCHIVE"))
@@ -808,7 +803,7 @@ Custom agenda commands.
 
 #+begin_src emacs-lisp
   (setq recker/tag-agenda-todos
-        '("work" "triage" "resolutions" "productivity" "grandpa" "media"))
+        '("work" "resolutions" "productivity" "grandpa" "media"))
 
   (defun recker/tag-to-custom-command (tag)
     (let ((key (nth 1 (split-string tag ""))))

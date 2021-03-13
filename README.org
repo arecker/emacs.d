@@ -314,7 +314,7 @@ Install yasnippet.
 #+begin_src emacs-lisp
   (use-package yasnippet
     :ensure t
-    :init (add-hook 'prog-mode-hook #'yas-minor-mode))
+    :init (yas-global-mode))
 #+end_src
 
 * Passwords
@@ -703,7 +703,7 @@ Use =C-c n= to open a scratch buffer for playing around in org mode.
   (org-mode)
   (insert "#+TITLE: Org Scratch\n\n"))
 
-(global-set-key (kbd "C-c n") 'recker/org-scratch)
+(global-set-key (kbd "C-c o") 'recker/org-scratch)
 #+end_src
 
 Run **code blocks** interactively without the confirmation prompt each
@@ -718,6 +718,29 @@ time.  Set up some languages.
      (python . t)
      (ruby . t)
      (shell . t)))
+#+end_src
+
+Deft for searching org notes.
+
+#+begin_src emacs-lisp
+  (use-package deft
+    :ensure t
+    :config
+    (setq deft-extensions '("org"))
+    (setq deft-directory (recker/path 'docs))
+    (setq deft-recursive t)
+    :init
+    (global-set-key (kbd "C-c o") 'deft)
+    (global-set-key (kbd "C-c n") 'deft-find-file))
+#+end_src
+
+Fix yasnippet in org mode.
+
+#+begin_src emacs-lisp
+  (defun recker/fix-yas-in-org ()
+    (setq-local yas-buffer-local-condition
+                '(not (org-in-src-block-p t))))
+  (add-hook 'org-mode-hook #'recker/fix-yas-in-org)
 #+end_src
 
 [[https://plantuml.com/emacs][Plantuml]] integration.  Make sure you download the [[https://plantuml.com/download][JAR file]] and save it

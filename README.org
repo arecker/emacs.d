@@ -799,24 +799,6 @@ Configure **agenda** and set up and map the view to =C-c a=.
 (setq org-agenda-tag-filter-preset '("-ARCHIVE"))
 #+end_src
 
-Custom agenda commands.
-
-#+begin_src emacs-lisp
-  (setq recker/tag-agenda-todos
-        '("work" "resolutions" "productivity" "grandpa" "media"))
-
-  (defun recker/tag-to-custom-command (tag)
-    (let ((key (nth 1 (split-string tag ""))))
-      `(,key ,tag
-             ((agenda ,tag ((org-agenda-span 3)
-                            (org-agenda-sorting-strategy
-                             (quote ((agenda time-up priority-down tag-up))))
-                            (org-deadline-warning-days 0)))
-              (tags-todo ,tag)))))
-
-  (setq org-agenda-custom-commands (mapcar #'recker/tag-to-custom-command recker/tag-agenda-todos))
-#+end_src
-
 Configure **attachments**.
 
 #+begin_src emacs-lisp

@@ -1,5 +1,5 @@
 #+TITLE: Emacs Configuration
-#+OPTIONS: toc:nil num:nil
+#+OPTIONS: num:nil
 #+STARTUP: showall noindent inlineimages
 #+PROPERTY: header-args :results none
 
@@ -192,6 +192,10 @@ For working with the [[https://jsonnet.org/][Jsonnet]] configuration language.
 #+end_src
 
 *** Nginx
+
+For working with [[https://www.nginx.com/][nginx]] configuration files.  This mode is
+automatically activated for files opened in =/etc/nginx=, but you can
+also turn it on with =M-x= =nginx-mode=.
 
 #+begin_src emacs-lisp
   (use-package nginx-mode

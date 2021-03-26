@@ -1,0 +1,81 @@
+#+TITLE: Emacs Configuration
+#+OPTIONS: toc:nil num:nil
+#+STARTUP: showall noindent inlineimages
+#+PROPERTY: header-args :results none
+
+Greetings!  Welcome to my personal [[https://www.gnu.org/software/emacs/][GNU Emacs]] configuration.  Feel free
+to re-use anything you'd like.  If you have any questions, don't
+hesitate to fire off an email to [[mailto:alex@reckerfamily.com][alex@reckerfamily.com]] or leave an
+issue in this git repository.
+
+* Development
+
+** Front End
+
+This section was adapted from Cody Reichert's [[https://gist.github.com/CodyReichert/9dbc8bd2a104780b64891d8736682cea][Configuring Emacs for
+react, es6, and flow]].
+
+*** Prerequisites
+
+For this configuration to work, you need some global npm packages
+installed.  You can take care of that like this:
+
+#+begin_src sh
+npm install -g eslint prettier
+#+end_src
+
+*** Web Mode
+
+ Use web mode for editing HTML, JavaScript, and anything in between.
+
+ #+begin_src emacs-lisp
+   (defun recker/web-mode-hook ()
+     "Custom web-mode hook."
+     (setq web-mode-markup-indent-offset 2)
+     (setq web-mode-script-padding 2)
+     (setq web-mode-style-padding 2)
+     (setq web-mode-code-indent-offset 2))
+
+   (use-package web-mode
+     :ensure t
+     :mode ("\\.html\\'" "\\.j2\\'" "\\.j2\\'" "\\.jsx?$")
+     :config (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
+     :init (add-hook 'web-mode-hook 'recker/web-mode-hook))
+ #+end_src
+
+*** ESLint
+
+ Make sure flycheck is installed, and disable the default jshint
+ checker.
+
+ #+begin_src emacs-lisp
+   (use-package flycheck
+     :ensure t
+     :init
+     (setq-default flycheck-disabled-checkers
+                   (append flycheck-disabled-checkers
+                           '(javascript-jshint json-jsonlist)))
+     (flycheck-add-mode 'javascript-eslint 'web-mode)
+     (add-hook 'after-init-hook #'global-flycheck-mode))
+ #+end_src
+
+*** Prettier.js
+
+Automatically format code on save with [[https://prettier.io/][Prettier]].
+
+#+begin_src emacs-lisp
+  (use-package prettier-js
+    :ensure t
+    :init (add-hook 'web-mode-hook 'prettier-js-mode))
+#+end_src
+
+*** Emmet Mode
+
+Use [[https://emmet.io/][Emmet]] for smart tag expansion.
+
+#+begin_src emacs-lisp
+  (use-package emmet-mode
+    :ensure t
+    :init (setq emmet-preview-default nil)
+    :config (add-hook 'web-mode-hook 'emmet-mode))
+#+end_src

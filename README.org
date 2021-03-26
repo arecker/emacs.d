@@ -431,37 +431,6 @@ sCaption: ")
        (format "<figure>\n%s\n%s\n</figure>" img figcaption)))))
 #+end_src
 
-** Javascript
-
-As you can tell I write a lot of Javascript.  Just look at all these
-options I've collected over the years.
-
-#+begin_src emacs-lisp
-(setq js-indent-level 2)
-#+end_src
-
-** Jsonnet
-
-For working with the [[https://jsonnet.org/][Jsonnet]] configuration language.
-
-#+begin_src emacs-lisp
-(use-package jsonnet-mode
-  :ensure t
-  :defer t
-  :mode ("\\.jsonnet\\'" "\\.libsonnet\\'"))
-#+end_src
-
-** Lua
-
-For pico8 games and pandoc extensions.
-
-#+begin_src emacs-lisp
-(use-package lua-mode
-  :ensure t
-  :defer t
-  :mode ("\\.lua\\'" "\\.p8\\'"))
-#+end_src
-
 ** Markdown
 
 Markdown, bleh.
@@ -498,26 +467,6 @@ pretty cool.
     :ensure t
     :defer t
     :mode (("\\.rst$" . rst-mode)))
-#+end_src
-
-** Ruby
-
-I like ruby, I just strangely don't have a lot of customizations for
-working with it.
-
-#+begin_src emacs-lisp
-  (setq ruby-deep-indent-paren nil)
-#+end_src
-
-** Terraform
-
-Package for working with [[https://www.terraform.io/][terraform]].
-
-#+begin_src emacs-lisp
-  (use-package terraform-mode
-    :ensure t
-    :defer t
-    :mode "\\.tf\\'")
 #+end_src
 
 ** Text

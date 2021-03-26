@@ -101,6 +101,26 @@ Haskell mode, in case I ever decide to really grow my neckbeard out.
   :mode "\\.hs\\'")
 #+end_src
 
+*** Lua
+
+For pico8 games and pandoc extensions.
+
+#+begin_src emacs-lisp
+(use-package lua-mode
+  :ensure t
+  :defer t
+  :mode ("\\.lua\\'" "\\.p8\\'"))
+#+end_src
+
+*** Ruby
+
+I like ruby, I just strangely don't have a lot of customizations for
+working with it.
+
+#+begin_src emacs-lisp
+  (setq ruby-deep-indent-paren nil)
+#+end_src
+
 ** DevOps
 
 *** Dockerfile
@@ -123,11 +143,33 @@ Mostly for editing Jenkinsfiles.
   :mode ("\\Jenkinsfile\\'" "\\.groovy\\'"))
 #+end_src
 
+*** Jsonnet
+
+For working with the [[https://jsonnet.org/][Jsonnet]] configuration language.
+
+#+begin_src emacs-lisp
+(use-package jsonnet-mode
+  :ensure t
+  :defer t
+  :mode ("\\.jsonnet\\'" "\\.libsonnet\\'"))
+#+end_src
+
 *** Nginx
 
 #+begin_src emacs-lisp
   (use-package nginx-mode
     :ensure t)
+#+end_src
+
+*** Terraform
+
+Package for working with [[https://www.terraform.io/][terraform]].
+
+#+begin_src emacs-lisp
+  (use-package terraform-mode
+    :ensure t
+    :defer t
+    :mode "\\.tf\\'")
 #+end_src
 
 ** Front End

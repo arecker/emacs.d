@@ -489,19 +489,6 @@ guess.  This is a recent workaround.
 (require 'org-tempo)
 #+end_src
 
-Use =C-c n= to open a scratch buffer for playing around in org mode.
-
-#+begin_src emacs-lisp
-(defun recker/org-scratch ()
-  "Open a org mode scratch pad."
-  (interactive)
-  (switch-to-buffer "*org scratch*")
-  (org-mode)
-  (insert "#+TITLE: Org Scratch\n\n"))
-
-(global-set-key (kbd "C-c o") 'recker/org-scratch)
-#+end_src
-
 Run **code blocks** interactively without the confirmation prompt each
 time.  Set up some languages.
 
@@ -525,6 +512,7 @@ Deft for searching org notes.
     (setq deft-extensions '("org"))
     (setq deft-directory (recker/path 'docs))
     (setq deft-recursive t)
+    (setq deft-auto-save-interval 0)
     :init
     (global-set-key (kbd "C-c o") 'deft)
     (global-set-key (kbd "C-c n") 'deft-find-file))
@@ -561,10 +549,11 @@ to =~/.plantuml/plantuml.jar=.
 Re-render images after executing code blocks.
 
 #+begin_src emacs-lisp
-(add-hook 'org-babel-after-execute-hook
-          (lambda ()
-            (when org-inline-image-overlays
-              (org-redisplay-inline-images))))
+  (defun recker/org-rerender-images ()
+    (when org-inline-image-overlays
+      (org-redisplay-inline-images)))
+
+  (add-hook 'org-babel-after-execute-hook #'recker/org-rerender-images)
 #+end_src
 
 Configure **capture templates** and map the selector to =C-c c=.

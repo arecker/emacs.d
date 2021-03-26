@@ -90,6 +90,29 @@ Yeah, there's a D language apparently.
   :mode "\\.d\\'")
 #+end_src
 
+*** Go
+
+Haven't really gotten into go, but I have to work on Kubernetes
+operators sometimes.
+
+#+begin_src emacs-lisp
+  (use-package go-mode
+    :ensure t
+    :defer t
+    :config (let ((govet (flycheck-checker-get 'go-vet 'command)))
+              (when (equal (cadr govet) "tool")
+                (setf (cdr govet) (cddr govet))))
+    :init (add-hook 'go-mode-hook
+                    (lambda ()
+                      (set (make-local-variable 'company-backends) '(company-go))
+                      (company-mode))))
+
+  (use-package company-go
+    :ensure t
+    :defer t
+    :after (company))
+#+end_src
+
 *** Haskell
 
 Haskell mode, in case I ever decide to really grow my neckbeard out.

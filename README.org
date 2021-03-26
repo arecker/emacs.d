@@ -445,18 +445,6 @@ Markdown, bleh.
   :init (setq markdown-command "multimarkdown"))
 #+end_src
 
-** Python
-
-Elpy is pretty full featured, just let it do its thing.
-
-#+begin_src emacs-lisp
-  (use-package elpy
-    :ensure t
-    :defer t
-    :config (setq elpy-rpc-virtualenv-path 'current)
-    :init (advice-add 'python-mode :before 'elpy-enable))
-#+end_src
-
 ** reStructuredText
 
 I intend to give [[https://docutils.sourceforge.io/rst.html][reStructuredText]] a serious try someday, it looks

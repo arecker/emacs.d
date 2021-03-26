@@ -10,10 +10,130 @@ issue in this git repository.
 
 * Development
 
+** General
+
+In any case, default to what's specified in the projects [[https://editorconfig.org/][editorconfig]].
+
+#+begin_src emacs-lisp
+(use-package editorconfig
+  :ensure t
+  :defer t
+  :config (editorconfig-mode 1))
+#+end_src
+
+Use company mode for completion.
+
+#+begin_src emacs-lisp
+  (use-package company
+    :ensure t
+    :init (add-hook 'after-init-hook 'global-company-mode))
+#+end_src
+
+** Backend
+
+*** C
+
+This is a snippet adapted from the [[https://www.kernel.org/doc/html/v4.10/process/coding-style.html][Linux kernel coding style]] - a
+surpisingly good and funny read.
+
+#+begin_src emacs-lisp
+(defun c-lineup-arglist-tabs-only (ignored)
+  "Line up argument lists by tabs, not spaces"
+  (let* ((anchor (c-langelem-pos c-syntactic-element))
+         (column (c-langelem-2nd-pos c-syntactic-element))
+         (offset (- (1+ column) anchor))
+         (steps (floor offset c-basic-offset)))
+    (* (max steps 1)
+       c-basic-offset)))
+
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (c-add-style
+             "linux-tabs-only"
+             '("linux" (c-offsets-alist
+                        (arglist-cont-nonempty
+                         c-lineup-gcc-asm-reg
+                         c-lineup-arglist-tabs-only))))))
+
+(add-hook 'c-mode-hook (lambda ()
+                         (setq indent-tabs-mode t)
+                         (setq show-trailing-whitespace t)
+                         (c-set-style "linux-tabs-only")))
+#+end_src
+
+*** Common Lisp
+
+Set up the [[https://common-lisp.net/project/slime/][slime]] common lisp developing environment.  Be sure to
+install sbcl first.
+
+#+begin_src emacs-lisp
+  (use-package slime
+    :ensure t
+    :defer t
+    :config (setq inferior-lisp-program (executable-find "sbcl")))
+
+  (use-package slime-company
+    :ensure t
+    :after (slime company)
+    :config (setq slime-company-completion 'fuzzy
+                  slime-company-after-completion 'slime-company-just-one-space))
+#+end_src
+
+*** D
+
+Yeah, there's a D language apparently.
+
+#+begin_src emacs-lisp
+(use-package d-mode
+  :ensure t
+  :defer t
+  :mode "\\.d\\'")
+#+end_src
+
+*** Haskell
+
+Haskell mode, in case I ever decide to really grow my neckbeard out.
+
+#+begin_src emacs-lisp
+(use-package haskell-mode
+  :ensure t
+  :defer t
+  :mode "\\.hs\\'")
+#+end_src
+
+** DevOps
+
+*** Dockerfile
+
+#+begin_src emacs-lisp
+(use-package dockerfile-mode
+  :ensure t
+  :defer t
+  :mode ("\\Dockerfile\\'" "\\.dockerfile\\'"))
+#+end_src
+
+*** Groovy
+
+Mostly for editing Jenkinsfiles.
+
+#+begin_src emacs-lisp
+(use-package groovy-mode
+  :ensure t
+  :defer t
+  :mode ("\\Jenkinsfile\\'" "\\.groovy\\'"))
+#+end_src
+
+*** Nginx
+
+#+begin_src emacs-lisp
+  (use-package nginx-mode
+    :ensure t)
+#+end_src
+
 ** Front End
 
-This section was adapted from Cody Reichert's [[https://gist.github.com/CodyReichert/9dbc8bd2a104780b64891d8736682cea][Configuring Emacs for
-react, es6, and flow]].
+This section was adapted from Cody Reichert's [[https://gist.github.com/CodyReichert/9dbc8bd2a104780b64891d8736682cea][gist]] "Configuring Emacs
+for react, es6, and flow".
 
 *** Prerequisites
 
@@ -21,43 +141,43 @@ For this configuration to work, you need some global npm packages
 installed.  You can take care of that like this:
 
 #+begin_src sh
-npm install -g eslint prettier
+  npm install -g eslint prettier
 #+end_src
 
 *** Web Mode
 
- Use web mode for editing HTML, JavaScript, and anything in between.
+Use web mode for editing HTML, JavaScript, and anything in between.
 
- #+begin_src emacs-lisp
-   (defun recker/web-mode-hook ()
-     "Custom web-mode hook."
-     (setq web-mode-markup-indent-offset 2)
-     (setq web-mode-script-padding 2)
-     (setq web-mode-style-padding 2)
-     (setq web-mode-code-indent-offset 2))
+#+begin_src emacs-lisp
+  (defun recker/web-mode-hook ()
+    "Custom web-mode hook."
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-script-padding 2)
+    (setq web-mode-style-padding 2)
+    (setq web-mode-code-indent-offset 2))
 
-   (use-package web-mode
-     :ensure t
-     :mode ("\\.html\\'" "\\.j2\\'" "\\.j2\\'" "\\.jsx?$")
-     :config (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
-     :init (add-hook 'web-mode-hook 'recker/web-mode-hook))
- #+end_src
+  (use-package web-mode
+    :ensure t
+    :mode ("\\.html\\'" "\\.j2\\'" "\\.j2\\'" "\\.jsx?$")
+    :config (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
+    :init (add-hook 'web-mode-hook 'recker/web-mode-hook))
+#+end_src
 
 *** ESLint
 
- Make sure flycheck is installed, and disable the default jshint
- checker.
+Make sure flycheck is installed, and disable the default jshint
+checker.
 
- #+begin_src emacs-lisp
-   (use-package flycheck
-     :ensure t
-     :init
-     (setq-default flycheck-disabled-checkers
-                   (append flycheck-disabled-checkers
-                           '(javascript-jshint json-jsonlist)))
-     (flycheck-add-mode 'javascript-eslint 'web-mode)
-     (add-hook 'after-init-hook #'global-flycheck-mode))
- #+end_src
+#+begin_src emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :init
+    (setq-default flycheck-disabled-checkers
+                  (append flycheck-disabled-checkers
+                          '(javascript-jshint json-jsonlist)))
+    (flycheck-add-mode 'javascript-eslint 'web-mode)
+    (add-hook 'after-init-hook #'global-flycheck-mode))
+#+end_src
 
 *** Prettier.js
 

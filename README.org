@@ -161,14 +161,6 @@ mode is displayed.
   :config (setq rm-blacklist ""))
 #+END_SRC
 
-Use company mode for completion.
-
-#+begin_src emacs-lisp
-  (use-package company
-    :ensure t
-    :init (add-hook 'after-init-hook 'global-company-mode))
-#+end_src
-
 * Buffers
 
 Purge all buffers with =C-x P=.
@@ -386,84 +378,6 @@ Eshell too.
 
 * Major Modes
 
-In any case, default to what's specified in the projects editorconfig.
-
-#+begin_src emacs-lisp
-(use-package editorconfig
-  :ensure t
-  :defer t
-  :config (editorconfig-mode 1))
-#+end_src
-
-** C
-
-This is a snippet adapted from the [[https://www.kernel.org/doc/html/v4.10/process/coding-style.html][Linux kernel coding style]] - a
-surpisingly good and funny read.
-
-#+begin_src emacs-lisp
-(defun c-lineup-arglist-tabs-only (ignored)
-  "Line up argument lists by tabs, not spaces"
-  (let* ((anchor (c-langelem-pos c-syntactic-element))
-         (column (c-langelem-2nd-pos c-syntactic-element))
-         (offset (- (1+ column) anchor))
-         (steps (floor offset c-basic-offset)))
-    (* (max steps 1)
-       c-basic-offset)))
-
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (c-add-style
-             "linux-tabs-only"
-             '("linux" (c-offsets-alist
-                        (arglist-cont-nonempty
-                         c-lineup-gcc-asm-reg
-                         c-lineup-arglist-tabs-only))))))
-
-(add-hook 'c-mode-hook (lambda ()
-                         (setq indent-tabs-mode t)
-                         (setq show-trailing-whitespace t)
-                         (c-set-style "linux-tabs-only")))
-#+end_src
-
-** Common Lisp
-
-Set up the slime common lisp developing environment.
-
-#+begin_src emacs-lisp
-  (use-package slime
-    :ensure t
-    :defer t
-    :config (setq inferior-lisp-program (executable-find "sbcl")))
-
-  (use-package slime-company
-    :ensure t
-    :after (slime company)
-    :config (setq slime-company-completion 'fuzzy
-                  slime-company-after-completion 'slime-company-just-one-space))
-#+end_src
-
-** D
-
-Yeah, there's a D language apparently.
-
-#+begin_src emacs-lisp
-(use-package d-mode
-  :ensure t
-  :defer t
-  :mode "\\.d\\'")
-#+end_src
-
-** Dockerfile
-
-Yes, there's even a mode for editing dockerfiles.
-
-#+begin_src emacs-lisp
-(use-package dockerfile-mode
-  :ensure t
-  :defer t
-  :mode ("\\Dockerfile\\'" "\\.dockerfile\\'"))
-#+end_src
-
 ** Go
 
 Haven't really gotten into go, but I have to work on Kubernetes
@@ -485,28 +399,6 @@ operators sometimes.
     :ensure t
     :defer t
     :after (company))
-#+end_src
-
-** Groovy
-
-Mostly for editing Jenkinsfiles at work.
-
-#+begin_src emacs-lisp
-(use-package groovy-mode
-  :ensure t
-  :defer t
-  :mode ("\\Jenkinsfile\\'" "\\.groovy\\'"))
-#+end_src
-
-** Haskell
-
-Haskell mode, in case I ever decide to grow my neckbeard out.
-
-#+begin_src emacs-lisp
-(use-package haskell-mode
-  :ensure t
-  :defer t
-  :mode "\\.hs\\'")
 #+end_src
 
 ** HTML
@@ -722,6 +614,13 @@ Deft for searching org notes.
     :init
     (global-set-key (kbd "C-c o") 'deft)
     (global-set-key (kbd "C-c n") 'deft-find-file))
+#+end_src
+
+Don't mess with indentation or empty lines.
+
+#+begin_src emacs-lisp
+  (setq org-adapt-indentation nil)
+  (setq org-cycle-separator-lines -1)
 #+end_src
 
 Fix yasnippet in org mode.

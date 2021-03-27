@@ -1,12 +1,32 @@
 #+TITLE: Emacs Configuration
-#+OPTIONS: num:nil
+#+OPTIONS: toc:2 num:nil
 #+STARTUP: showall noindent inlineimages
 #+PROPERTY: header-args :results none
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://www.alexrecker.com/assets/site.css" />
+
+
+* About
 
 Greetings!  Welcome to my personal [[https://www.gnu.org/software/emacs/][GNU Emacs]] configuration.  Feel free
-to re-use anything you'd like.  If you have any questions, don't
-hesitate to fire off an email to [[mailto:alex@reckerfamily.com][alex@reckerfamily.com]] or leave an
-issue in this git repository.
+to re-use anything you'd like.  But before you do that, here are some
+things you might want to read up on:
+
+- [[https://github.com/jwiegley/use-package][use-package]]
+- [[https://orgmode.org/][Org Mode]]
+- [[https://orgmode.org/worg/org-contrib/babel/][Babel: active code in Org-mode]]
+
+For your own configuration, you can start off by introducing yourself
+to emacs.  If you use this entire config, be sure to switch out my
+name and email with yours.  We wouldn't want to confuse my mother,
+would we?
+
+#+begin_src emacs-lisp
+  (setq user-full-name "Alex Recker"
+        user-mail-address "alex@reckerfamily.com")
+#+end_src
+
+If you have any questions, don't hesitate to fire off an email to
+[[mailto:alex@reckerfamily.com][alex@reckerfamily.com]] or leave an issue in this git repository.
 
 * Development
 
@@ -162,6 +182,8 @@ working with it.
 
 *** Dockerfile
 
+This enables pretty syntax highlighting for editing [[https://docs.docker.com/engine/reference/builder/#:~:text=A%20Dockerfile%20is%20a%20text,command%2Dline%20instructions%20in%20succession.][Dockerfiles]].
+
 #+begin_src emacs-lisp
 (use-package dockerfile-mode
   :ensure t
@@ -229,7 +251,7 @@ installed.  You can take care of that like this:
 
 *** Web Mode
 
-Use web mode for editing HTML, JavaScript, and anything in between.
+Use [[https://web-mode.org/][web-mode]] for editing HTML, JavaScript, and anything in between.
 
 #+begin_src emacs-lisp
   (defun recker/web-mode-hook ()

@@ -4,7 +4,6 @@
 #+PROPERTY: header-args :results none
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://www.alexrecker.com/assets/site.css" />
 
-
 * About
 
 Greetings!  Welcome to my personal [[https://www.gnu.org/software/emacs/][GNU Emacs]] configuration.  Feel free
@@ -27,6 +26,100 @@ would we?
 
 If you have any questions, don't hesitate to fire off an email to
 [[mailto:alex@reckerfamily.com][alex@reckerfamily.com]] or leave an issue in this git repository.
+
+* Environment
+
+This package does a nice job keeping your shell =$PATH= in sync with
+the =$PATH= that emacs uses for shelling out to commands in your
+environment.  It ensures you have an easier time.
+
+#+begin_src emacs-lisp
+(use-package exec-path-from-shell
+  :ensure t
+  :config (exec-path-from-shell-initialize))
+#+end_src
+
+* Appearance
+
+** Scratch
+
+The =*scratch*= buffer is the first screen you see when you open
+emacs.  Not only is it a great place to test out lisp, but it can also
+be customized to be a little more friendly and helpful.
+
+First, suppress the big startup screen message.
+
+#+begin_src emacs-lisp
+(setq inhibit-startup-message 't)
+#+end_src
+
+Next, make the =*scratch*= buffer un-killable, so you can always have
+a familiar buffer to start with.  This is simply a lisp hook called
+when a buffer is about to be deleted.
+
+#+begin_src emacs-lisp
+(defun recker/dont-kill-scratch ()
+  "Return NIL if the current buffer is the *scratch* buffer."
+  (not (equal (buffer-name (current-buffer)) "*scratch*")))
+(add-hook 'kill-buffer-query-functions 'recker/dont-kill-scratch)
+#+end_src
+
+** Widgets
+
+Most setups I see hide the awkward looking menu, toolbar, and scroll
+bar, but personally I find them kind of cozy.  Give it a chance and
+they might grow on you too.
+
+#+BEGIN_SRC emacs-lisp
+(menu-bar-mode t)
+(tool-bar-mode t)
+(when (display-graphic-p)
+  (scroll-bar-mode t))
+#+END_SRC
+
+* Files
+
+** Paths
+
+To simplify my configuration, I made this little function that lets me
+construct paths (ex =(recker/paths 'docs "notes.org")=).
+
+#+begin_src emacs-lisp
+  (defun recker/path (dir &optional subpath)
+    "Build a path name relative to the home directory."
+    (let ((dir (file-name-as-directory (getf recker/path-aliases dir (format "~/%s" dir))))
+          (subpath (or subpath "")))
+      (concat dir subpath)))
+#+end_src
+
+
+You can set your own aliases by overriding or appending
+=recker/paths-aliases=.
+
+#+begin_src emacs-lisp
+  (setq recker/path-aliases
+        '(:home "~"
+          :desktop "~/desktop"
+          :docs "~/docs"
+          :pics "~/pics"
+          :public "~/public"
+          :src "~/src"
+          :emacs user-emacs-directory))
+#+end_src
+
+Or it might look like this on a mac.
+
+#+begin_src emacs-lisp
+  (if (string-equal system-type "darwin")
+      (setq recker/path-aliases
+            '(:home "~"
+              :desktop "~/Desktop"
+              :docs "~/Documents"
+              :pics "~/Pictures"
+              :public "~/Public"
+              :src "~/src"
+              :emacs user-emacs-directory)))
+#+end_src
 
 * Development
 

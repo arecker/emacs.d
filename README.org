@@ -4,69 +4,43 @@
 #+STARTUP: showall
 #+PROPERTY: header-args :results none
 
-Welcome to my personal emacs configuration!  Feel free to re-use
-anything you'd like.  If you have any questions, send me an email at
-[[mailto:alex@reckerfamily.com][alex@reckerfamily.com]] or leave an issue with this github repository.
+#+begin_src emacs-lisp
+  (defun recker/path (dir &optional subpath)
+    "Build a path name relative to the home directory."
+    (let ((dir (file-name-as-directory (cl-getf recker/path-aliases dir (format "~/%s" dir))))
+          (subpath (or subpath "")))
+      (concat dir subpath)))
+#+end_src
 
-* Personal
+You can set your own aliases by overriding or appending
+=recker/paths-aliases=.
 
-Personal identifying information.  Please don't re-use anything from
-this section - we wouldn't want to confuse my mother.
+#+begin_src emacs-lisp
+  (setq recker/path-aliases
+        '(:home "~"
+          :desktop "~/desktop"
+          :docs "~/docs"
+          :pics "~/pics"
+          :public "~/public"
+          :src "~/src"
+          :emacs "~/.emacs.d"))
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
-(setq user-full-name "Alex Recker"
-      user-mail-address "alex@reckerfamily.com")
-#+END_SRC
+Or it might look like this on a mac.
+
+#+begin_src emacs-lisp
+  (if (string-equal system-type "darwin")
+      (setq recker/path-aliases
+            '(:home "~"
+              :desktop "~/Desktop"
+              :docs "~/Documents"
+              :pics "~/Pictures"
+              :public "~/Public"
+              :src "~/src"
+              :emacs "~/.emacs.d")))
+#+end_src
 
 * Interface
-
-Overwrite the selected text.
-
-#+begin_src emacs-lisp
-(delete-selection-mode t)
-#+end_src
-
-Avoid tabs.
-
-#+begin_src emacs-lisp
-(setq-default indent-tabs-mode nil)
-#+end_src
-
-Enable IDO mode and try to use it everywhere.  It's a strange
-interface at first, but you grow to appreciate the consistency.
-
-#+BEGIN_SRC emacs-lisp
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
-(ido-mode 1)
-#+END_SRC
-
-Make it vertical.
-
-#+begin_src emacs-lisp
-  (use-package ido-vertical-mode
-    :ensure t
-    :config (setq ido-vertical-define-keys 'C-n-and-C-p-only)
-    :init (ido-vertical-mode))
-#+end_src
-
-Install idomenu as well.
-
-#+begin_src emacs-lisp
-(use-package idomenu
-  :ensure t
-  :bind ("C-c i" . idomenu))
-#+end_src
-
-Use smex as a smarter replacement for the =M-x= menu.
-
-#+begin_src emacs-lisp
-  (use-package smex
-    :ensure t
-    :init (smex-initialize)
-    :bind (("M-x" . 'smex)
-           ("M-X" . 'smex-major-mode-commands)))
-#+end_src
 
 By default, emacs will display the major mode as well as all active
 minor modes in the modeline.  I think it clutters up the file
@@ -128,16 +102,16 @@ Configure **dired**, the emacs file manager.
 Map a few file registers.
 
 #+begin_src emacs-lisp
-  (set-register ?b `(file . ,(recker/path 'src "blog")))
+  (set-register ?b `(file . ,(recker/path :src "blog")))
   (set-register ?c '(file . "/ssh:laptop:/home/alex"))
-  (set-register ?d `(file . ,(recker/path 'desktop)))
-  (set-register ?a `(file . ,(recker/path 'docs "archive.org")))
-  (set-register ?w `(file . ,(recker/path 'docs "work.org")))
-  (set-register ?j `(file . ,(recker/path 'docs "journal.org")))
-  (set-register ?i `(file . ,(recker/path 'docs "ideas.org")))
-  (set-register ?j `(file . ,(recker/path 'docs "mixtape.org")))
-  (set-register ?e `(file . ,(recker/path 'emacs "README.org")))
-  (set-register ?l `(file . ,(recker/path 'emacs "local.el")))
+  (set-register ?d `(file . ,(recker/path :desktop)))
+  (set-register ?a `(file . ,(recker/path :docs "archive.org")))
+  (set-register ?w `(file . ,(recker/path :docs "work.org")))
+  (set-register ?j `(file . ,(recker/path :docs "journal.org")))
+  (set-register ?i `(file . ,(recker/path :docs "ideas.org")))
+  (set-register ?j `(file . ,(recker/path :docs "mixtape.org")))
+  (set-register ?e `(file . ,(recker/path :emacs "README.org")))
+  (set-register ?l `(file . ,(recker/path :emacs "local.el")))
   (set-register ?n '(file . "/ssh:alex@nas.local:/volume1/homes/alex/"))
 #+end_src
 
@@ -146,7 +120,7 @@ Configure bookmarks.
 #+begin_src emacs-lisp
 (require 'bookmark)
 (setq bookmark-save-flag 1
-      bookmark-default-file (recker/path 'docs "emacs/bookmarks.el"))
+      bookmark-default-file (recker/path :docs "emacs/bookmarks.el"))
 
 (defun recker/ido-bookmark-jump (bookmark)
   "*Switch to bookmark BOOKMARK interactively using `ido'."
@@ -248,7 +222,7 @@ crummy implementation.
    (directory-files-recursively (recker/pass-directory) ".gpg")))
 
 (defun recker/pass-to-string (path)
-  (first
+  (cl-first
    (split-string
     (shell-command-to-string
      (format "PASSWORD_STORE_DIR=\"%s\" pass \"%s\" | head -1" (recker/pass-directory) path))
@@ -364,7 +338,7 @@ Clean up white space on save.
 Configure spellcheck.
 
 #+begin_src emacs-lisp
-(setq ispell-personal-dictionary (recker/path 'docs "emacs/ispell.dict"))
+(setq ispell-personal-dictionary (recker/path :docs "emacs/ispell.dict"))
 (setq ispell-program-name (executable-find "ispell"))
 (add-hook 'text-mode-hook #'(lambda () (flyspell-mode t)))
 #+end_src
@@ -429,7 +403,7 @@ Deft for searching org notes.
     :ensure t
     :config
     (setq deft-extensions '("org"))
-    (setq deft-directory (recker/path 'docs))
+    (setq deft-directory (recker/path :docs))
     (setq deft-recursive t)
     (setq deft-auto-save-interval 0)
     :init
@@ -459,7 +433,7 @@ to =~/.plantuml/plantuml.jar=.
 #+begin_src emacs-lisp
   (use-package plantuml-mode
     :ensure t
-    :config (setq org-plantuml-jar-path (recker/path 'home ".plantuml/plantuml.jar"))
+    :config (setq org-plantuml-jar-path (recker/path :home ".plantuml/plantuml.jar"))
     :init
     (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
     (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
@@ -482,29 +456,29 @@ Configure **capture templates** and map the selector to =C-c c=.
   (global-set-key (kbd "C-c c") 'org-capture)
 
   (add-to-list 'org-capture-templates
-               `("j" "journal entry" plain (file+olp+datetree ,(recker/path 'docs "journal.org")) "%?\n"
+               `("j" "journal entry" plain (file+olp+datetree ,(recker/path :docs "journal.org")) "%?\n"
                  :empty-lines-before 1 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates
-               `("m" "mixtape notes" plain (file+olp+datetree ,(recker/path 'docs "mixtape.org")) "%?\n"
+               `("m" "mixtape notes" plain (file+olp+datetree ,(recker/path :docs "mixtape.org")) "%?\n"
                  :empty-lines-before 1 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates
-               `("i" "idea" plain (file+olp+datetree ,(recker/path 'docs "ideas.org")) "%?\n"
+               `("i" "idea" plain (file+olp+datetree ,(recker/path :docs "ideas.org")) "%?\n"
                  :empty-lines-before 1 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates
-               `("p" "productivity task" entry (file+headline ,(recker/path 'docs "opsat.org") "Productivity") "* TODO %?\n"))
+               `("p" "productivity task" entry (file+headline ,(recker/path :docs "opsat.org") "Productivity") "* TODO %?\n"))
 
   (add-to-list 'org-capture-templates
-               `("w" "work task" entry (file ,(recker/path 'docs "work.org")) "* TODO %?\n"))
+               `("w" "work task" entry (file ,(recker/path :docs "work.org")) "* TODO %?\n"))
 #+end_src
 
 Configure **agenda** and set up and map the view to =C-c a=.
 
 #+begin_src emacs-lisp
-(setq org-agenda-files (list (recker/path 'docs)))
-(setq org-directory (list (recker/path 'docs)))
+(setq org-agenda-files (list (recker/path :docs)))
+(setq org-directory (list (recker/path :docs)))
 (setq org-agenda-start-with-follow-mode t)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (setq org-agenda-tag-filter-preset '("-ARCHIVE"))
@@ -513,7 +487,7 @@ Configure **agenda** and set up and map the view to =C-c a=.
 Configure **attachments**.
 
 #+begin_src emacs-lisp
-(setq org-attach-directory (recker/path 'docs "attachments/"))
+(setq org-attach-directory (recker/path :docs "attachments/"))
 (setq org-attach-archive-delete 't)
 #+end_src
 
@@ -536,7 +510,7 @@ Open up a new blog post.
     "Open today's journal entry."
     (interactive)
     (let* ((target
-            (recker/path 'src (format-time-string "blog/_posts/%Y-%m-%d-entry.md")))
+            (recker/path :src (format-time-string "blog/_posts/%Y-%m-%d-entry.md")))
            (frontmatter
             (format-time-string "---\ntitle:\nbanner: %Y-%m-%d.jpg\n---\n\n")))
       (if (file-exists-p target)
@@ -579,12 +553,12 @@ Use topic mode by default.
 Hide startup files and directories in my documents.
 
 #+begin_src emacs-lisp
-(setq gnus-startup-file (recker/path 'docs "emacs/newsrc"))
-(setq gnus-home-directory (recker/path 'docs "emacs/gnus")
-      nnfolder-directory (recker/path 'docs "emacs/gnus/Mail/archive")
-      message-directory (recker/path 'docs "emacs/gnus/Mail")
-      nndraft-directory (recker/path 'docs "emacs/gnus/Drafts")
-      gnus-cache-directory (recker/path 'docs "emacs/gnus/cache"))
+(setq gnus-startup-file (recker/path :docs "emacs/newsrc"))
+(setq gnus-home-directory (recker/path :docs "emacs/gnus")
+      nnfolder-directory (recker/path :docs "emacs/gnus/Mail/archive")
+      message-directory (recker/path :docs "emacs/gnus/Mail")
+      nndraft-directory (recker/path :docs "emacs/gnus/Drafts")
+      gnus-cache-directory (recker/path :docs "emacs/gnus/cache"))
 #+end_src
 
 Enable the powerful placebo options.
@@ -620,7 +594,7 @@ Use bbdb to store addresses.
 #+begin_src emacs-lisp
 (use-package bbdb
   :ensure t
-  :config (setq bbdb-file (recker/path 'docs "emacs/bbdb.el"))
+  :config (setq bbdb-file (recker/path :docs "emacs/bbdb.el"))
   :init
   (bbdb-mua-auto-update-init 'message)
   (setq bbdb-mua-auto-update-p 'query)
@@ -689,87 +663,10 @@ Some other helpful functions.
 
   (defun recker/docs-sync ()
     (interactive)
-    (let ((command (format "git-sync -d %s" (recker/path 'docs))))
+    (let ((command (format "git-sync -d %s" (recker/path :docs))))
       (call-process-shell-command command nil "*docs-sync*" t))
     (message "docs-sync: successful"))
   (global-set-key (kbd "C-c d") 'recker/docs-sync)
-#+end_src
-
-* Quotes
-
-Display random quotes in the scratch buffer as an elisp comment.
-
-#+name: scratch-quotes
-|----------------------------------------------------------------------------------------------------------------------------+---------------------------|
-| Sanity and happiness are an impossible combination.                                                                        | Mark Twain                |
-| Trust thyself only, and another shall not betray thee.                                                                     | Thomas Fuller             |
-| Fear has its uses but cowardice has none.                                                                                  | Mahatma Ghandi            |
-| Happiness can exist only in acceptance.                                                                                    | George Orwell             |
-| Seek respect mainly from thyself, for it comes first from within.                                                          | Steven H. Coogler         |
-| Conscience is the dog that can't bite, but never stops barking.                                                            | Proverb                   |
-| In general, pride is at the bottom of all great mistakes.                                                                  | Steven H. Coogler         |
-| Anger as soon as fed is dead -- tis starving makes it fat.                                                                 | Emily Dickinson           |
-| Make no judgements where you have no compassion.                                                                           | Anne McCaffrey            |
-| Isolation is a self-defeating dream.                                                                                       | Carlos Salinas de Gortari |
-| Doubt must be no more than vigilance, otherwise it can become dangerous.                                                   | George C. Lichtenberg     |
-| Love is a willingless to sacrifice.                                                                                        | Michael Novak             |
-| The value of identity is that so often with it comes purpose.                                                              | Richard R. Grant          |
-| Discontent is the first necessity of progress.                                                                             | Thomas Edison             |
-| Some of us think holding on makes us strong, but sometimes it is letting go.                                               | Herman Hesse              |
-| Let not a man guard his dignity but let his dignity guard him.                                                             | Ralph Waldo Emerson       |
-| Guilt: the gift that keeps on giving.                                                                                      | Erma Bombeck              |
-| Be here now.                                                                                                               | Ram Dass                  |
-| The master understands that the universe is forever out of control.                                                        | Lao Tzu                   |
-| Our biggest problems arise from the avoidance of smaller ones.                                                             | James A. Lee Iacocca      |
-| Honesty and transparency make you vulnerable.                                                                              | Mother Teresa             |
-| If you do not ask the right questions, you do not get the right answers.                                                   | Edward Hodnett            |
-| Resentment is like taking poison and waiting for the other person to die.                                                  | Malachy McCourt           |
-| If we knew each other's  secrets, what comfort should we find.                                                             | John Churton Collins      |
-| The mistake is thinking that there can be an antidote to the uncertainty.                                                  | David Levithan            |
-| Cure sometimes, treat often, comfort always.                                                                               | Hippocrates               |
-| Suspicion is a heavy armor and with its weight it impedes more than it protects.                                           | Robert Burns              |
-| Sincerity, even if it speaks with a stutter, will sound eloquent when inspired.                                            | Eiji Yoshikawa            |
-| I have little shame, no dignity - all in the name of a better cause.                                                       | A.J. Jacobs               |
-| Truth may sometimes hurt, but delusion harms.                                                                              | Vanna Bonta               |
-| Intuition is more important to discovery than logic.                                                                       | Henri Poincare            |
-| How weird was it to drive streets I knew so well. What a different perspective.                                            | Suzanne Vega              |
-| There can be no progress without head-on confrontation.                                                                    | Christopher Hitchens      |
-| Sometimes it's necessary to go a long distance out of the way to come back a short distance correctly.                     | Edward Albea              |
-| Stagnation is death. If you don't change, you die. It's that simple. It's that scary.                                      | Leonard Sweet             |
-| In my opinion, actual heroism, like actual love, is a messy, painful, vulnerable business.                                 | John Green                |
-| Maybe all one can do is hope to end up with the right regrets.                                                             | Arthur Miller             |
-| If you have behaved badly, repent, make what amends you can and address yourself to the task of behaving better next time. | Aldous Huxley             |
-| Sooner or later everyone sits down to a banquet of consequences.                                                           | Robert Louis Stevenson    |
-| We are all in the same boat, in a stormy sea, and we owe each other a terrible loyalty.                                    | G.K. Chesterton           |
-| In our quest for the answers of life we tend to make order out of chaos, and chaos out of order.                           | Jeffrey Fry               |
-| There are many ways of going forward, but only one way of standing still.                                                  | Franklin D. Roosevelt     |
-| Truth is outside of all patterns.                                                                                          | Bruce Lee                 |
-| By imposing too great a responsibility, or rather, all responsibility, on yourself, you crush yourself.                    | Franz Kafka               |
-| How few there are who have courage enough to own their faults, or resolution enough to mend them.                          | Benjamin Franklin         |
-| Resistance is useless.                                                                                                     | Doctor Who                |
-| Happiness does not depend on outward things, but on the way we see them.                                                   | Leo Tolstoy               |
-| Being president is like being a jackass in a hailstorm.  There's nothing to do but to stand there and take it.             | Lyndon Johnson            |
-
-#+begin_src emacs-lisp :var scratch-quotes=scratch-quotes
-  (setq recker/scratch-quotes scratch-quotes)
-
-  (defun recker/random-scratch-quote ()
-    (interactive)
-    (let* ((quotes recker/scratch-quotes)
-           (choice (nth (random (length quotes)) quotes))
-           (text (car choice))
-           (attribution (car (cdr choice))))
-      (with-temp-buffer
-        (lisp-mode)
-        (newline)
-        (insert (format "\"%s\"\n" text))
-        (fill-region (point-min) (point-max))
-        (insert (format "-- %s" attribution))
-        (comment-region (point-min) (point-max))
-        (dotimes (_ 2) (newline))
-        (buffer-string))))
-
-  (setq initial-scratch-message (recker/random-scratch-quote))
 #+end_src
 
 * Local
@@ -777,7 +674,7 @@ Display random quotes in the scratch buffer as an elisp comment.
 Finally, load any local overrides if they exist..
 
 #+begin_src emacs-lisp
-  (let ((local-path (recker/path 'emacs "local.el")))
+  (let ((local-path (recker/path :emacs "local.el")))
     (if (file-exists-p local-path)
         (load-file local-path)))
 #+end_src

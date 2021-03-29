@@ -349,19 +349,16 @@ time.  Set up some languages.
      (shell . t)))
 #+end_src
 
-Deft for searching org notes.
+Use MY OWN FUNCTION for searching org notes.
 
 #+begin_src emacs-lisp
-  (use-package deft
-    :ensure t
-    :config
-    (setq deft-extensions '("org"))
-    (setq deft-directory (recker/path :docs))
-    (setq deft-recursive t)
-    (setq deft-auto-save-interval 0)
-    :init
-    (global-set-key (kbd "C-c o") 'deft)
-    (global-set-key (kbd "C-c n") 'deft-find-file))
+(defun recker/opsat-find ()
+  (interactive)
+  (let ((files
+         (mapcar #'file-name-nondirectory (directory-files-recursively (recker/path :docs) "\\.org$" nil nil t))))
+    (find-file (recker/path :docs (ido-completing-read "File: " files nil nil)))))
+
+(global-set-key (kbd "C-c o") 'recker/opsat-find)
 #+end_src
 
 Don't mess with indentation or empty lines.

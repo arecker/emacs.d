@@ -205,12 +205,6 @@ text.
 (setq delete-selection-mode t)
 #+end_src
 
-Avoid tabs.
-
-#+begin_src emacs-lisp
-(setq-default indent-tabs-mode nil)
-#+end_src
-
 * Files
 
 ** Paths
@@ -264,6 +258,8 @@ And while we're at it, set the default starting directory to home.
 
 ** General
 
+*** Editorconfig
+
 In any case, default to what's specified in the projects [[https://editorconfig.org/][editorconfig]].
 
 #+begin_src emacs-lisp
@@ -273,12 +269,28 @@ In any case, default to what's specified in the projects [[https://editorconfig.
   :config (editorconfig-mode 1))
 #+end_src
 
-Use company mode for completion.
+*** Completion
+
+Use [[https://company-mode.github.io/][company-mode]] for completion.
 
 #+begin_src emacs-lisp
   (use-package company
     :ensure t
     :init (add-hook 'after-init-hook 'global-company-mode))
+#+end_src
+
+*** Whitespace
+
+Clean-up whitespace on save.
+
+#+begin_src emacs-lisp
+(add-hook 'before-save-hook 'whitespace-cleanup)
+#+end_src
+
+Avoid tabs.
+
+#+begin_src emacs-lisp
+(setq-default indent-tabs-mode nil)
 #+end_src
 
 ** Backend
@@ -408,6 +420,63 @@ working with it.
 
 #+begin_src emacs-lisp
   (setq ruby-deep-indent-paren nil)
+#+end_src
+
+** Writing
+
+*** Filling
+
+"Filling" is when you use a newline after every 72 characters for the
+purpose of making it easier to read plain text.  Enable auto-fill mode
+when doing any kind of word processing.
+
+#+begin_src emacs-lisp
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'org-mode-hook 'turn-on-auto-fill)
+(add-hook 'gfm-mode-hook 'turn-on-auto-fill)
+(add-hook 'rst-mode-hook 'turn-on-auto-fill)
+#+end_src
+
+*** Spelling
+
+Use the =ispell= tool for spell check.  Spelling errors presenting
+like code errors with judgemental red squiggles, thanks to flyspell.
+
+#+begin_src emacs-lisp
+  (use-package flyspell
+    :config
+    (setq ispell-personal-dictionary (recker/path :docs "emacs/ispell.dict"))
+    (setq ispell-program-name (executable-find "ispell"))
+    :init
+    (add-hook 'text-mode-hook #'(lambda () (flyspell-mode 1))))
+#+end_src
+
+*** Style
+
+Use the =write-good= package to learn to write more good.  This will
+warn for passive voice and bad word choice.
+
+#+begin_src emacs-lisp
+(use-package writegood-mode
+  :ensure t
+  :defer t
+  :init
+  (add-hook 'text-mode-hook 'writegood-mode)
+  (add-hook 'org-mode-hook 'writegood-mode)
+  (add-hook 'gfm-mode-hook 'writegood-mode)
+  (add-hook 'rst-mode-hook 'writegood-mode))
+#+end_src
+
+*** reStructuredText
+
+I intend to give [[https://docutils.sourceforge.io/rst.html][reStructuredText]] a serious try someday, it looks
+pretty cool.
+
+#+begin_src emacs-lisp
+  (use-package rst
+    :ensure t
+    :defer t
+    :mode (("\\.rst$" . rst-mode)))
 #+end_src
 
 ** DevOps

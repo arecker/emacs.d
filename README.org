@@ -315,53 +315,6 @@ Markdown, bleh.
   :init (setq markdown-command "multimarkdown"))
 #+end_src
 
-** reStructuredText
-
-I intend to give [[https://docutils.sourceforge.io/rst.html][reStructuredText]] a serious try someday, it looks
-pretty cool.
-
-#+begin_src emacs-lisp
-  (use-package rst
-    :ensure t
-    :defer t
-    :mode (("\\.rst$" . rst-mode)))
-#+end_src
-
-** Text
-
-Clean up white space on save.
-
-#+begin_src emacs-lisp
-(add-hook 'before-save-hook 'whitespace-cleanup)
-#+end_src
-
-Configure spellcheck.
-
-#+begin_src emacs-lisp
-(setq ispell-personal-dictionary (recker/path :docs "emacs/ispell.dict"))
-(setq ispell-program-name (executable-find "ispell"))
-(add-hook 'text-mode-hook #'(lambda () (flyspell-mode t)))
-#+end_src
-
-Auto-fill text while writing, and check spelling of course.
-
-#+begin_src emacs-lisp
-(add-hook 'org-mode-hook 'turn-on-auto-fill)
-(add-hook 'gfm-mode-hook 'turn-on-auto-fill)
-(add-hook 'rst-mode-hook 'turn-on-auto-fill)
-#+end_src
-
-The =write-good= package so I can learn to write more gooder.
-
-#+begin_src emacs-lisp
-(use-package writegood-mode
-  :ensure t
-  :defer t
-  :init
-  (add-hook 'org-mode-hook 'writegood-mode)
-  (add-hook 'gfm-mode-hook 'writegood-mode))
-#+end_src
-
 ** YAML
 
 I hate being a YAML engineer it's awesome.

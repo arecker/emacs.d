@@ -117,6 +117,7 @@ quote from this table as an elisp comment.
 | Resistance is useless.                                                                                                     | Doctor Who                |
 | Happiness does not depend on outward things, but on the way we see them.                                                   | Leo Tolstoy               |
 | Being president is like being a jackass in a hailstorm.  There's nothing to do but to stand there and take it.             | Lyndon Johnson            |
+| In the depth of winter, I finally learned that within me, there lay, an invincible summer.                                 | Albert Camus              |
 
 #+begin_src emacs-lisp :var scratch-quotes=scratch-quotes :results value
     (defun recker/scratch-quote--pick ()

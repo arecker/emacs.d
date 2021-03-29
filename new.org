@@ -467,6 +467,26 @@ warn for passive voice and bad word choice.
   (add-hook 'rst-mode-hook 'writegood-mode))
 #+end_src
 
+*** Mediawiki
+
+Use the [[https://github.com/hexmode/mediawiki-el][mediawiki]] package for editing pages remotely.
+
+#+begin_src emacs-lisp
+  (use-package mediawiki :ensure t)
+#+end_src
+
+Default the site to my [[https://www.thereckerfamilycookbook.com][family's cookbook]].
+
+#+begin_src emacs-lisp
+  (setq mediawiki-site-alist
+        `(("cookbook" "https://www.thereckerfamilycookbook.com"
+           "Alex"
+           ,(recker/pass-to-string "thereckerfamilycookbook")
+           nil "Home")))
+
+  (setq mediawiki-site-default "cookbook")
+#+end_src
+
 *** reStructuredText
 
 I intend to give [[https://docutils.sourceforge.io/rst.html][reStructuredText]] a serious try someday, it looks

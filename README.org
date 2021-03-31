@@ -40,126 +40,6 @@ Or it might look like this on a mac.
               :emacs "~/.emacs.d")))
 #+end_src
 
-* Interface
-
-By default, emacs will display the major mode as well as all active
-minor modes in the modeline.  I think it clutters up the file
-information so I use this nifty plugin to hide it all.  Only the major
-mode is displayed.
-
-#+BEGIN_SRC emacs-lisp
-(use-package rich-minority
-  :ensure t
-  :init (rich-minority-mode 1)
-  :config (setq rm-blacklist ""))
-#+END_SRC
-
-* Buffers
-
-Purge all buffers with =C-x P=.
-
-#+begin_src emacs-lisp
-  (defun recker/purge-buffers ()
-    "Delete all buffers, except for *scratch*."
-    (interactive)
-    (mapc #'(lambda (b) (unless (string= (buffer-name b) "*scratch*") (kill-buffer b))) (buffer-list)))
-(global-set-key (kbd "C-x P") 'recker/purge-buffers)
-#+end_src
-
-Kill buffers without confirming.
-
-#+begin_src emacs-lisp
-(global-set-key (kbd "C-x C-k k") 'kill-buffer)
-(global-set-key (kbd "C-x k") 'kill-this-buffer)
-#+end_src
-
-* Files
-
-Don't automatically make backup files.
-
-#+begin_src emacs-lisp
-(setq make-backup-files nil
-      auto-save-default nil)
-#+end_src
-
-Automatically revert buffer if file changes.
-
-#+begin_src emacs-lisp
-(global-auto-revert-mode 1)
-#+end_src
-
-Configure **dired**, the emacs file manager.
-
-#+begin_src emacs-lisp
-(require 'dired-x)
-(setq-default dired-omit-files-p t)
-(setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
-(setq dired-listing-switches "-lah")
-(setq dired-use-ls-dired nil)
-(setq dired-clean-confirm-killing-deleted-buffers nil)
-#+end_src
-
-Map a few file registers.
-
-#+begin_src emacs-lisp
-  (set-register ?b `(file . ,(recker/path :src "blog")))
-  (set-register ?c '(file . "/ssh:laptop:/home/alex"))
-  (set-register ?d `(file . ,(recker/path :desktop)))
-  (set-register ?a `(file . ,(recker/path :docs "archive.org")))
-  (set-register ?w `(file . ,(recker/path :docs "work.org")))
-  (set-register ?j `(file . ,(recker/path :docs "journal.org")))
-  (set-register ?i `(file . ,(recker/path :docs "ideas.org")))
-  (set-register ?j `(file . ,(recker/path :docs "mixtape.org")))
-  (set-register ?e `(file . ,(recker/path :emacs "README.org")))
-  (set-register ?l `(file . ,(recker/path :emacs "local.el")))
-  (set-register ?n '(file . "/ssh:alex@nas.local:/volume1/homes/alex/"))
-#+end_src
-
-Configure bookmarks.
-
-#+begin_src emacs-lisp
-(require 'bookmark)
-(setq bookmark-save-flag 1
-      bookmark-default-file (recker/path :docs "emacs/bookmarks.el"))
-
-(defun recker/ido-bookmark-jump (bookmark)
-  "*Switch to bookmark BOOKMARK interactively using `ido'."
-  (interactive (list (ido-completing-read "Bookmark: " (bookmark-all-names) nil t)))
-  (bookmark-jump bookmark))
-
-(global-set-key (kbd "C-x r b") 'recker/ido-bookmark-jump)
-#+end_src
-
-Search files within a project with projectile mode.
-
-#+begin_src emacs-lisp
-(use-package projectile
-  :ensure t
-  :config
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (setq projectile-completion-system 'ivy)
-  :init (projectile-mode t))
-#+end_src
-
-* Version Control
-
-Follow symlinks.
-
-#+BEGIN_SRC emacs-lisp
-(setq vc-follow-symlinks t)
-#+END_SRC
-
-Magit is a wonderful plugin.  Honestly, it just gets it so right with
-the quick, intuitive interface.
-
-#+BEGIN_SRC emacs-lisp
-(use-package magit
-  :ensure t
-  :bind
-  ("C-x g" . magit-status)
-  ("C-c m" . magit-blame))
-#+END_SRC
-
 * Tools
 
 Dictionary
@@ -299,31 +179,6 @@ sCaption: ")
      (if (string-equal caption "")
          (format "<figure>\n%s\n</figure>" img)
        (format "<figure>\n%s\n%s\n</figure>" img figcaption)))))
-#+end_src
-
-** Markdown
-
-Markdown, bleh.
-
-#+begin_src emacs-lisp
-(use-package markdown-mode
-  :ensure t
-  :commands (markdown-mode gfm-mode)
-  :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command "multimarkdown"))
-#+end_src
-
-** YAML
-
-I hate being a YAML engineer it's awesome.
-
-#+begin_src emacs-lisp
-(use-package yaml-mode
-  :ensure t
-  :defer t
-  :mode ("\\.yml\\'" "\\.yaml\\'"))
 #+end_src
 
 * Org
@@ -617,14 +472,4 @@ Some other helpful functions.
       (call-process-shell-command command nil "*docs-sync*" t))
     (message "docs-sync: successful"))
   (global-set-key (kbd "C-c d") 'recker/docs-sync)
-#+end_src
-
-* Local
-
-Finally, load any local overrides if they exist..
-
-#+begin_src emacs-lisp
-  (let ((local-path (recker/path :emacs "local.el")))
-    (if (file-exists-p local-path)
-        (load-file local-path)))
 #+end_src

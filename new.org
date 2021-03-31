@@ -152,6 +152,206 @@ they might grow on you too.
   (scroll-bar-mode t))
 #+END_SRC
 
+** Modeline
+
+By default, emacs will display the major mode as well as all active
+minor modes in the modeline.  I think it clutters up the file
+information so I use this nifty plugin to hide it all.  Only the major
+mode is displayed.
+
+#+BEGIN_SRC emacs-lisp
+(use-package rich-minority
+  :ensure t
+  :init (rich-minority-mode 1)
+  :config (setq rm-blacklist ""))
+#+END_SRC
+
+* Behavior
+
+If you have text selected and you start typing, delete the selected
+text.
+
+#+begin_src emacs-lisp
+(setq delete-selection-mode t)
+#+end_src
+
+** Files
+
+*** Backups
+
+Don't automatically make backup files.
+
+#+begin_src emacs-lisp
+(setq make-backup-files nil
+      auto-save-default nil)
+#+end_src
+
+*** Revert
+
+Automatically revert buffer if file changes.
+
+#+begin_src emacs-lisp
+(global-auto-revert-mode 1)
+#+end_src
+
+*** Paths
+
+To simplify my configuration, I made this little function that lets me
+construct paths (ex =(recker/paths 'docs "notes.org")=).
+
+#+begin_src emacs-lisp
+  (defun recker/path (dir &optional subpath)
+    "Build a path name relative to the home directory."
+    (let ((dir (file-name-as-directory (cl-getf recker/path-aliases dir (format "~/%s" dir))))
+          (subpath (or subpath "")))
+      (concat dir subpath)))
+#+end_src
+
+You can set your own aliases by overriding or appending
+=recker/paths-aliases=.
+
+#+begin_src emacs-lisp
+  (setq recker/path-aliases
+        '(:home "~"
+          :desktop "~/desktop"
+          :docs "~/docs"
+          :pics "~/pics"
+          :public "~/public"
+          :src "~/src"
+          :emacs "~/.emacs.d"))
+#+end_src
+
+Or it might look like this on a mac.
+
+#+begin_src emacs-lisp
+  (if (string-equal system-type "darwin")
+      (setq recker/path-aliases
+            '(:home "~"
+              :desktop "~/Desktop"
+              :docs "~/Documents"
+              :pics "~/Pictures"
+              :public "~/Public"
+              :src "~/src"
+              :emacs "~/.emacs.d")))
+#+end_src
+
+And while we're at it, set the default starting directory to home.
+
+#+begin_src emacs-lisp
+(setq default-directory (recker/path :home))
+#+end_src
+
+*** Dired
+
+Configure **dired**, the emacs file manager.
+
+#+begin_src emacs-lisp
+(require 'dired-x)
+(setq-default dired-omit-files-p t)
+(setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
+(setq dired-listing-switches "-lah")
+(setq dired-use-ls-dired nil)
+(setq dired-clean-confirm-killing-deleted-buffers nil)
+#+end_src
+
+*** Registers
+
+Map a few file registers.  These are kind of like my speed dial.
+
+#+begin_src emacs-lisp
+  (set-register ?a `(file . ,(recker/path :docs "archive.org")))
+  (set-register ?b `(file . ,(recker/path :src "blog")))
+  (set-register ?c `(file . ,(recker/path :emacs "custom.el")))
+  (set-register ?d `(file . ,(recker/path :desktop)))
+  (set-register ?e `(file . ,(recker/path :emacs "README.org")))
+  (set-register ?i `(file . ,(recker/path :docs "ideas.org")))
+  (set-register ?j `(file . ,(recker/path :docs "journal.org")))
+  (set-register ?l `(file . ,(recker/path :emacs "local.el")))
+  (set-register ?m `(file . ,(recker/path :docs "mixtape.org")))
+  (set-register ?o `(file . ,(recker/path :docs)))
+  (set-register ?w `(file . ,(recker/path :docs "work.org")))
+#+end_src
+
+It works over SSH too, thanks to TRAMP.
+
+#+begin_src emacs-lisp
+(set-register ?M '(file . "/ssh:alex@nas.local:/volume1/media/"))
+(set-register ?D '(file . "/ssh:alex@nas.local:/volume1/downloads/"))
+(set-register ?N '(file . "/ssh:alex@nas.local:/volume1/homes/alex/"))
+(set-register ?L '(file . "/ssh:laptop:/home/alex"))
+#+end_src
+
+*** Bookmarks
+
+Configure bookmarks.  Use IDO to jump between them.
+
+#+begin_src emacs-lisp
+(require 'bookmark)
+(setq bookmark-save-flag 1
+      bookmark-default-file (recker/path :docs "emacs/bookmarks.el"))
+
+(defun recker/ido-bookmark-jump (bookmark)
+  "*Switch to bookmark BOOKMARK interactively using `ido'."
+  (interactive (list (ido-completing-read "Bookmark: " (bookmark-all-names) nil t)))
+  (bookmark-jump bookmark))
+
+(global-set-key (kbd "C-x r b") 'recker/ido-bookmark-jump)
+#+end_src
+
+*** Auth
+
+Emacs consults any of the files specified in the variable
+=auth-sources= when it needs credentials for something.  This can be
+an encrypted file too - just add the =.gpg= file extension.  I use a
+single file I keep in private version control.
+
+#+begin_src emacs-lisp
+  (setq auth-sources '())
+  (add-to-list 'auth-sources (recker/path :docs "emacs/authinfo.gpg"))
+#+end_src
+
+*** Version Control
+
+Follow symlinks.
+
+#+BEGIN_SRC emacs-lisp
+(setq vc-follow-symlinks t)
+#+END_SRC
+
+Magit is a wonderful plugin.  Honestly, it just gets it so right with
+the quick, intuitive interface.
+
+#+BEGIN_SRC emacs-lisp
+(use-package magit
+  :ensure t
+  :bind
+  ("C-x g" . magit-status)
+  ("C-c m" . magit-blame))
+#+END_SRC
+
+** Buffers
+
+Purge all buffers with =C-x P=.
+
+#+begin_src emacs-lisp
+  (defun recker/purge-buffers ()
+    "Delete all buffers, except for *scratch*."
+    (interactive)
+    (mapc #'(lambda (b) (unless (string= (buffer-name b) "*scratch*") (kill-buffer b))) (buffer-list)))
+(global-set-key (kbd "C-x P") 'recker/purge-buffers)
+#+end_src
+
+Kill buffers without confirming.
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-x C-k k") 'kill-buffer)
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
+#+end_src
+
+* Tools
+
+Things to make life in emacs a little easier.
+
 ** IDO
 
 IDO stands for "interactive do".  It's a helpful little menu in the
@@ -197,62 +397,17 @@ Use smex as a more powerful replacement for =M-x=.
            ("M-X" . 'smex-major-mode-commands)))
 #+end_src
 
-* Behavior
+** Projectile
 
-If you have text selected and you start typing, delete the selected
-text.
-
-#+begin_src emacs-lisp
-(setq delete-selection-mode t)
-#+end_src
-
-* Files
-
-** Paths
-
-To simplify my configuration, I made this little function that lets me
-construct paths (ex =(recker/paths 'docs "notes.org")=).
+Search files within a project with projectile mode.
 
 #+begin_src emacs-lisp
-  (defun recker/path (dir &optional subpath)
-    "Build a path name relative to the home directory."
-    (let ((dir (file-name-as-directory (cl-getf recker/path-aliases dir (format "~/%s" dir))))
-          (subpath (or subpath "")))
-      (concat dir subpath)))
-#+end_src
-
-You can set your own aliases by overriding or appending
-=recker/paths-aliases=.
-
-#+begin_src emacs-lisp
-  (setq recker/path-aliases
-        '(:home "~"
-          :desktop "~/desktop"
-          :docs "~/docs"
-          :pics "~/pics"
-          :public "~/public"
-          :src "~/src"
-          :emacs "~/.emacs.d"))
-#+end_src
-
-Or it might look like this on a mac.
-
-#+begin_src emacs-lisp
-  (if (string-equal system-type "darwin")
-      (setq recker/path-aliases
-            '(:home "~"
-              :desktop "~/Desktop"
-              :docs "~/Documents"
-              :pics "~/Pictures"
-              :public "~/Public"
-              :src "~/src"
-              :emacs "~/.emacs.d")))
-#+end_src
-
-And while we're at it, set the default starting directory to home.
-
-#+begin_src emacs-lisp
-(setq default-directory (recker/path :home))
+(use-package projectile
+  :ensure t
+  :config
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (setq projectile-completion-system 'ido)
+  :init (projectile-mode t))
 #+end_src
 
 * Development
@@ -500,6 +655,20 @@ pretty cool.
     :mode (("\\.rst$" . rst-mode)))
 #+end_src
 
+*** Markdown
+
+Markdown.  Not my favorite, but you can't really go without it.
+
+#+begin_src emacs-lisp
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
+#+end_src
+
 ** DevOps
 
 *** Dockerfile
@@ -555,6 +724,17 @@ Package for working with [[https://www.terraform.io/][terraform]].
     :ensure t
     :defer t
     :mode "\\.tf\\'")
+#+end_src
+
+*** YAML
+
+I hate being a YAML engineer it's awesome.
+
+#+begin_src emacs-lisp
+(use-package yaml-mode
+  :ensure t
+  :defer t
+  :mode ("\\.yml\\'" "\\.yaml\\'"))
 #+end_src
 
 ** Front End
@@ -625,4 +805,14 @@ Use [[https://emmet.io/][Emmet]] for smart tag expansion.
     :ensure t
     :init (setq emmet-preview-default nil)
     :config (add-hook 'web-mode-hook 'emmet-mode))
+#+end_src
+
+* Local
+
+Finally, load any local overrides if they exist..
+
+#+begin_src emacs-lisp
+  (let ((local-path (recker/path :emacs "local.el")))
+    (if (file-exists-p local-path)
+        (load-file local-path)))
 #+end_src

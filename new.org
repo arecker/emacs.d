@@ -1,7 +1,7 @@
 #+TITLE: Emacs Configuration
 #+OPTIONS: toc:2 num:nil
 #+STARTUP: showall noindent inlineimages
-#+PROPERTY: header-args :results none
+#+PROPERTY: header-args :results none :tangle yes
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://www.alexrecker.com/assets/site.css" />
 
 * About
@@ -223,7 +223,7 @@ You can set your own aliases by overriding or appending
 
 Or it might look like this on a mac.
 
-#+begin_src emacs-lisp :tangle (if (string= system-type "darwin")
+#+begin_src emacs-lisp :tangle (if (string= system-type "darwin") "yes" "no")
   (setq recker/path-aliases
         '(:home "~"
           :desktop "~/Desktop"

@@ -223,16 +223,15 @@ You can set your own aliases by overriding or appending
 
 Or it might look like this on a mac.
 
-#+begin_src emacs-lisp
-  (if (string-equal system-type "darwin")
-      (setq recker/path-aliases
-            '(:home "~"
-              :desktop "~/Desktop"
-              :docs "~/Documents"
-              :pics "~/Pictures"
-              :public "~/Public"
-              :src "~/src"
-              :emacs "~/.emacs.d")))
+#+begin_src emacs-lisp :tangle (if (string= system-type "darwin")
+  (setq recker/path-aliases
+        '(:home "~"
+          :desktop "~/Desktop"
+          :docs "~/Documents"
+          :pics "~/Pictures"
+          :public "~/Public"
+          :src "~/src"
+          :emacs "~/.emacs.d"))
 #+end_src
 
 And while we're at it, set the default starting directory to home.

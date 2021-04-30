@@ -1,8 +1,203 @@
 #+TITLE: Emacs Configuration
-#+AUTHOR: Alex Recker
-#+OPTIONS: num:nil
-#+STARTUP: showall
-#+PROPERTY: header-args :results none
+#+OPTIONS: toc:2 num:nil
+#+STARTUP: showall noindent inlineimages
+#+PROPERTY: header-args :results none :tangle yes
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://www.alexrecker.com/assets/site.css" />
+
+* About
+
+Greetings!  Welcome to my personal [[https://www.gnu.org/software/emacs/][GNU Emacs]] configuration.  Feel free
+to re-use anything you'd like.  But before you do that, here are some
+things you might want to read up on:
+
+- [[https://github.com/jwiegley/use-package][use-package]]
+- [[https://orgmode.org/][Org Mode]]
+- [[https://orgmode.org/worg/org-contrib/babel/][Babel: active code in Org-mode]]
+
+For your own configuration, you can start off by introducing yourself
+to emacs.  If you use this entire config, be sure to switch out my
+name and email with yours.  We wouldn't want to confuse my mother,
+would we?
+
+#+begin_src emacs-lisp
+  (setq user-full-name "Alex Recker"
+        user-mail-address "alex@reckerfamily.com")
+#+end_src
+
+If you have any questions, don't hesitate to fire off an email to
+[[mailto:alex@reckerfamily.com][alex@reckerfamily.com]] or leave an issue in this git repository.
+
+* Environment
+
+This package does a nice job keeping your shell =$PATH= in sync with
+the =$PATH= that emacs uses for shelling out to commands in your
+environment.  It ensures you have an easier time.
+
+#+begin_src emacs-lisp
+(use-package exec-path-from-shell
+  :ensure t
+  :config (exec-path-from-shell-initialize))
+#+end_src
+
+* Appearance
+
+** Scratch
+
+The =*scratch*= buffer is the first screen you see when you open
+emacs.  Not only is it a great place to test out lisp, but it can also
+be customized to be a little more friendly and helpful.
+
+First, suppress the big startup screen message.
+
+#+begin_src emacs-lisp
+(setq inhibit-startup-message 't)
+#+end_src
+
+Next, make the =*scratch*= buffer un-killable, so you can always have
+a familiar buffer to start with.  This is simply a lisp hook called
+when a buffer is about to be deleted.
+
+#+begin_src emacs-lisp
+(defun recker/dont-kill-scratch ()
+  "Return NIL if the current buffer is the *scratch* buffer."
+  (not (equal (buffer-name (current-buffer)) "*scratch*")))
+(add-hook 'kill-buffer-query-functions 'recker/dont-kill-scratch)
+#+end_src
+
+Just to keep things interesting, this is a hook to display a random
+quote from this table as an elisp comment.
+
+#+name: scratch-quotes
+|----------------------------------------------------------------------------------------------------------------------------+---------------------------|
+| Sanity and happiness are an impossible combination.                                                                        | Mark Twain                |
+| Trust thyself only, and another shall not betray thee.                                                                     | Thomas Fuller             |
+| Fear has its uses but cowardice has none.                                                                                  | Mahatma Ghandi            |
+| Happiness can exist only in acceptance.                                                                                    | George Orwell             |
+| Seek respect mainly from thyself, for it comes first from within.                                                          | Steven H. Coogler         |
+| Conscience is the dog that can't bite, but never stops barking.                                                            | Proverb                   |
+| In general, pride is at the bottom of all great mistakes.                                                                  | Steven H. Coogler         |
+| Anger as soon as fed is dead -- tis starving makes it fat.                                                                 | Emily Dickinson           |
+| Make no judgements where you have no compassion.                                                                           | Anne McCaffrey            |
+| Isolation is a self-defeating dream.                                                                                       | Carlos Salinas de Gortari |
+| Doubt must be no more than vigilance, otherwise it can become dangerous.                                                   | George C. Lichtenberg     |
+| Love is a willingless to sacrifice.                                                                                        | Michael Novak             |
+| The value of identity is that so often with it comes purpose.                                                              | Richard R. Grant          |
+| Discontent is the first necessity of progress.                                                                             | Thomas Edison             |
+| Some of us think holding on makes us strong, but sometimes it is letting go.                                               | Herman Hesse              |
+| Let not a man guard his dignity but let his dignity guard him.                                                             | Ralph Waldo Emerson       |
+| Guilt: the gift that keeps on giving.                                                                                      | Erma Bombeck              |
+| Be here now.                                                                                                               | Ram Dass                  |
+| The master understands that the universe is forever out of control.                                                        | Lao Tzu                   |
+| Our biggest problems arise from the avoidance of smaller ones.                                                             | James A. Lee Iacocca      |
+| Honesty and transparency make you vulnerable.                                                                              | Mother Teresa             |
+| If you do not ask the right questions, you do not get the right answers.                                                   | Edward Hodnett            |
+| Resentment is like taking poison and waiting for the other person to die.                                                  | Malachy McCourt           |
+| If we knew each other's  secrets, what comfort should we find.                                                             | John Churton Collins      |
+| The mistake is thinking that there can be an antidote to the uncertainty.                                                  | David Levithan            |
+| Cure sometimes, treat often, comfort always.                                                                               | Hippocrates               |
+| Suspicion is a heavy armor and with its weight it impedes more than it protects.                                           | Robert Burns              |
+| Sincerity, even if it speaks with a stutter, will sound eloquent when inspired.                                            | Eiji Yoshikawa            |
+| I have little shame, no dignity - all in the name of a better cause.                                                       | A.J. Jacobs               |
+| Truth may sometimes hurt, but delusion harms.                                                                              | Vanna Bonta               |
+| Intuition is more important to discovery than logic.                                                                       | Henri Poincare            |
+| How weird was it to drive streets I knew so well. What a different perspective.                                            | Suzanne Vega              |
+| There can be no progress without head-on confrontation.                                                                    | Christopher Hitchens      |
+| Sometimes it's necessary to go a long distance out of the way to come back a short distance correctly.                     | Edward Albea              |
+| Stagnation is death. If you don't change, you die. It's that simple. It's that scary.                                      | Leonard Sweet             |
+| In my opinion, actual heroism, like actual love, is a messy, painful, vulnerable business.                                 | John Green                |
+| Maybe all one can do is hope to end up with the right regrets.                                                             | Arthur Miller             |
+| If you have behaved badly, repent, make what amends you can and address yourself to the task of behaving better next time. | Aldous Huxley             |
+| Sooner or later everyone sits down to a banquet of consequences.                                                           | Robert Louis Stevenson    |
+| We are all in the same boat, in a stormy sea, and we owe each other a terrible loyalty.                                    | G.K. Chesterton           |
+| In our quest for the answers of life we tend to make order out of chaos, and chaos out of order.                           | Jeffrey Fry               |
+| There are many ways of going forward, but only one way of standing still.                                                  | Franklin D. Roosevelt     |
+| Truth is outside of all patterns.                                                                                          | Bruce Lee                 |
+| By imposing too great a responsibility, or rather, all responsibility, on yourself, you crush yourself.                    | Franz Kafka               |
+| How few there are who have courage enough to own their faults, or resolution enough to mend them.                          | Benjamin Franklin         |
+| Resistance is useless.                                                                                                     | Doctor Who                |
+| Happiness does not depend on outward things, but on the way we see them.                                                   | Leo Tolstoy               |
+| Being president is like being a jackass in a hailstorm.  There's nothing to do but to stand there and take it.             | Lyndon Johnson            |
+| In the depth of winter, I finally learned that within me, there lay, an invincible summer.                                 | Albert Camus              |
+
+#+begin_src emacs-lisp :var scratch-quotes=scratch-quotes :results value
+    (defun recker/scratch-quote--pick ()
+      (nth (random (length scratch-quotes)) scratch-quotes))
+
+    (defun recker/scratch-quote--format (fortune)
+      (let* ((text (cl-first fortune))
+             (splittext
+              (with-temp-buffer
+                (insert text)
+                (fill-region (point-min) (point-max))
+                (split-string (buffer-string) "\n")))
+             (author (format "\n;; -- %s\n\n" (cl-first (last fortune)))))
+        (concat "\n;; " (string-join splittext "\n;; ") author)))
+
+    (defun recker/scratch-quote ()
+      (recker/scratch-quote--format (recker/scratch-quote--pick)))
+
+  (setq initial-scratch-message (recker/scratch-quote))
+#+end_src
+
+** Widgets
+
+Most setups I see hide the awkward looking menu, toolbar, and scroll
+bar, but personally I find them kind of cozy.  Give it a chance and
+they might grow on you too.
+
+#+BEGIN_SRC emacs-lisp
+(menu-bar-mode t)
+(tool-bar-mode t)
+(when (display-graphic-p)
+  (scroll-bar-mode t))
+#+END_SRC
+
+** Modeline
+
+By default, emacs will display the major mode as well as all active
+minor modes in the modeline.  I think it clutters up the file
+information so I use this nifty plugin to hide it all.  Only the major
+mode is displayed.
+
+#+BEGIN_SRC emacs-lisp
+(use-package rich-minority
+  :ensure t
+  :init (rich-minority-mode 1)
+  :config (setq rm-blacklist ""))
+#+END_SRC
+
+* Behavior
+
+If you have text selected and you start typing, delete the selected
+text.
+
+#+begin_src emacs-lisp
+(setq delete-selection-mode t)
+#+end_src
+
+** Files
+
+*** Backups
+
+Don't automatically make backup files.
+
+#+begin_src emacs-lisp
+(setq make-backup-files nil
+      auto-save-default nil)
+#+end_src
+
+*** Revert
+
+Automatically revert buffer if file changes.
+
+#+begin_src emacs-lisp
+(global-auto-revert-mode 1)
+#+end_src
+
+*** Paths
+
+To simplify my configuration, I made this little function that lets me
+construct paths (ex =(recker/paths 'docs "notes.org")=).
 
 #+begin_src emacs-lisp
   (defun recker/path (dir &optional subpath)
@@ -28,220 +223,254 @@ You can set your own aliases by overriding or appending
 
 Or it might look like this on a mac.
 
-#+begin_src emacs-lisp
-  (if (string-equal system-type "darwin")
-      (setq recker/path-aliases
-            '(:home "~"
-              :desktop "~/Desktop"
-              :docs "~/Documents"
-              :pics "~/Pictures"
-              :public "~/Public"
-              :src "~/src"
-              :emacs "~/.emacs.d")))
+#+begin_src emacs-lisp :tangle (if (string= system-type "darwin") "yes" "no")
+  (setq recker/path-aliases
+        '(:home "~"
+          :desktop "~/Desktop"
+          :docs "~/Documents"
+          :pics "~/Pictures"
+          :public "~/Public"
+          :src "~/src"
+          :emacs "~/.emacs.d"))
 #+end_src
 
-* Passwords
-
-I use the =pass= tool for personal secret management.  It's my own
-crummy implementation.
+And while we're at it, set the default starting directory to home.
 
 #+begin_src emacs-lisp
-(defun recker/pass-directory ()
-  (or (bound-and-true-p recker/active-pass-directory)
-      (expand-file-name "~/.password-store")))
-
-(defun recker/pass--file-to-entry (path)
-  (file-name-sans-extension
-   (file-relative-name path (recker/pass-directory))))
-
-(defun recker/pass-list-entries ()
-  (mapcar
-   #'recker/pass--file-to-entry
-   (directory-files-recursively (recker/pass-directory) ".gpg")))
-
-(defun recker/pass-to-string (path)
-  (cl-first
-   (split-string
-    (shell-command-to-string
-     (format "PASSWORD_STORE_DIR=\"%s\" pass \"%s\" | head -1" (recker/pass-directory) path))
-    "\n")))
-
-(defun recker/pass-to-clip (path)
-  (interactive (list (completing-read "Password: " (recker/pass-list-entries) nil t)))
-  (shell-command
-   (format "PASSWORD_STORE_DIR=\"%s\" pass -c \"%s\"" (recker/pass-directory) path)))
-
-(defun recker/pass-to-clip-work ()
-  (interactive)
-  (let ((recker/active-pass-directory (expand-file-name "~/.password-store-work")))
-    (funcall-interactively #'recker/pass-to-clip (completing-read "Password: " (recker/pass-list-entries) nil t))))
-
-(global-set-key (kbd "C-x p") 'recker/pass-to-clip)
-(global-set-key (kbd "C-x w") 'recker/pass-to-clip-work)
+(setq default-directory (recker/path :home))
 #+end_src
 
-* Org
+*** Dired
 
-Make sure =org-tempo= is loaded so shortcuts work for code blocks, I
-guess.  This is a recent workaround.
+Configure **dired**, the emacs file manager.
 
 #+begin_src emacs-lisp
-(require 'org-tempo)
+(require 'dired-x)
+(setq-default dired-omit-files-p t)
+(setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
+(setq dired-listing-switches "-lah")
+(setq dired-use-ls-dired nil)
+(setq dired-clean-confirm-killing-deleted-buffers nil)
 #+end_src
 
-Run **code blocks** interactively without the confirmation prompt each
-time.  Set up some languages.
+*** Registers
+
+Map a few file registers.  These are kind of like my speed dial.
 
 #+begin_src emacs-lisp
-  (setq org-confirm-babel-evaluate nil)
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((java . t)
-     (perl . t)
-     (python . t)
-     (ruby . t)
-     (shell . t)))
+  (set-register ?a `(file . ,(recker/path :docs "archive.org")))
+  (set-register ?b `(file . ,(recker/path :src "blog")))
+  (set-register ?c `(file . ,(recker/path :emacs "custom.el")))
+  (set-register ?d `(file . ,(recker/path :desktop)))
+  (set-register ?e `(file . ,(recker/path :emacs "README.org")))
+  (set-register ?i `(file . ,(recker/path :docs "ideas.org")))
+  (set-register ?j `(file . ,(recker/path :docs "journal.org")))
+  (set-register ?l `(file . ,(recker/path :emacs "local.el")))
+  (set-register ?m `(file . ,(recker/path :docs "mixtape.org")))
+  (set-register ?o `(file . ,(recker/path :docs)))
+  (set-register ?w `(file . ,(recker/path :docs "work.org")))
 #+end_src
 
-Use MY OWN FUNCTION for searching org notes.
+It works over SSH too, thanks to TRAMP.
 
 #+begin_src emacs-lisp
-(defun recker/opsat-find ()
-  (interactive)
-  (let ((files
-         (mapcar #'file-name-nondirectory (directory-files-recursively (recker/path :docs) "\\.org$" nil nil t))))
-    (find-file (recker/path :docs (ido-completing-read "File: " files nil nil)))))
-
-(global-set-key (kbd "C-c o") 'recker/opsat-find)
+(set-register ?M '(file . "/ssh:alex@nas.local:/volume1/media/"))
+(set-register ?D '(file . "/ssh:alex@nas.local:/volume1/downloads/"))
+(set-register ?N '(file . "/ssh:alex@nas.local:/volume1/homes/alex/"))
+(set-register ?L '(file . "/ssh:laptop:/home/alex"))
 #+end_src
 
-Don't mess with indentation or empty lines.
+*** Bookmarks
+
+Configure bookmarks.  Use IDO to jump between them.
 
 #+begin_src emacs-lisp
-  (setq org-adapt-indentation nil)
-  (setq org-cycle-separator-lines -1)
+(require 'bookmark)
+(setq bookmark-save-flag 1
+      bookmark-default-file (recker/path :docs "emacs/bookmarks.el"))
+
+(defun recker/ido-bookmark-jump (bookmark)
+  "*Switch to bookmark BOOKMARK interactively using `ido'."
+  (interactive (list (ido-completing-read "Bookmark: " (bookmark-all-names) nil t)))
+  (bookmark-jump bookmark))
+
+(global-set-key (kbd "C-x r b") 'recker/ido-bookmark-jump)
 #+end_src
 
-Fix yasnippet in org mode.
+*** Auth
+
+Emacs consults any of the files specified in the variable
+=auth-sources= when it needs credentials for something.  This can be
+an encrypted file too - just add the =.gpg= file extension.  I use a
+single file I keep in private version control.
 
 #+begin_src emacs-lisp
-  (defun recker/fix-yas-in-org ()
-    (setq-local yas-buffer-local-condition
-                '(not (org-in-src-block-p t))))
-  (add-hook 'org-mode-hook #'recker/fix-yas-in-org)
+  (setq auth-sources '())
+  (add-to-list 'auth-sources (recker/path :docs "emacs/authinfo.gpg"))
 #+end_src
 
-[[https://plantuml.com/emacs][Plantuml]] integration.  Make sure you download the [[https://plantuml.com/download][JAR file]] and save it
-to =~/.plantuml/plantuml.jar=.
+*** Version Control
+
+Follow symlinks.
+
+#+BEGIN_SRC emacs-lisp
+(setq vc-follow-symlinks t)
+#+END_SRC
+
+Magit is a wonderful plugin.  Honestly, it just gets it so right with
+the quick, intuitive interface.
+
+#+BEGIN_SRC emacs-lisp
+(use-package magit
+  :ensure t
+  :bind
+  ("C-x g" . magit-status)
+  ("C-c m" . magit-blame))
+#+END_SRC
+
+** Buffers
+
+Purge all buffers with =C-x P=.
 
 #+begin_src emacs-lisp
-  (use-package plantuml-mode
-    :ensure t
-    :config (setq org-plantuml-jar-path (recker/path :home ".plantuml/plantuml.jar"))
-    :init
-    (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
-    (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
-#+end_src
-
-Re-render images after executing code blocks.
-
-#+begin_src emacs-lisp
-  (defun recker/org-rerender-images ()
-    (when org-inline-image-overlays
-      (org-redisplay-inline-images)))
-
-  (add-hook 'org-babel-after-execute-hook #'recker/org-rerender-images)
-#+end_src
-
-Configure **capture templates** and map the selector to =C-c c=.
-
-#+begin_src emacs-lisp
-  (setq org-capture-templates '())
-  (global-set-key (kbd "C-c c") 'org-capture)
-
-  (add-to-list 'org-capture-templates
-               `("j" "journal entry" plain (file+olp+datetree ,(recker/path :docs "journal.org")) "%?\n"
-                 :empty-lines-before 1 :empty-lines-after 1))
-
-  (add-to-list 'org-capture-templates
-               `("m" "mixtape notes" plain (file+olp+datetree ,(recker/path :docs "mixtape.org")) "%?\n"
-                 :empty-lines-before 1 :empty-lines-after 1))
-
-  (add-to-list 'org-capture-templates
-               `("i" "idea" plain (file+olp+datetree ,(recker/path :docs "ideas.org")) "%?\n"
-                 :empty-lines-before 1 :empty-lines-after 1))
-
-  (add-to-list 'org-capture-templates
-               `("p" "productivity task" entry (file+headline ,(recker/path :docs "opsat.org") "Productivity") "* TODO %?\n"))
-
-  (add-to-list 'org-capture-templates
-               `("w" "work task" entry (file ,(recker/path :docs "work.org")) "* TODO %?\n"))
-#+end_src
-
-Configure **agenda** and set up and map the view to =C-c a=.
-
-#+begin_src emacs-lisp
-(setq org-agenda-files (list (recker/path :docs)))
-(setq org-directory (list (recker/path :docs)))
-(setq org-agenda-start-with-follow-mode t)
-(global-set-key (kbd "C-c a") 'org-agenda)
-(setq org-agenda-tag-filter-preset '("-ARCHIVE"))
-#+end_src
-
-Configure **attachments**.
-
-#+begin_src emacs-lisp
-(setq org-attach-directory (recker/path :docs "attachments/"))
-(setq org-attach-archive-delete 't)
-#+end_src
-
-Configure **publish projects**.
-
-#+begin_src emacs-lisp
-(setq org-publish-project-alist '())
-#+end_src
-
-Install htmlize for sweet snyntax highlighting on HTML exports.
-
-#+begin_src emacs-lisp
-(use-package htmlize :ensure t)
-#+end_src
-
-Open up a new blog post.
-
-#+begin_src emacs-lisp
-  (defun recker/today ()
-    "Open today's journal entry."
+  (defun recker/purge-buffers ()
+    "Delete all buffers, except for *scratch*."
     (interactive)
-    (let* ((target
-            (recker/path :src (format-time-string "blog/_posts/%Y-%m-%d-entry.md")))
-           (frontmatter
-            (format-time-string "---\ntitle:\nbanner: %Y-%m-%d.jpg\n---\n\n")))
-      (if (file-exists-p target)
-          (find-file target)
-        (progn (find-file target)
-               (insert frontmatter)))))
-  (global-set-key (kbd "C-c t") 'recker/today)
+    (mapc #'(lambda (b) (unless (string= (buffer-name b) "*scratch*") (kill-buffer b))) (buffer-list)))
+(global-set-key (kbd "C-x P") 'recker/purge-buffers)
 #+end_src
 
-Don't show archived or done items in the agenda.
+Kill buffers without confirming.
 
 #+begin_src emacs-lisp
-  (setq org-agenda-skip-scheduled-if-done t
-        org-agenda-skip-deadline-if-done  t
-        org-agenda-archives-mode nil)
+(global-set-key (kbd "C-x C-k k") 'kill-buffer)
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
 #+end_src
 
-Don't automatically search in =org-goto=.
+** Shells
+
+Use bash for launching a terminal and bind my custom wrapper function
+to =C-x t=.
 
 #+begin_src emacs-lisp
-  (setq org-goto-auto-isearch nil)
+(defun recker/ansi-term ()
+  (interactive)
+  (ansi-term "/bin/bash"))
+
+(global-set-key (kbd "C-x t") 'recker/ansi-term)
 #+end_src
 
-* Gnus
+On exiting a terminal, also kill the buffer.
 
-Odd, but fulfilling.  Here is my sordid configuration.  Set up some
-empty primary and secondary methods.
+#+begin_src emacs-lisp
+(defadvice term-handle-exit
+    (after term-kill-buffer-on-exit activate)
+  (kill-buffer))
+#+end_src
+
+Eshell has its own quirks, but it's pretty cool too, especially for
+working with TRAMP.
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-c e") 'eshell)
+#+end_src
+
+* Tools
+
+Things to make life in emacs a little easier.
+
+** IDO
+
+IDO stands for "interactive do".  It's a helpful little menu in the
+mini buffer for selection options interactively.  I'd recommend the
+[[https://www.masteringemacs.org/article/introduction-to-ido-mode][guide]] from _Mastering Emacs_.
+
+Enable it everywhere and turn on
+
+#+BEGIN_SRC emacs-lisp
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
+#+END_SRC
+
+Use this package to make ido vertical and easier to read.
+
+#+begin_src emacs-lisp
+  (use-package ido-vertical-mode
+    :ensure t
+    :config (setq ido-vertical-define-keys 'C-n-and-C-p-only)
+    :init (ido-vertical-mode))
+#+end_src
+
+The =idomenu= package makes IDO power =imenu= as well.  That way, if
+you are editing code in a mode where =imenu= is supported, you can hit
+=C-c= =i= to browse it by function, object, or section.
+
+#+begin_src emacs-lisp
+(use-package idomenu
+  :ensure t
+  :bind ("C-c i" . idomenu))
+#+end_src
+
+** Smex
+
+Use smex as a more powerful replacement for =M-x=.
+
+#+begin_src emacs-lisp
+  (use-package smex
+    :ensure t
+    :init (smex-initialize)
+    :bind (("M-x" . 'smex)
+           ("M-X" . 'smex-major-mode-commands)))
+#+end_src
+
+** Projectile
+
+Search files within a project with projectile mode.
+
+#+begin_src emacs-lisp
+(use-package projectile
+  :ensure t
+  :config
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (setq projectile-completion-system 'ido)
+  :init (projectile-mode t))
+#+end_src
+
+** Swiper
+
+Use swiper for quickly searching a buffer.
+
+#+begin_src emacs-lisp
+(use-package swiper
+  :ensure t
+  :bind ("C-c s" . swiper))
+#+end_src
+
+** Expand Region
+
+Select incrementally larger areas of text with =expand-region=, bound
+to =C-c= =​==.
+
+** Yasnippet
+
+Yasnippet us a powerful snippets tool.
+
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :init (yas-global-mode))
+#+end_src
+
+** Gnus
+
+Gnus is a strange tool.  Chances are, even if you try using it for a
+whole day, you'll wonder what anyone sees in this weird beast.  But it
+gets better, I promise.  And it helps to start with this reasonable
+configuration.
+
+First, set up a blank primary method, so Gnus doesn't warmly explode
+when you try to open it.
 
 #+begin_src emacs-lisp
 (setq gnus-select-method '(nnml ""))
@@ -335,28 +564,85 @@ Configure **smtp** settings.
       send-mail-function 'smtpmail-send-it)
 #+end_src
 
-* Mail
+* Development
 
-Use mstp to send mail (handles multiple accounts).
+** General
 
-#+begin_src emacs-lisp
-  (setq message-send-mail-function 'message-send-mail-with-sendmail)
-  (setq sendmail-program "msmtp")
-  (setq mail-host-address "smtp.gmail.com")
-  (setq message-sendmail-f-is-evil 't)
-  (setq message-sendmail-extra-arguments '("--read-envelope-from"))
-#+end_src
+*** Functions
 
-* Functions
-
-Rebind keys to some helpful existing functions.
+These functions already exist, I just like them bound to keys because
+I use them a lot.
 
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-c r") 'replace-string)
 (global-set-key (kbd "C-c l") 'sort-lines)
 #+end_src
 
-Some other helpful functions.
+*** Flycheck
+
+Flycheck puts angry red squiggles on the screen when I do something
+stupid.
+
+#+begin_src emacs-lisp
+(use-package flycheck
+  :ensure t
+  :init
+  (global-flycheck-mode))
+#+end_src
+
+*** Editorconfig
+
+In any case, default to what's specified in the projects [[https://editorconfig.org/][editorconfig]].
+
+#+begin_src emacs-lisp
+(use-package editorconfig
+  :ensure t
+  :defer t
+  :config (editorconfig-mode 1))
+#+end_src
+
+*** Completion
+
+Use [[https://company-mode.github.io/][company-mode]] for completion.
+
+#+begin_src emacs-lisp
+  (use-package company
+    :ensure t
+    :init (add-hook 'after-init-hook 'global-company-mode))
+#+end_src
+
+*** Whitespace
+
+Clean-up whitespace on save.
+
+#+begin_src emacs-lisp
+(add-hook 'before-save-hook 'whitespace-cleanup)
+#+end_src
+
+Avoid tabs.
+
+#+begin_src emacs-lisp
+(setq-default indent-tabs-mode nil)
+#+end_src
+
+** Writing
+
+*** Filling
+
+"Filling" is when you use a newline after every 72 characters for the
+purpose of making it easier to read plain text.  Enable auto-fill mode
+when doing any kind of word processing.
+
+#+begin_src emacs-lisp
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'org-mode-hook 'turn-on-auto-fill)
+(add-hook 'gfm-mode-hook 'turn-on-auto-fill)
+(add-hook 'rst-mode-hook 'turn-on-auto-fill)
+#+end_src
+
+Use this nifty custom function to /unfill/ text.  This is handy when
+you are copying something out of a text file in emacs and pasting it
+into something that makes the newlines look obnoxious, like slack.
 
 #+begin_src emacs-lisp
   (defun recker/unfill-region (beg end)
@@ -365,10 +651,369 @@ Some other helpful functions.
     (let ((fill-column (point-max)))
       (fill-region beg end)))
 
-  (defun recker/docs-sync ()
-    (interactive)
-    (let ((command (format "git-sync -d %s" (recker/path :docs))))
-      (call-process-shell-command command nil "*docs-sync*" t))
-    (message "docs-sync: successful"))
-  (global-set-key (kbd "C-c d") 'recker/docs-sync)
+  (global-set-key (kbd "C-c u") 'recker/unfill-region)
+#+end_src
+
+Just highlight the region and mash =C-c u=.
+
+
+*** Spelling
+
+Use the =ispell= tool for spell check.  Spelling errors presenting
+like code errors with judgemental red squiggles, thanks to flyspell.
+
+#+begin_src emacs-lisp
+  (use-package flyspell
+    :config
+    (setq ispell-personal-dictionary (recker/path :docs "emacs/ispell.dict"))
+    (setq ispell-program-name (executable-find "ispell"))
+    :init
+    (add-hook 'text-mode-hook #'(lambda () (flyspell-mode 1))))
+#+end_src
+
+*** Words
+
+Install the dictionary package.
+
+#+begin_src emacs-lisp
+(use-package dictionary :ensure t)
+#+end_src
+
+*** Style
+
+Use the =write-good= package to learn to write more good.  This will
+warn for passive voice and bad word choice.
+
+#+begin_src emacs-lisp
+(use-package writegood-mode
+  :ensure t
+  :defer t
+  :init
+  (add-hook 'text-mode-hook 'writegood-mode)
+  (add-hook 'org-mode-hook 'writegood-mode)
+  (add-hook 'gfm-mode-hook 'writegood-mode)
+  (add-hook 'rst-mode-hook 'writegood-mode))
+#+end_src
+
+*** Mediawiki
+
+Use the [[https://github.com/hexmode/mediawiki-el][mediawiki]] package for editing pages remotely.
+
+#+begin_src emacs-lisp
+  (use-package mediawiki :ensure t)
+#+end_src
+
+Default the site to my [[https://www.thereckerfamilycookbook.com][family's cookbook]].
+
+#+begin_src emacs-lisp
+  (setq mediawiki-site-alist
+        `(("cookbook" "https://www.thereckerfamilycookbook.com"
+           "Alex"
+           ,(recker/pass-to-string "thereckerfamilycookbook")
+           nil "Home")))
+
+  (setq mediawiki-site-default "cookbook")
+#+end_src
+
+*** reStructuredText
+
+I intend to give [[https://docutils.sourceforge.io/rst.html][reStructuredText]] a serious try someday, it looks
+pretty cool.
+
+#+begin_src emacs-lisp
+  (use-package rst
+    :ensure t
+    :defer t
+    :mode (("\\.rst$" . rst-mode)))
+#+end_src
+
+*** Markdown
+
+Markdown.  Not my favorite, but you can't really go without it.
+
+#+begin_src emacs-lisp
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
+#+end_src
+
+** Backend
+
+*** C
+
+This is a snippet adapted from the [[https://www.kernel.org/doc/html/v4.10/process/coding-style.html][Linux kernel coding style]] - a
+surpisingly good and funny read.
+
+#+begin_src emacs-lisp
+(defun c-lineup-arglist-tabs-only (ignored)
+  "Line up argument lists by tabs, not spaces"
+  (let* ((anchor (c-langelem-pos c-syntactic-element))
+         (column (c-langelem-2nd-pos c-syntactic-element))
+         (offset (- (1+ column) anchor))
+         (steps (floor offset c-basic-offset)))
+    (* (max steps 1)
+       c-basic-offset)))
+
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (c-add-style
+             "linux-tabs-only"
+             '("linux" (c-offsets-alist
+                        (arglist-cont-nonempty
+                         c-lineup-gcc-asm-reg
+                         c-lineup-arglist-tabs-only))))))
+
+(add-hook 'c-mode-hook (lambda ()
+                         (setq indent-tabs-mode t)
+                         (setq show-trailing-whitespace t)
+                         (c-set-style "linux-tabs-only")))
+#+end_src
+
+*** Common Lisp
+
+Set up the [[https://common-lisp.net/project/slime/][slime]] common lisp developing environment.  Be sure to
+install sbcl first.
+
+#+begin_src emacs-lisp
+  (use-package slime
+    :ensure t
+    :defer t
+    :config (setq inferior-lisp-program (executable-find "sbcl")))
+
+  (use-package slime-company
+    :ensure t
+    :after (slime company)
+    :config (setq slime-company-completion 'fuzzy
+                  slime-company-after-completion 'slime-company-just-one-space))
+#+end_src
+
+*** D
+
+Yeah, there's a D language apparently.
+
+#+begin_src emacs-lisp
+(use-package d-mode
+  :ensure t
+  :defer t
+  :mode "\\.d\\'")
+#+end_src
+
+*** Go
+
+Haven't really gotten into go, but I have to work on Kubernetes
+operators sometimes.
+
+#+begin_src emacs-lisp
+  (use-package go-mode
+    :ensure t
+    :defer t
+    :config (let ((govet (flycheck-checker-get 'go-vet 'command)))
+              (when (equal (cadr govet) "tool")
+                (setf (cdr govet) (cddr govet))))
+    :init (add-hook 'go-mode-hook
+                    (lambda ()
+                      (set (make-local-variable 'company-backends) '(company-go))
+                      (company-mode))))
+
+  (use-package company-go
+    :ensure t
+    :defer t
+    :after (company))
+#+end_src
+
+*** Haskell
+
+Haskell mode, in case I ever decide to really grow my neckbeard out.
+
+#+begin_src emacs-lisp
+(use-package haskell-mode
+  :ensure t
+  :defer t
+  :mode "\\.hs\\'")
+#+end_src
+
+*** Lua
+
+For pico8 games and pandoc extensions.
+
+#+begin_src emacs-lisp
+(use-package lua-mode
+  :ensure t
+  :defer t
+  :mode ("\\.lua\\'" "\\.p8\\'"))
+#+end_src
+
+*** Python
+
+[[https://elpy.readthedocs.io/en/latest/][Elpy]] is pretty full featured, just let it do its thing.  The only
+thing I do differently is disable the automatic venv feature - I
+prefer to just manually switch with =M-x= =pyvenv-workon=.
+
+#+begin_src emacs-lisp
+  (use-package elpy
+    :ensure t
+    :defer t
+    :config (setq elpy-rpc-virtualenv-path 'current)
+    :init (advice-add 'python-mode :before 'elpy-enable))
+#+end_src
+
+*** Ruby
+
+I like ruby, I just strangely don't have a lot of customizations for
+working with it.
+
+#+begin_src emacs-lisp
+  (setq ruby-deep-indent-paren nil)
+#+end_src
+
+** DevOps
+
+*** Dockerfile
+
+This enables pretty syntax highlighting for editing [[https://docs.docker.com/engine/reference/builder/#:~:text=A%20Dockerfile%20is%20a%20text,command%2Dline%20instructions%20in%20succession.][Dockerfiles]].
+
+#+begin_src emacs-lisp
+(use-package dockerfile-mode
+  :ensure t
+  :defer t
+  :mode ("\\Dockerfile\\'" "\\.dockerfile\\'"))
+#+end_src
+
+*** Groovy
+
+Mostly for editing Jenkinsfiles.
+
+#+begin_src emacs-lisp
+(use-package groovy-mode
+  :ensure t
+  :defer t
+  :mode ("\\Jenkinsfile\\'" "\\.groovy\\'"))
+#+end_src
+
+*** Jsonnet
+
+For working with the [[https://jsonnet.org/][Jsonnet]] configuration language.
+
+#+begin_src emacs-lisp
+(use-package jsonnet-mode
+  :ensure t
+  :defer t
+  :mode ("\\.jsonnet\\'" "\\.libsonnet\\'"))
+#+end_src
+
+*** Nginx
+
+For working with [[https://www.nginx.com/][nginx]] configuration files.  This mode is
+automatically activated for files opened in =/etc/nginx=, but you can
+also turn it on with =M-x= =nginx-mode=.
+
+#+begin_src emacs-lisp
+  (use-package nginx-mode
+    :ensure t)
+#+end_src
+
+*** Terraform
+
+Package for working with [[https://www.terraform.io/][terraform]].
+
+#+begin_src emacs-lisp
+  (use-package terraform-mode
+    :ensure t
+    :defer t
+    :mode "\\.tf\\'")
+#+end_src
+
+*** YAML
+
+I hate being a YAML engineer it's awesome.
+
+#+begin_src emacs-lisp
+(use-package yaml-mode
+  :ensure t
+  :defer t
+  :mode ("\\.yml\\'" "\\.yaml\\'"))
+#+end_src
+
+** Front End
+
+This section was adapted from Cody Reichert's [[https://gist.github.com/CodyReichert/9dbc8bd2a104780b64891d8736682cea][gist]] "Configuring Emacs
+for react, es6, and flow".
+
+*** Prerequisites
+
+For this configuration to work, you need some global npm packages
+installed.  You can take care of that like this:
+
+#+begin_src sh
+  npm install -g eslint prettier
+#+end_src
+
+*** Web Mode
+
+Use [[https://web-mode.org/][web-mode]] for editing HTML, JavaScript, and anything in between.
+
+#+begin_src emacs-lisp
+  (defun recker/web-mode-hook ()
+    "Custom web-mode hook."
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-script-padding 2)
+    (setq web-mode-style-padding 2)
+    (setq web-mode-code-indent-offset 2))
+
+  (use-package web-mode
+    :ensure t
+    :mode ("\\.html\\'" "\\.j2\\'" "\\.j2\\'" "\\.jsx?$")
+    :config (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
+    :init (add-hook 'web-mode-hook 'recker/web-mode-hook))
+#+end_src
+
+*** ESLint
+
+Make sure flycheck is installed, and disable the default jshint
+checker.
+
+#+begin_src emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :init
+    (setq-default flycheck-disabled-checkers
+                  (append flycheck-disabled-checkers
+                          '(javascript-jshint json-jsonlist)))
+    (flycheck-add-mode 'javascript-eslint 'web-mode)
+    (add-hook 'after-init-hook #'global-flycheck-mode))
+#+end_src
+
+*** Prettier.js
+
+Automatically format code on save with [[https://prettier.io/][Prettier]].
+
+#+begin_src emacs-lisp
+  (use-package prettier-js
+    :ensure t
+    :init (add-hook 'web-mode-hook 'prettier-js-mode))
+#+end_src
+
+*** Emmet Mode
+
+Use [[https://emmet.io/][Emmet]] for smart tag expansion.
+
+#+begin_src emacs-lisp
+  (use-package emmet-mode
+    :ensure t
+    :init (setq emmet-preview-default nil)
+    :config (add-hook 'web-mode-hook 'emmet-mode))
+#+end_src
+
+* Local
+
+Finally, load any local overrides if they exist..
+
+#+begin_src emacs-lisp
+  (let ((local-path (recker/path :emacs "local.el")))
+    (if (file-exists-p local-path)
+        (load-file local-path)))
 #+end_src

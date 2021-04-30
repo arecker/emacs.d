@@ -241,18 +241,6 @@ Don't automatically search in =org-goto=.
   (setq org-goto-auto-isearch nil)
 #+end_src
 
-* Mail
-
-Use mstp to send mail (handles multiple accounts).
-
-#+begin_src emacs-lisp
-  (setq message-send-mail-function 'message-send-mail-with-sendmail)
-  (setq sendmail-program "msmtp")
-  (setq mail-host-address "smtp.gmail.com")
-  (setq message-sendmail-f-is-evil 't)
-  (setq message-sendmail-extra-arguments '("--read-envelope-from"))
-#+end_src
-
 * Functions
 
 Some other helpful functions.

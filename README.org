@@ -375,6 +375,20 @@ working with TRAMP.
 (global-set-key (kbd "C-c e") 'eshell)
 #+end_src
 
+** Mail
+
+Use mstp to send mail.  It's the same as sendmail, only it handles
+multiple accounts.  Chances are it has to be installed - check if you
+have the =msmtp= command in your path.
+
+#+begin_src emacs-lisp
+  (setq message-send-mail-function 'message-send-mail-with-sendmail)
+  (setq sendmail-program "msmtp")
+  (setq mail-host-address "smtp.gmail.com")
+  (setq message-sendmail-f-is-evil 't)
+  (setq message-sendmail-extra-arguments '("--read-envelope-from"))
+#+end_src
+
 * Tools
 
 Things to make life in emacs a little easier.

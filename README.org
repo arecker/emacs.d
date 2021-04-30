@@ -40,48 +40,6 @@ Or it might look like this on a mac.
               :emacs "~/.emacs.d")))
 #+end_src
 
-* Tools
-
-Dictionary
-
-#+begin_src emacs-lisp
-(use-package dictionary :ensure t)
-#+end_src
-
-_SWIPER NO SWIPING_.
-
-#+begin_src emacs-lisp
-(use-package swiper
-  :ensure t
-  :bind ("C-c s" . swiper))
-#+end_src
-
-Incrementally select intelligent portions of text the with
-=expand-region= shortcut.
-
-#+begin_src emacs-lisp
-(use-package expand-region
-  :ensure t
-  :bind ("C-=" . er/expand-region))
-#+end_src
-
-Flycheck for angry red squiggles.
-
-#+begin_src emacs-lisp
-(use-package flycheck
-  :ensure t
-  :init
-  (global-flycheck-mode))
-#+end_src
-
-Install yasnippet.
-
-#+begin_src emacs-lisp
-  (use-package yasnippet
-    :ensure t
-    :init (yas-global-mode))
-#+end_src
-
 * Passwords
 
 I use the =pass= tool for personal secret management.  It's my own
@@ -120,33 +78,6 @@ crummy implementation.
 
 (global-set-key (kbd "C-x p") 'recker/pass-to-clip)
 (global-set-key (kbd "C-x w") 'recker/pass-to-clip-work)
-#+end_src
-
-* Terminal
-
-Use bash for launching a terminal and bind my custom wrapper function
-to =C-x t=.
-
-#+begin_src emacs-lisp
-(defun recker/ansi-term ()
-  (interactive)
-  (ansi-term "/bin/bash"))
-
-(global-set-key (kbd "C-x t") 'recker/ansi-term)
-#+end_src
-
-On exiting a terminal, also kill the buffer.
-
-#+begin_src emacs-lisp
-(defadvice term-handle-exit
-    (after term-kill-buffer-on-exit activate)
-  (kill-buffer))
-#+end_src
-
-Eshell too.
-
-#+begin_src emacs-lisp
-(global-set-key (kbd "C-c e") 'eshell)
 #+end_src
 
 * Major Modes

@@ -347,6 +347,34 @@ Kill buffers without confirming.
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 #+end_src
 
+** Shells
+
+Use bash for launching a terminal and bind my custom wrapper function
+to =C-x t=.
+
+#+begin_src emacs-lisp
+(defun recker/ansi-term ()
+  (interactive)
+  (ansi-term "/bin/bash"))
+
+(global-set-key (kbd "C-x t") 'recker/ansi-term)
+#+end_src
+
+On exiting a terminal, also kill the buffer.
+
+#+begin_src emacs-lisp
+(defadvice term-handle-exit
+    (after term-kill-buffer-on-exit activate)
+  (kill-buffer))
+#+end_src
+
+Eshell has its own quirks, but it's pretty cool too, especially for
+working with TRAMP.
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-c e") 'eshell)
+#+end_src
+
 * Tools
 
 Things to make life in emacs a little easier.
@@ -409,9 +437,46 @@ Search files within a project with projectile mode.
   :init (projectile-mode t))
 #+end_src
 
+** Swiper
+
+Use swiper for quickly searching a buffer.
+
+#+begin_src emacs-lisp
+(use-package swiper
+  :ensure t
+  :bind ("C-c s" . swiper))
+#+end_src
+
+** Expand Region
+
+Select incrementally larger areas of text with =expand-region=, bound
+to =C-c= =​==.
+
+** Yasnippet
+
+Yasnippet us a powerful snippets tool.
+
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :init (yas-global-mode))
+#+end_src
+
 * Development
 
 ** General
+
+*** Flycheck
+
+Flycheck puts angry red squiggles on the screen when I do something
+stupid.
+
+#+begin_src emacs-lisp
+(use-package flycheck
+  :ensure t
+  :init
+  (global-flycheck-mode))
+#+end_src
 
 *** Editorconfig
 
@@ -604,6 +669,14 @@ like code errors with judgemental red squiggles, thanks to flyspell.
     (setq ispell-program-name (executable-find "ispell"))
     :init
     (add-hook 'text-mode-hook #'(lambda () (flyspell-mode 1))))
+#+end_src
+
+*** Words
+
+Install the dictionary package.
+
+#+begin_src emacs-lisp
+(use-package dictionary :ensure t)
 #+end_src
 
 *** Style

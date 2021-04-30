@@ -80,38 +80,6 @@ crummy implementation.
 (global-set-key (kbd "C-x w") 'recker/pass-to-clip-work)
 #+end_src
 
-* Major Modes
-
-** HTML
-
-Some custom HTML writing functions.  I'll probably move them to
-yasnippet once I can figure it out.
-
-#+begin_src emacs-lisp
-(defun recker/filename-to-alt (filename)
-  "Convert a filepath to an HTML alt attribute."
-  (let ((name (file-name-sans-extension filename))
-        (chars '(?_ ?- ?/)))
-    (dolist (char chars)
-      (setf name (subst-char-in-string char ?\s name)))
-    name))
-
-(defun recker/insert-figure (filename caption)
-  "Insert an HTML figure and caption."
-  (interactive "sFilename:
-sCaption: ")
-  (message "%s" caption)
-  (let* ((src (format "/images/%s" filename))
-         (alt (recker/filename-to-alt filename))
-         (img (format "<a href=\"%s\">\n<img alt=\"%s\" src=\"%s\"/>\n</a>" src alt src))
-         (figcaption (if (not (string-equal caption ""))
-                         (format "<figcaption>\n<p>%s</p>\n</figcaption>" caption))))
-    (insert
-     (if (string-equal caption "")
-         (format "<figure>\n%s\n</figure>" img)
-       (format "<figure>\n%s\n%s\n</figure>" img figcaption)))))
-#+end_src
-
 * Org
 
 Make sure =org-tempo= is loaded so shortcuts work for code blocks, I

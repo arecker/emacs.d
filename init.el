@@ -19,6 +19,4 @@
       (warn (concat config " not found - not loading")))))
 
 (recker/package-init)
-(org-babel-load-file (concat (file-name-as-directory user-emacs-directory) "old.org"))
 (recker/load-config)
-(put 'upcase-region 'disabled nil)

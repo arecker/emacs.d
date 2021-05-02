@@ -1019,27 +1019,32 @@ Yeah, there's a D language apparently.
 
 *** Go
 
-Haven't really gotten into go, but I have to work on Kubernetes
-operators sometimes.
+This config is adapted from the [[https://github.com/golang/tools/blob/master/gopls/doc/emacs.md][official golang guide]].
 
-#+begin_src emacs-lisp
-  (use-package go-mode
-    :ensure t
-    :defer t
-    :config (let ((govet (flycheck-checker-get 'go-vet 'command)))
-              (when (equal (cadr govet) "tool")
-                (setf (cdr govet) (cddr govet))))
-    :init (add-hook 'go-mode-hook
-                    (lambda ()
-                      (set (make-local-variable 'company-backends) '(company-go))
-                      (company-mode))))
+First, install =gopls=.  You will most likely use the following
+command:
 
-  (use-package company-go
-    :ensure t
-    :defer t
-    :after (company))
+#+begin_src sh
+GO111MODULE=on go get golang.org/x/tools/gopls@latest
 #+end_src
 
+Next, install =lsp-mode=.
+
+#+begin_src emacs-lisp
+  (defun recker/lsp-go-install-save-hooks ()
+    (add-hook 'before-save-hook #'lsp-format-buffer t t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+
+  (use-package lsp-mode
+    :ensure t
+    :init
+    (add-hook 'go-mode-hook #'lsp-deferred)
+    (add-hook 'go-mode-hook #'recker/lsp-go-install-save-hooks))
+#+end_src
+
+That's pretty much it!  When you open a go file, you'll be prompted
+with different options.  Just import the project if you'd like to turn
+on completion for the session.  Pretty cool, huh?
 *** Haskell
 
 Haskell mode, in case I ever decide to really grow my neckbeard out.

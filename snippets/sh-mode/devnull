@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: devnull
+# key: devnull
+# --
+> /dev/null 2>&1

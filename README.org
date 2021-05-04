@@ -1144,6 +1144,7 @@ Package for working with [[https://www.terraform.io/][terraform]].
   (use-package terraform-mode
     :ensure t
     :defer t
+    :init (add-hook 'terraform-mode-hook #'(lambda () (terraform-format-on-save-mode 1)))
     :mode "\\.tf\\'")
 #+end_src
 

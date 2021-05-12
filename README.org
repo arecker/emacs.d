@@ -618,6 +618,19 @@ crummy implementation.
 (global-set-key (kbd "C-x w") 'recker/pass-to-clip-work)
 #+end_src
 
+** Kubernetes
+
+Install the kubernetes package.  Gives you a nice magit-style overview
+of kubernetes resources.
+
+#+begin_src emacs-lisp
+(use-package kubernetes
+  :ensure t
+  :commands (kubernetes-overview))
+
+(global-set-key (kbd "C-c K") 'kubernetes-overview)
+#+end_src
+
 * Development
 
 ** General

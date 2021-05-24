@@ -218,7 +218,8 @@ You can set your own aliases by overriding or appending
           :pics "~/pics"
           :public "~/public"
           :src "~/src"
-          :emacs "~/.emacs.d"))
+          :emacs "~/.emacs.d"
+          :bin "~/bin"))
 #+end_src
 
 Or it might look like this on a mac.
@@ -268,6 +269,7 @@ Map a few file registers.  These are kind of like my speed dial.
   (set-register ?l `(file . ,(recker/path :emacs "local.el")))
   (set-register ?m `(file . ,(recker/path :docs "mixtape.org")))
   (set-register ?o `(file . ,(recker/path :docs)))
+  (set-register ?r `(file . ,(recker/path :docs "reckerops.org")))
   (set-register ?w `(file . ,(recker/path :docs "work.org")))
 #+end_src
 
@@ -904,26 +906,30 @@ Don't mess with indentation or empty lines.
 Configure **capture templates** and map the selector to =C-c c=.
 
 #+begin_src emacs-lisp
-  (setq org-capture-templates '())
-  (global-set-key (kbd "C-c c") 'org-capture)
+    (setq org-capture-templates '())
+    (global-set-key (kbd "C-c c") 'org-capture)
 
-  (add-to-list 'org-capture-templates
-               `("j" "journal entry" plain (file+olp+datetree ,(recker/path :docs "journal.org")) "%?\n"
-                 :empty-lines-before 1 :empty-lines-after 1))
+    (add-to-list 'org-capture-templates
+                 `("j" "journal entry" plain (file+olp+datetree ,(recker/path :docs "journal.org")) "%?\n"
+                   :empty-lines-before 1 :empty-lines-after 1))
 
-  (add-to-list 'org-capture-templates
-               `("m" "mixtape notes" plain (file+olp+datetree ,(recker/path :docs "mixtape.org")) "%?\n"
-                 :empty-lines-before 1 :empty-lines-after 1))
+    (add-to-list 'org-capture-templates
+                 `("m" "mixtape notes" plain (file+olp+datetree ,(recker/path :docs "mixtape.org")) "%?\n"
+                   :empty-lines-before 1 :empty-lines-after 1))
 
-  (add-to-list 'org-capture-templates
-               `("i" "idea" plain (file+olp+datetree ,(recker/path :docs "ideas.org")) "%?\n"
-                 :empty-lines-before 1 :empty-lines-after 1))
+    (add-to-list 'org-capture-templates
+                 `("i" "idea" plain (file+olp+datetree ,(recker/path :docs "ideas.org")) "%?\n"
+                   :empty-lines-before 1 :empty-lines-after 1))
 
-  (add-to-list 'org-capture-templates
-               `("p" "productivity task" entry (file+headline ,(recker/path :docs "opsat.org") "Productivity") "* TODO %?\n"))
+    (add-to-list 'org-capture-templates
+                 `("p" "productivity task" entry (file+headline ,(recker/path :docs "opsat.org") "Productivity") "* TODO %?\n"))
 
-  (add-to-list 'org-capture-templates
-               `("w" "work task" entry (file ,(recker/path :docs "work.org")) "* TODO %?\n"))
+    (add-to-list 'org-capture-templates
+                 `("w" "work task" entry (file ,(recker/path :docs "work.org")) "* TODO %?\n"))
+
+    (add-to-list 'org-capture-templates
+                 `("r" "ReckerOps task" entry (file ,(recker/path :docs "reckerops.org")) "* TODO %?\n"
+                   :empty-lines-before 1 :empty-lines-after 1))
 #+end_src
 
 **** Agenda
@@ -1044,6 +1050,9 @@ GO111MODULE=on go get golang.org/x/tools/gopls@latest
 Next, install =lsp-mode=.
 
 #+begin_src emacs-lisp
+  (use-package go-mode
+    :ensure t)
+
   (defun recker/lsp-go-install-save-hooks ()
     (add-hook 'before-save-hook #'lsp-format-buffer t t)
     (add-hook 'before-save-hook #'lsp-organize-imports t t))
@@ -1151,14 +1160,26 @@ also turn it on with =M-x= =nginx-mode=.
 
 *** Terraform
 
-Package for working with [[https://www.terraform.io/][terraform]].
+Package for working with [[https://www.terraform.io/][terraform]].  First, install tflint the
+/dangerous/ way.
+
+#+begin_src sh
+curl https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+#+end_src
+
+Next the package and the lsp mode or whatever.
 
 #+begin_src emacs-lisp
+  (defun recker/terraform-mode-hook ()
+    (terraform-format-on-save-mode))
+
   (use-package terraform-mode
     :ensure t
-    :defer t
-    :init (add-hook 'terraform-mode-hook #'(lambda () (terraform-format-on-save-mode 1)))
-    :mode "\\.tf\\'")
+    :init
+    (add-hook 'terraform-mode-hook #'recker/terraform-mode-hook))
+
+  (use-package company-terraform
+    :ensure t)
 #+end_src
 
 *** YAML

@@ -1279,7 +1279,7 @@ Some other helpful functions.
     "Open today's journal entry."
     (interactive)
     (let* ((target
-            (recker/path :src (format-time-string "blog/_posts/%Y-%m-%d-entry.md")))
+            (recker/path :src (format-time-string "blog/entries/%Y-%m-%d.md")))
            (frontmatter
             (format-time-string "---\ntitle:\nbanner: %Y-%m-%d.jpg\n---\n\n")))
       (if (file-exists-p target)

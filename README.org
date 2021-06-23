@@ -906,30 +906,32 @@ Don't mess with indentation or empty lines.
 Configure **capture templates** and map the selector to =C-c c=.
 
 #+begin_src emacs-lisp
-    (setq org-capture-templates '())
-    (global-set-key (kbd "C-c c") 'org-capture)
+  (setq org-capture-templates '())
+  (global-set-key (kbd "C-c c") 'org-capture)
 
-    (add-to-list 'org-capture-templates
-                 `("j" "journal entry" plain (file+olp+datetree ,(recker/path :docs "journal.org")) "%?\n"
-                   :empty-lines-before 1 :empty-lines-after 1))
+  (add-to-list 'org-capture-templates
+               `("j" "journal entry" plain (file+olp+datetree ,(recker/path :docs "journal.org")) "%?\n"
+                 :empty-lines-before 1 :empty-lines-after 1))
 
-    (add-to-list 'org-capture-templates
-                 `("m" "mixtape notes" plain (file+olp+datetree ,(recker/path :docs "mixtape.org")) "%?\n"
-                   :empty-lines-before 1 :empty-lines-after 1))
+  (add-to-list 'org-capture-templates
+               `("m" "mixtape notes" plain (file+olp+datetree ,(recker/path :docs "mixtape.org")) "%?\n"
+                 :empty-lines-before 1 :empty-lines-after 1))
 
-    (add-to-list 'org-capture-templates
-                 `("i" "idea" plain (file+olp+datetree ,(recker/path :docs "ideas.org")) "%?\n"
-                   :empty-lines-before 1 :empty-lines-after 1))
+  (add-to-list 'org-capture-templates
+               `("i" "idea" plain (file+olp+datetree ,(recker/path :docs "ideas.org")) "%?\n"
+                 :empty-lines-before 1 :empty-lines-after 1))
 
-    (add-to-list 'org-capture-templates
-                 `("p" "productivity task" entry (file+headline ,(recker/path :docs "opsat.org") "Productivity") "* TODO %?\n"))
+  (add-to-list 'org-capture-templates
+               `("p" "productivity task" entry (file+headline ,(recker/path :docs "opsat.org") "Productivity") "* TODO %?\n"
+                 :empty-lines-before 1 :empty-lines-after 1))
 
-    (add-to-list 'org-capture-templates
-                 `("w" "work task" entry (file ,(recker/path :docs "work.org")) "* TODO %?\n"))
+  (add-to-list 'org-capture-templates
+               `("w" "work task" entry (file ,(recker/path :docs "work.org")) "* TODO %?\n"
+                 :empty-lines-before 1 :empty-lines-after 1))
 
-    (add-to-list 'org-capture-templates
-                 `("r" "ReckerOps task" entry (file ,(recker/path :docs "reckerops.org")) "* TODO %?\n"
-                   :empty-lines-before 1 :empty-lines-after 1))
+  (add-to-list 'org-capture-templates
+               `("r" "ReckerOps task" entry (file ,(recker/path :docs "reckerops.org")) "* TODO %?\n"
+                 :empty-lines-before 1 :empty-lines-after 1))
 #+end_src
 
 **** Agenda
@@ -1114,6 +1116,17 @@ working with it.
 
 ** DevOps
 
+*** Bats
+
+[[https://github.com/bats-core/bats-core][Bats]], for testing bash.
+
+#+begin_src emacs-lisp
+  (use-package bats-mode
+    :ensure t
+    :defer t
+    :mode ("\\.bats\\'"))
+#+end_src
+
 *** Dockerfile
 
 This enables pretty syntax highlighting for editing [[https://docs.docker.com/engine/reference/builder/#:~:text=A%20Dockerfile%20is%20a%20text,command%2Dline%20instructions%20in%20succession.][Dockerfiles]].
@@ -1204,26 +1217,7 @@ For this configuration to work, you need some global npm packages
 installed.  You can take care of that like this:
 
 #+begin_src sh
-  npm install -g eslint prettier
-#+end_src
-
-*** Web Mode
-
-Use [[https://web-mode.org/][web-mode]] for editing HTML, JavaScript, and anything in between.
-
-#+begin_src emacs-lisp
-  (defun recker/web-mode-hook ()
-    "Custom web-mode hook."
-    (setq web-mode-markup-indent-offset 2)
-    (setq web-mode-script-padding 2)
-    (setq web-mode-style-padding 2)
-    (setq web-mode-code-indent-offset 2))
-
-  (use-package web-mode
-    :ensure t
-    :mode ("\\.html\\'" "\\.j2\\'" "\\.j2\\'" "\\.jsx?$")
-    :config (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
-    :init (add-hook 'web-mode-hook 'recker/web-mode-hook))
+  npm install -g eslint
 #+end_src
 
 *** ESLint
@@ -1240,27 +1234,6 @@ checker.
                           '(javascript-jshint json-jsonlist)))
     (flycheck-add-mode 'javascript-eslint 'web-mode)
     (add-hook 'after-init-hook #'global-flycheck-mode))
-#+end_src
-
-*** Prettier.js
-
-Automatically format code on save with [[https://prettier.io/][Prettier]].
-
-#+begin_src emacs-lisp
-  (use-package prettier-js
-    :ensure t
-    :init (add-hook 'web-mode-hook 'prettier-js-mode))
-#+end_src
-
-*** Emmet Mode
-
-Use [[https://emmet.io/][Emmet]] for smart tag expansion.
-
-#+begin_src emacs-lisp
-  (use-package emmet-mode
-    :ensure t
-    :init (setq emmet-preview-default nil)
-    :config (add-hook 'web-mode-hook 'emmet-mode))
 #+end_src
 
 * Functions

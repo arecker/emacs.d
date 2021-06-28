@@ -678,7 +678,7 @@ Use [[https://company-mode.github.io/][company-mode]] for completion.
   (use-package company
     :ensure t
     :init (add-hook 'after-init-hook 'global-company-mode)
-    :config (setq company-global-modes '(not org-mode mhtml-mode markdown-mode))
+    :config (setq company-global-modes '(not org-mode mhtml-mode markdown-mode)))
 #+end_src
 
 *** Whitespace

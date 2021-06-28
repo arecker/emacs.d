@@ -1221,6 +1221,17 @@ installed.  You can take care of that like this:
   npm install -g eslint
 #+end_src
 
+*** HTML
+
+Newer, slimmer vanilla emacs configuration for editing HTML!
+
+Insert paragraph tags with =M-RET= and close them with the default
+=C-c C-e=.
+
+#+begin_src emacs-lisp
+  (define-key mhtml-mode-map (kbd "M-RET") 'html-paragraph)
+#+end_src
+
 *** ESLint
 
 Make sure flycheck is installed, and disable the default jshint

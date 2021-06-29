@@ -1225,6 +1225,22 @@ installed.  You can take care of that like this:
 
 Newer, slimmer vanilla emacs configuration for editing HTML!
 
+Automatically wrap paragraphs in =p= tags.  Thank you for the
+inspiration, [[https://www.youtube.com/watch?v=ZS5lGxMbXyI][Xah Lee]].
+
+#+begin_src emacs-lisp
+  (defun recker/add-p-tags-to-buffer ()
+    "Automatically wrap all paragraphs in buffer in <p></p> tags."
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "\\(\\`\\|\n\n+\\)\\([^<\n]\\)" nil t)
+        (replace-match "\\1<p>\\2" t))
+      (goto-char (point-min))
+      (while (re-search-forward "\\([^>\n]\\)\\(\n\n+\\|\n\\'\\)" nil t)
+        (replace-match "\\1</p>\\2" t))))
+#+end_src
+
 *** ESLint
 
 Make sure flycheck is installed, and disable the default jshint

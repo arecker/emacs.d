@@ -1050,6 +1050,15 @@ command:
 GO111MODULE=on go get golang.org/x/tools/gopls@latest
 #+end_src
 
+Install =godef= too, so the jump to definition feature works.  **Note
+to self** if weird stuff starts happening, just try reinstalling or
+upgrading this package.  That would have saved a whole Friday morning
+for me.
+
+#+begin_src sh
+GO111MODULE=on go get github.com/rogpeppe/godef@latest
+#+end_src
+
 Next, install =lsp-mode=.
 
 #+begin_src emacs-lisp

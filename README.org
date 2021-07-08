@@ -1243,10 +1243,10 @@ inspiration, [[https://www.youtube.com/watch?v=ZS5lGxMbXyI][Xah Lee]].
     (interactive)
     (save-excursion
       (goto-char (point-min))
-      (while (re-search-forward "\\(\\`\\|\n\n+\\)\\([^< \n]\\)" nil t)
+      (while (re-search-forward "\\(\\`\\|\n\n+\\)\\([^< $\n]\\)" nil t)
         (replace-match "\\1<p>\\2" t))
       (goto-char (point-min))
-      (while (re-search-forward "\\([^>\n]\\)\\(\n\n+\\|\n\\'\\)" nil t)
+      (while (re-search-forward "\\([^>}\n]\\)\\(\n\n+\\|\n\\'\\)" nil t)
         (replace-match "\\1</p>\\2" t))))
 #+end_src
 

@@ -1108,11 +1108,35 @@ thing I do differently is disable the automatic venv feature - I
 prefer to just manually switch with =M-x= =pyvenv-workon=.
 
 #+begin_src emacs-lisp
+  (setq recker/python-auto-format-enabled t)
+
+  (defun recker/toggle-python-format-on-save ()
+    "Toggle python auto formatting on save."
+    (interactive)
+    (if recker/python-auto-format-enabled
+        (progn
+          (message "recker: disabling python auto format")
+          (setq recker/python-auto-format-enabled nil))
+      (progn
+        (message "recker: enabling python auto format")
+        (setq recker/python-auto-format-enabled t))))
+
+  (defun recker/maybe-elpy-format-code ()
+    (unless (not recker/python-auto-format-enabled)
+      (elpy-format-code)))
+
+  (defun recker/python-hook ()
+    (add-hook 'before-save-hook 'recker/maybe-elpy-format-code nil t))
+
   (use-package elpy
     :ensure t
     :defer t
-    :config (setq elpy-rpc-virtualenv-path 'current)
-    :init (advice-add 'python-mode :before 'elpy-enable))
+    :config
+    (setq elpy-formatter "yapf")
+    (setq elpy-rpc-virtualenv-path 'current)
+    :init
+    (advice-add 'python-mode :before 'elpy-enable)
+    (add-hook 'elpy-mode-hook #'recker/python-hook))
 #+end_src
 
 *** Ruby

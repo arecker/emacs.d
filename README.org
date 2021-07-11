@@ -1274,15 +1274,6 @@ inspiration, [[https://www.youtube.com/watch?v=ZS5lGxMbXyI][Xah Lee]].
         (replace-match "\\1</p>\\2" t))))
 #+end_src
 
-Run it on save as a hook when in HTML mode, why not.
-
-#+begin_src emacs-lisp
-  (defun recker/html-mode-hook ()
-    (add-hook 'before-save-hook #'recker/add-p-tags-to-buffer 0 t))
-
-  (add-hook 'mhtml-mode-hook #'recker/html-mode-hook)
-#+end_src
-
 *** ESLint
 
 Make sure flycheck is installed, and disable the default jshint

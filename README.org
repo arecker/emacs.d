@@ -1161,6 +1161,14 @@ working with it.
     :mode ("\\.bats\\'"))
 #+end_src
 
+*** Dhall
+
+#+begin_src emacs-lisp
+(use-package dhall-mode
+  :ensure t
+  :mode "\\.dhall\\'")
+#+end_src
+
 *** Dockerfile
 
 This enables pretty syntax highlighting for editing [[https://docs.docker.com/engine/reference/builder/#:~:text=A%20Dockerfile%20is%20a%20text,command%2Dline%20instructions%20in%20succession.][Dockerfiles]].

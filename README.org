@@ -1292,9 +1292,9 @@ Some other helpful functions.
     "Open today's journal entry."
     (interactive)
     (let* ((target
-            (recker/path :src (format-time-string "blog/entries/%Y-%m-%d.md")))
+            (recker/path :src (format-time-string "blog/entries/%Y-%m-%d.html")))
            (frontmatter
-            (format-time-string "---\ntitle:\nbanner: %Y-%m-%d.jpg\n---\n\n")))
+            (format-time-string "<!-- meta:title -->\n<!-- meta:banner %Y-%m-%d.jpg -->\n\n")))
       (if (file-exists-p target)
           (find-file target)
         (progn (find-file target)

@@ -1207,7 +1207,8 @@ prefer to just manually switch with =M-x= =pyvenv-workon=.
       (elpy-format-code)))
 
   (defun recker/python-hook ()
-    (add-hook 'before-save-hook 'recker/maybe-elpy-format-code nil t))
+    (add-hook 'before-save-hook 'recker/maybe-elpy-format-code nil t)
+    (set (make-local-variable 'yas-indent-line) 'fixed))
 
   (use-package elpy
     :ensure t

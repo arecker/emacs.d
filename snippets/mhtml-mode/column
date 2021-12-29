@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: column
+# key: .column
+# --
+<div class="column">
+  $1
+</div>

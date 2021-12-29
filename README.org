@@ -310,18 +310,6 @@ the quick, intuitive interface.
   ("C-c m" . magit-blame))
 #+END_SRC
 
-** Auth
-
-Emacs consults any of the files specified in the variable
-=auth-sources= when it needs credentials for something.  This can be
-an encrypted file too - just add the =.gpg= file extension.  I use a
-single file I keep in private version control.
-
-#+begin_src emacs-lisp
-  (setq auth-sources '())
-  (add-to-list 'auth-sources (recker/path :docs "emacs/authinfo.gpg"))
-#+end_src
-
 ** Buffers
 
 Purge all buffers with =C-x P=.

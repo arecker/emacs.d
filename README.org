@@ -600,10 +600,12 @@ like code errors with judgemental red squiggles, thanks to flyspell.
 #+begin_src emacs-lisp
   (use-package flyspell
     :config
-    (setq ispell-personal-dictionary (recker/path :docs "emacs/ispell.dict"))
     (setq ispell-program-name (executable-find "ispell"))
     :init
     (add-hook 'text-mode-hook #'(lambda () (flyspell-mode 1))))
+
+(eval-after-load "ispell"
+  '(progn (defun ispell-get-coding-system () 'utf-8)))
 #+end_src
 
 *** Words

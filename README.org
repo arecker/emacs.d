@@ -254,26 +254,6 @@ Configure **dired**, the emacs file manager.
 (setq dired-clean-confirm-killing-deleted-buffers nil)
 #+end_src
 
-*** Registers
-
-Map a few file registers.  These are kind of like my speed dial.
-
-#+begin_src emacs-lisp
-  (set-register ?d `(file . ,(recker/path :desktop)))
-  (set-register ?e `(file . ,(recker/path :emacs "README.org")))
-  (set-register ?l `(file . ,(recker/path :emacs "local.el")))
-  (set-register ?o `(file . ,(recker/path :docs)))
-  (set-register ?w `(file . ,(recker/path :docs "work.org")))
-#+end_src
-
-It works over SSH too, thanks to TRAMP.
-
-#+begin_src emacs-lisp
-(set-register ?M '(file . "/ssh:alex@nas.local:/volume1/media/"))
-(set-register ?D '(file . "/ssh:alex@nas.local:/volume1/downloads/"))
-(set-register ?N '(file . "/ssh:alex@nas.local:/volume1/homes/alex/"))
-#+end_src
-
 *** Bookmarks
 
 Configure bookmarks.  Use IDO to jump between them.

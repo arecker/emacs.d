@@ -279,16 +279,15 @@ It works over SSH too, thanks to TRAMP.
 Configure bookmarks.  Use IDO to jump between them.
 
 #+begin_src emacs-lisp
-(require 'bookmark)
-(setq bookmark-save-flag 1
-      bookmark-default-file (recker/path :docs "emacs/bookmarks.el"))
+  (require 'bookmark)
+  (setq bookmark-save-flag 1)
 
-(defun recker/ido-bookmark-jump (bookmark)
-  "*Switch to bookmark BOOKMARK interactively using `ido'."
-  (interactive (list (ido-completing-read "Bookmark: " (bookmark-all-names) nil t)))
-  (bookmark-jump bookmark))
+  (defun recker/ido-bookmark-jump (bookmark)
+    "*Switch to bookmark BOOKMARK interactively using `ido'."
+    (interactive (list (ido-completing-read "Bookmark: " (bookmark-all-names) nil t)))
+    (bookmark-jump bookmark))
 
-(global-set-key (kbd "C-x r b") 'recker/ido-bookmark-jump)
+  (global-set-key (kbd "C-x r b") 'recker/ido-bookmark-jump)
 #+end_src
 
 *** Version Control

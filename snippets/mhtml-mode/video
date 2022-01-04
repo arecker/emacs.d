@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: video
+# key: video
+# --
+<video width="400" controls="">
+  <source src="/vids/`(substring (buffer-name) 0 10)`-${1:name}.${2:mp4}" type="video/$2" />
+Bummer - it looks like your browser doesn't support embedded video.
+</video>

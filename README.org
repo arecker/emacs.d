@@ -964,23 +964,7 @@ Configure **capture templates** and map the selector to =C-c c=.
                  :empty-lines-before 1 :empty-lines-after 1))
 
   (add-to-list 'org-capture-templates
-               `("m" "mixtape notes" plain (file+olp+datetree ,(recker/path :docs "mixtape.org")) "%?\n"
-                 :empty-lines-before 1 :empty-lines-after 1))
-
-  (add-to-list 'org-capture-templates
                `("i" "idea" plain (file+olp+datetree ,(recker/path :docs "ideas.org")) "%?\n"
-                 :empty-lines-before 1 :empty-lines-after 1))
-
-  (add-to-list 'org-capture-templates
-               `("p" "productivity task" entry (file+headline ,(recker/path :docs "opsat.org") "Productivity") "* TODO %?\n"
-                 :empty-lines-before 1 :empty-lines-after 1))
-
-  (add-to-list 'org-capture-templates
-               `("w" "work task" entry (file ,(recker/path :docs "work.org")) "* TODO %?\n"
-                 :empty-lines-before 1 :empty-lines-after 1))
-
-  (add-to-list 'org-capture-templates
-               `("r" "ReckerOps task" entry (file ,(recker/path :docs "reckerops.org")) "* TODO %?\n"
                  :empty-lines-before 1 :empty-lines-after 1))
 #+end_src
 

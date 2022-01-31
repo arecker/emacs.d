@@ -1018,36 +1018,12 @@ thing I do differently is disable the automatic venv feature - I
 prefer to just manually switch with =M-x= =pyvenv-workon=.
 
 #+begin_src emacs-lisp
-  (setq recker/python-auto-format-enabled t)
-
-  (defun recker/toggle-python-format-on-save ()
-    "Toggle python auto formatting on save."
-    (interactive)
-    (if recker/python-auto-format-enabled
-        (progn
-          (message "recker: disabling python auto format")
-          (setq recker/python-auto-format-enabled nil))
-      (progn
-        (message "recker: enabling python auto format")
-        (setq recker/python-auto-format-enabled t))))
-
-  (defun recker/maybe-elpy-format-code ()
-    (unless (not recker/python-auto-format-enabled)
-      (elpy-format-code)))
-
-  (defun recker/python-hook ()
-    (add-hook 'before-save-hook 'recker/maybe-elpy-format-code nil t)
-    (set (make-local-variable 'yas-indent-line) 'fixed))
-
-  (use-package elpy
+  (use-package lsp-python-ms
     :ensure t
-    :defer t
-    :config
-    (setq elpy-formatter "yapf")
-    (setq elpy-rpc-virtualenv-path 'current)
-    :init
-    (advice-add 'python-mode :before 'elpy-enable)
-    (add-hook 'elpy-mode-hook #'recker/python-hook))
+    :init (setq lsp-python-ms-auto-install-server t)
+    :hook (python-mode . (lambda ()
+                            (require 'lsp-python-ms)
+                            (lsp-deferred))))
 #+end_src
 
 ** reStructuredText

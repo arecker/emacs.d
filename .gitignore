@@ -21,3 +21,4 @@ network-security.data
 /old.el
 /.lsp-session-v1
 /.cache/
+/.dap-breakpoints

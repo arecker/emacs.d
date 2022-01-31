@@ -408,11 +408,6 @@ Use swiper for quickly searching a buffer.
   :bind ("C-c s" . swiper))
 #+end_src
 
-** Expand Region
-
-Select incrementally larger areas of text with =expand-region=, bound
-to =C-c= =​==.
-
 ** Yasnippet
 
 Yasnippet us a powerful snippets tool.

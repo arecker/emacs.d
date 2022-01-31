@@ -471,6 +471,16 @@ of kubernetes resources.
 (global-set-key (kbd "C-c K") 'kubernetes-overview)
 #+end_src
 
+** LSP
+
+Use LSP for enhancing emacs in ways that I don't yet totally
+understand.
+
+#+begin_src emacs-lisp
+  (use-package lsp-mode :ensure t)
+  (use-package lsp-ui :ensure t :commands lsp-ui-mode)
+#+end_src
+
 * Modes
 
 Configurations for all the types of text I edit with Emacs.
@@ -679,9 +689,14 @@ Yeah, there's a D language apparently.
 ** Dhall
 
 #+begin_src emacs-lisp
-(use-package dhall-mode
-  :ensure t
-  :mode "\\.dhall\\'")
+  (use-package dhall-mode
+    :ensure t
+    :mode "\\.dhall\\'"
+    :config
+    (setq dhall-format-at-save t
+          dhall-format-arguments (\` ("--ascii"))
+          dhall-use-header-line nil)
+    :init (add-hook 'dhall-mode-hook #'lsp-deferred))
 #+end_src
 
 ** Dockerfile
@@ -689,10 +704,10 @@ Yeah, there's a D language apparently.
 This enables pretty syntax highlighting for editing [[https://docs.docker.com/engine/reference/builder/#:~:text=A%20Dockerfile%20is%20a%20text,command%2Dline%20instructions%20in%20succession.][Dockerfiles]].
 
 #+begin_src emacs-lisp
-(use-package dockerfile-mode
-  :ensure t
-  :defer t
-  :mode ("\\Dockerfile\\'" "\\.dockerfile\\'"))
+  (use-package dockerfile-mode
+    :ensure t
+    :defer t
+    :mode ("\\Dockerfile\\'" "\\.dockerfile\\'"))
 #+end_src
 
 ** Go
@@ -715,17 +730,14 @@ for me.
 GO111MODULE=on go get github.com/rogpeppe/godef@latest
 #+end_src
 
-Next, install =lsp-mode=.
+Finally, the LSP config stuff.
 
 #+begin_src emacs-lisp
-  (use-package go-mode
-    :ensure t)
-
   (defun recker/lsp-go-install-save-hooks ()
     (add-hook 'before-save-hook #'lsp-format-buffer t t)
     (add-hook 'before-save-hook #'lsp-organize-imports t t))
 
-  (use-package lsp-mode
+  (use-package go-mode
     :ensure t
     :init
     (add-hook 'go-mode-hook #'lsp-deferred)
@@ -1017,8 +1029,8 @@ prefer to just manually switch with =M-x= =pyvenv-workon=.
     :ensure t
     :init (setq lsp-python-ms-auto-install-server t)
     :hook (python-mode . (lambda ()
-                            (require 'lsp-python-ms)
-                            (lsp-deferred))))
+                           (require 'lsp-python-ms)
+                           (lsp-deferred))))
 #+end_src
 
 ** reStructuredText

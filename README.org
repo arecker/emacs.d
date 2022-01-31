@@ -1047,11 +1047,9 @@ pretty cool.
 
 ** Ruby
 
-I like ruby, I just strangely don't have a lot of customizations for
-working with it.
-
 #+begin_src emacs-lisp
   (setq ruby-deep-indent-paren nil)
+  (add-hook 'ruby-mode-hook #'lsp-deferred)
 #+end_src
 
 ** Terraform

@@ -616,6 +616,12 @@ warn for passive voice and bad word choice.
   (add-hook 'rst-mode-hook 'writegood-mode))
 #+end_src
 
+** Bash
+
+#+begin_src emacs-lisp
+(add-hook 'sh-mode-hook #'lsp-deferred)
+#+end_src
+
 ** Bats
 
 [[https://github.com/bats-core/bats-core][Bats]], for testing bash.

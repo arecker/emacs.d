@@ -3,8 +3,8 @@
 # key: figure
 # --
 <figure>
-  <a href="/images/`(substring (buffer-name) 0 10)`-${1:name}.${2:jpg}">
-    <img alt="$1" src="/images/`(substring (buffer-name) 0 10)`-$1.$2"/>
+  <a href="./images/`(substring (buffer-name) 0 10)`-${1:name}.${2:jpg}">
+    <img alt="$1" src="./images/`(substring (buffer-name) 0 10)`-$1.$2"/>
   </a>
   <figcaption><p>${3:caption}</p></figcaption>
 </figure>

@@ -1026,17 +1026,37 @@ Install htmlize for sweet snyntax highlighting on HTML exports.
 
 ** Python
 
-[[https://elpy.readthedocs.io/en/latest/][Elpy]] is pretty full featured, just let it do its thing.  The only
-thing I do differently is disable the automatic venv feature - I
-prefer to just manually switch with =M-x= =pyvenv-workon=.
-
 #+begin_src emacs-lisp
-  (use-package lsp-python-ms
+  (setq recker/python-auto-format-enabled t)
+
+  (defun recker/toggle-python-format-on-save ()
+    "Toggle python auto formatting on save."
+    (interactive)
+    (if recker/python-auto-format-enabledu
+        (progn
+          (message "recker: disabling python auto format")
+          (setq recker/python-auto-format-enabled nil))
+      (progn
+        (message "recker: enabling python auto format")
+        (setq recker/python-auto-format-enabled t))))
+
+  (defun recker/maybe-elpy-format-code ()
+    (unless (not recker/python-auto-format-enabled)
+      (elpy-format-code)))
+
+  (defun recker/python-hook ()
+    (add-hook 'before-save-hook 'recker/maybe-elpy-format-code nil t)
+    (set (make-local-variable 'yas-indent-line) 'fixed))
+
+  (use-package elpy
     :ensure t
-    :init (setq lsp-python-ms-auto-install-server t)
-    :hook (python-mode . (lambda ()
-                           (require 'lsp-python-ms)
-                           (lsp-deferred))))
+    :defer t
+    :config
+    (setq elpy-formatter "yapf")
+    (setq elpy-rpc-virtualenv-path 'current)
+    :init
+    (advice-add 'python-mode :before 'elpy-enable)
+    (add-hook 'elpy-mode-hook #'recker/python-hook))
 #+end_src
 
 ** reStructuredText

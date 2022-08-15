@@ -67,19 +67,22 @@ when a buffer is about to be deleted.
 Just to keep things interesting, this is a hook to display a random
 quote from this table as an elisp comment.
 
-#+begin_src emacs-lisp :var scratch-quotes=scratch-quotes :results value
+#+begin_src emacs-lisp :results value
     (defun recker/scratch-quote--format (fortune)
       (let* ((text (cl-first fortune))
-             (splittext
-              (with-temp-buffer
-                (insert text)
-                (fill-region (point-min) (point-max))
-                (split-string (buffer-string) "\n")))
-             (author (format "\n;; -- %s\n\n" (cl-first (last fortune)))))
-        (concat "\n;; " (string-join splittext "\n;; ") author)))
+	     (splittext
+	      (with-temp-buffer
+		(insert text)
+		(fill-region (point-min) (point-max))
+		(split-string (buffer-string) "\n")))
+	     (author (format "\n;; %s\n\n" (cl-first (last fortune)))))
+	(concat "\n;; " (string-join splittext "\n;; ") author)))
 
-    (defun recker/scratch-quote ()
-      (recker/scratch-quote--format (recker/scratch-quote--pick)))
+  (defun recker/scratch-quote ()
+    (let* ((result (shell-command-to-string "fortune-blog"))
+	   (result (string-trim result))
+	   (result (split-string result "\n")))
+      (recker/scratch-quote--format result)))
 
   (setq initial-scratch-message (recker/scratch-quote))
 #+end_src

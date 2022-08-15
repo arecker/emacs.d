@@ -50,7 +50,7 @@ be customized to be a little more friendly and helpful.
 First, suppress the big startup screen message.
 
 #+begin_src emacs-lisp
-(setq inhibit-startup-message 't)
+  (setq inhibit-startup-message 't)
 #+end_src
 
 Next, make the =*scratch*= buffer un-killable, so you can always have
@@ -67,62 +67,7 @@ when a buffer is about to be deleted.
 Just to keep things interesting, this is a hook to display a random
 quote from this table as an elisp comment.
 
-#+name: scratch-quotes
-|----------------------------------------------------------------------------------------------------------------------------+---------------------------|
-| Sanity and happiness are an impossible combination.                                                                        | Mark Twain                |
-| Trust thyself only, and another shall not betray thee.                                                                     | Thomas Fuller             |
-| Fear has its uses but cowardice has none.                                                                                  | Mahatma Ghandi            |
-| Happiness can exist only in acceptance.                                                                                    | George Orwell             |
-| Seek respect mainly from thyself, for it comes first from within.                                                          | Steven H. Coogler         |
-| Conscience is the dog that can't bite, but never stops barking.                                                            | Proverb                   |
-| In general, pride is at the bottom of all great mistakes.                                                                  | Steven H. Coogler         |
-| Anger as soon as fed is dead -- tis starving makes it fat.                                                                 | Emily Dickinson           |
-| Make no judgements where you have no compassion.                                                                           | Anne McCaffrey            |
-| Isolation is a self-defeating dream.                                                                                       | Carlos Salinas de Gortari |
-| Doubt must be no more than vigilance, otherwise it can become dangerous.                                                   | George C. Lichtenberg     |
-| Love is a willingless to sacrifice.                                                                                        | Michael Novak             |
-| The value of identity is that so often with it comes purpose.                                                              | Richard R. Grant          |
-| Discontent is the first necessity of progress.                                                                             | Thomas Edison             |
-| Some of us think holding on makes us strong, but sometimes it is letting go.                                               | Herman Hesse              |
-| Let not a man guard his dignity but let his dignity guard him.                                                             | Ralph Waldo Emerson       |
-| Guilt: the gift that keeps on giving.                                                                                      | Erma Bombeck              |
-| Be here now.                                                                                                               | Ram Dass                  |
-| The master understands that the universe is forever out of control.                                                        | Lao Tzu                   |
-| Our biggest problems arise from the avoidance of smaller ones.                                                             | James A. Lee Iacocca      |
-| Honesty and transparency make you vulnerable.                                                                              | Mother Teresa             |
-| If you do not ask the right questions, you do not get the right answers.                                                   | Edward Hodnett            |
-| Resentment is like taking poison and waiting for the other person to die.                                                  | Malachy McCourt           |
-| If we knew each other's  secrets, what comfort should we find.                                                             | John Churton Collins      |
-| The mistake is thinking that there can be an antidote to the uncertainty.                                                  | David Levithan            |
-| Cure sometimes, treat often, comfort always.                                                                               | Hippocrates               |
-| Suspicion is a heavy armor and with its weight it impedes more than it protects.                                           | Robert Burns              |
-| Sincerity, even if it speaks with a stutter, will sound eloquent when inspired.                                            | Eiji Yoshikawa            |
-| I have little shame, no dignity - all in the name of a better cause.                                                       | A.J. Jacobs               |
-| Truth may sometimes hurt, but delusion harms.                                                                              | Vanna Bonta               |
-| Intuition is more important to discovery than logic.                                                                       | Henri Poincare            |
-| How weird was it to drive streets I knew so well. What a different perspective.                                            | Suzanne Vega              |
-| There can be no progress without head-on confrontation.                                                                    | Christopher Hitchens      |
-| Sometimes it's necessary to go a long distance out of the way to come back a short distance correctly.                     | Edward Albea              |
-| Stagnation is death. If you don't change, you die. It's that simple. It's that scary.                                      | Leonard Sweet             |
-| In my opinion, actual heroism, like actual love, is a messy, painful, vulnerable business.                                 | John Green                |
-| Maybe all one can do is hope to end up with the right regrets.                                                             | Arthur Miller             |
-| If you have behaved badly, repent, make what amends you can and address yourself to the task of behaving better next time. | Aldous Huxley             |
-| Sooner or later everyone sits down to a banquet of consequences.                                                           | Robert Louis Stevenson    |
-| We are all in the same boat, in a stormy sea, and we owe each other a terrible loyalty.                                    | G.K. Chesterton           |
-| In our quest for the answers of life we tend to make order out of chaos, and chaos out of order.                           | Jeffrey Fry               |
-| There are many ways of going forward, but only one way of standing still.                                                  | Franklin D. Roosevelt     |
-| Truth is outside of all patterns.                                                                                          | Bruce Lee                 |
-| By imposing too great a responsibility, or rather, all responsibility, on yourself, you crush yourself.                    | Franz Kafka               |
-| How few there are who have courage enough to own their faults, or resolution enough to mend them.                          | Benjamin Franklin         |
-| Resistance is useless.                                                                                                     | Doctor Who                |
-| Happiness does not depend on outward things, but on the way we see them.                                                   | Leo Tolstoy               |
-| Being president is like being a jackass in a hailstorm.  There's nothing to do but to stand there and take it.             | Lyndon Johnson            |
-| In the depth of winter, I finally learned that within me, there lay, an invincible summer.                                 | Albert Camus              |
-
 #+begin_src emacs-lisp :var scratch-quotes=scratch-quotes :results value
-    (defun recker/scratch-quote--pick ()
-      (nth (random (length scratch-quotes)) scratch-quotes))
-
     (defun recker/scratch-quote--format (fortune)
       (let* ((text (cl-first fortune))
              (splittext
@@ -556,7 +501,6 @@ when doing any kind of word processing.
 #+begin_src emacs-lisp
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
-(add-hook 'gfm-mode-hook 'turn-on-auto-fill)
 (add-hook 'rst-mode-hook 'turn-on-auto-fill)
 #+end_src
 
@@ -614,12 +558,6 @@ warn for passive voice and bad word choice.
   (add-hook 'org-mode-hook 'writegood-mode)
   (add-hook 'gfm-mode-hook 'writegood-mode)
   (add-hook 'rst-mode-hook 'writegood-mode))
-#+end_src
-
-** Bash
-
-#+begin_src emacs-lisp
-(add-hook 'sh-mode-hook #'lsp-deferred)
 #+end_src
 
 ** Bats
@@ -1032,7 +970,7 @@ Install htmlize for sweet snyntax highlighting on HTML exports.
   (defun recker/toggle-python-format-on-save ()
     "Toggle python auto formatting on save."
     (interactive)
-    (if recker/python-auto-format-enabledu
+    (if recker/python-auto-format-enabled
         (progn
           (message "recker: disabling python auto format")
           (setq recker/python-auto-format-enabled nil))
@@ -1076,6 +1014,12 @@ pretty cool.
 #+begin_src emacs-lisp
   (setq ruby-deep-indent-paren nil)
   (add-hook 'ruby-mode-hook #'lsp-deferred)
+#+end_src
+
+** Rust
+#+begin_src emacs-lisp
+  (use-package rust-mode
+    :ensure t)
 #+end_src
 
 ** Terraform

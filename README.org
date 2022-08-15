@@ -68,20 +68,20 @@ Just to keep things interesting, this is a hook to display a random
 quote from this table as an elisp comment.
 
 #+begin_src emacs-lisp :results value
-    (defun recker/scratch-quote--format (fortune)
-      (let* ((text (cl-first fortune))
-	     (splittext
-	      (with-temp-buffer
-		(insert text)
-		(fill-region (point-min) (point-max))
-		(split-string (buffer-string) "\n")))
-	     (author (format "\n;; %s\n\n" (cl-first (last fortune)))))
-	(concat "\n;; " (string-join splittext "\n;; ") author)))
+  (defun recker/scratch-quote--format (fortune)
+    (let* ((text (cl-first fortune))
+           (splittext
+            (with-temp-buffer
+              (insert text)
+              (fill-region (point-min) (point-max))
+              (split-string (buffer-string) "\n")))
+           (author (format "\n;; %s\n\n" (cl-first (last fortune)))))
+      (concat "\n;; " (string-join splittext "\n;; ") author)))
 
   (defun recker/scratch-quote ()
     (let* ((result (shell-command-to-string "fortune-blog"))
-	   (result (string-trim result))
-	   (result (split-string result "\n")))
+           (result (string-trim result))
+           (result (split-string result "\n")))
       (recker/scratch-quote--format result)))
 
   (setq initial-scratch-message (recker/scratch-quote))
@@ -486,7 +486,7 @@ Use [[https://company-mode.github.io/][company-mode]] for completion.
 Clean-up whitespace on save.
 
 #+begin_src emacs-lisp
-  ;; (add-hook 'before-save-hook 'whitespace-cleanup)
+  (add-hook 'before-save-hook 'whitespace-cleanup)
 #+end_src
 
 Avoid tabs.
@@ -498,14 +498,7 @@ Avoid tabs.
 *** Filling
 
 "Filling" is when you use a newline after every 72 characters for the
-purpose of making it easier to read plain text.  Enable auto-fill mode
-when doing any kind of word processing.
-
-#+begin_src emacs-lisp
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
-(add-hook 'org-mode-hook 'turn-on-auto-fill)
-(add-hook 'rst-mode-hook 'turn-on-auto-fill)
-#+end_src
+purpose of making it easier to read plain text.
 
 Use this nifty custom function to /unfill/ text.  This is handy when
 you are copying something out of a text file in emacs and pasting it

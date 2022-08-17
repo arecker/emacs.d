@@ -419,16 +419,6 @@ of kubernetes resources.
 (global-set-key (kbd "C-c K") 'kubernetes-overview)
 #+end_src
 
-** LSP
-
-Use LSP for enhancing emacs in ways that I don't yet totally
-understand.
-
-#+begin_src emacs-lisp
-  (use-package lsp-mode :ensure t)
-  (use-package lsp-ui :ensure t :commands lsp-ui-mode)
-#+end_src
-
 * Modes
 
 Configurations for all the types of text I edit with Emacs.
@@ -635,8 +625,7 @@ Yeah, there's a D language apparently.
     :config
     (setq dhall-format-at-save t
           dhall-format-arguments (\` ("--ascii"))
-          dhall-use-header-line nil)
-    :init (add-hook 'dhall-mode-hook #'lsp-deferred))
+          dhall-use-header-line nil))
 #+end_src
 
 ** Dockerfile
@@ -652,9 +641,15 @@ This enables pretty syntax highlighting for editing [[https://docs.docker.com/en
 
 ** Go
 
-This config is adapted from the [[https://github.com/golang/tools/blob/master/gopls/doc/emacs.md][official golang guide]].
+Use LSP for enhancing emacs in ways that I don't yet totally
+understand.
 
-First, install =gopls=.  You will most likely use the following
+#+begin_src emacs-lisp
+  (use-package lsp-mode :ensure t)
+  (use-package lsp-ui :ensure t :commands lsp-ui-mode)
+#+end_src
+
+Install =gopls=.  You will most likely use the following
 command:
 
 #+begin_src sh
@@ -1009,7 +1004,6 @@ pretty cool.
 
 #+begin_src emacs-lisp
   (setq ruby-deep-indent-paren nil)
-  (add-hook 'ruby-mode-hook #'lsp-deferred)
 #+end_src
 
 ** Rust
@@ -1027,7 +1021,7 @@ Package for working with [[https://www.terraform.io/][terraform]].  First, insta
 curl https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 #+end_src
 
-Next the package and the lsp mode or whatever.
+Next the package.
 
 #+begin_src emacs-lisp
   (defun recker/terraform-mode-hook ()

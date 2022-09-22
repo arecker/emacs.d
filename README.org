@@ -801,6 +801,12 @@ also turn it on with =M-x= =nginx-mode=.
     :ensure t)
 #+end_src
 
+** Nftables
+
+#+begin_src emacs-lisp
+  (use-package nftables-mode :ensure t)
+#+end_src
+
 ** Org
 
 *** Hacks
@@ -1024,8 +1030,7 @@ curl https://raw.githubusercontent.com/terraform-linters/tflint/master/install_l
 Next the package.
 
 #+begin_src emacs-lisp
-  (defun recker/terraform-mode-hook ()
-    (terraform-format-on-save-mode))
+  (defun recker/terraform-mode-hook ())
 
   (use-package terraform-mode
     :ensure t

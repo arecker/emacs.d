@@ -22,3 +22,4 @@ network-security.data
 /.lsp-session-v1
 /.cache/
 /.dap-breakpoints
+/venv/

@@ -1,37 +1,71 @@
-(require 'package)
+(defun load-local-file (filename)
+  (let ((full-path (concat user-emacs-directory "/lisp/" filename)))
+    (load-file full-path)))
 
-(setq package-archives
-      '(("gnu" . "http://elpa.gnu.org/packages/")
-        ("melpa" . "https://melpa.org/packages/")))
+(load-local-file "functions.el")
 
-(defun recker/package-init ()
-  "Initialize the package manager and install use-package."
-  (package-initialize)
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package)))
+(setq custom-file (concat user-emacs-directory "custom.el"))
+(when (file-exists-p custom-file)
+  (load custom-file))
 
-(defun recker/load-config ()
-  "Tangle configuration and load it."
-  (let ((config (concat (file-name-as-directory user-emacs-directory) "README.org")))
-    (if (file-exists-p config)
-        (org-babel-load-file config)
-      (warn (concat config " not found - not loading")))))
+;; don't show the splash screen
+(setq inhibit-startup-message 't)
 
-(recker/package-init)
-(recker/load-config)
-(put 'upcase-region 'disabled nil)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(git-timemachine nftables-mode rust-mode zenburn-theme yaml-mode writegood-mode web-mode use-package twittering-mode swiper spacemacs-theme smex slime-company rich-minority projectile prettier-js plantuml-mode ox-jira nginx-mode monokai-theme mediawiki magit lua-mode lsp-ui lsp-python-ms lsp-pyright kubernetes jsonnet-mode idomenu ido-vertical-mode htmlize haskell-mode groovy-mode flycheck fireplace expand-region exec-path-from-shell emmet-mode elpy eglot editorconfig edit-indirect doom-themes dockerfile-mode dictionary dhall-mode deft dap-mode d-mode csv-mode company-terraform company-go bbdb bats-mode autumn-light-theme async)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-(put 'downcase-region 'disabled nil)
+;; don't kill *scratch* buffer
+(add-hook 'kill-buffer-query-functions 'recker/not-scratch-p)
+
+;; set startup message from fortune-blog
+(setq initial-scratch-message (recker/scratch-message))
+
+;; UI widgets
+(menu-bar-mode 0)
+(tool-bar-mode 0)
+(scroll-bar-mode 0)
+
+;; font
+(set-frame-font (if (recker/macos-p) "Monaco 18" "Menlo 16") nil t)
+
+;; IDO mode
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode t)
+
+;; disable auto save files
+(setq make-backup-files nil)
+(setq auto-save-default nil)
+
+;; delete highlighted text
+(setq delete-selection-mode t)
+
+;; automatically follow symlinks
+(setq vc-follow-symlinks t)
+
+;; don't pass --dired flag to ls
+(setq dired-use-ls-dired nil)
+
+;; don't prompt when deleting files behind buffers
+(setq dired-clean-confirm-killing-deleted-buffers nil)
+
+;; kill buffer when shell exits
+(advice-add 'term-handle-exit :after 'recker/handle-term-exit)
+
+(add-hook 'before-save-hook 'whitespace-cleanup)
+
+(add-hook 'c-mode-hook #'recker/c-mode-hook)
+
+(add-hook 'mhtml-mode-hook 'turn-off-auto-fill)
+
+(eval-after-load "ispell"
+  '(progn (defun ispell-get-coding-system () 'utf-8)))
+
+(setq bookmark-save-flag 1)
+
+(setq ruby-deep-indent-paren nil)
+
+;; start emacs server
+(server-start)
+
+(load-local-file "org.el")
+(load-local-file "packages.el")
+(load-local-file "pass.el")
+(load-local-file "keys.el")

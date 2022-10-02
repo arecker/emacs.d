@@ -8,6 +8,9 @@
 (when (file-exists-p custom-file)
   (load custom-file))
 
+(setq user-full-name "Alex Recker"
+      user-mail-address "alex@reckerfamily.com")
+
 ;; don't show the splash screen
 (setq inhibit-startup-message 't)
 

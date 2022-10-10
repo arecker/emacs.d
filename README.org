@@ -307,7 +307,9 @@ I heard a rumor that eglot is going to be included by default in the
 next version of Emacs, so I may as well get used to it now.
 
 #+begin_src emacs-lisp
-  (use-package eglot :ensure t)
+  (use-package eglot
+    :ensure t
+    :config (setq eglot-autoshutdown 't))
 #+end_src
 
 I don't like to use these external language servers everywhere, but
@@ -412,15 +414,16 @@ Run the hook.
 ** Lisp
 
 #+begin_src emacs-lisp
-  (use-package slime
-    :ensure t
-    :config (setq inferior-lisp-program (executable-find "sbcl")))
+  ;; TODO: busted?
+  ;; (use-package slime
+  ;;   :ensure t
+  ;;   :config (setq inferior-lisp-program (executable-find "sbcl")))
 
-  (use-package slime-company
-    :ensure t
-    :after (slime company)
-    :config (setq slime-company-completion 'fuzzy
-		  slime-company-after-completion 'slime-company-just-one-space))
+  ;; (use-package slime-company
+  ;;   :ensure t
+  ;;   :after (slime company)
+  ;;   :config (setq slime-company-completion 'fuzzy
+  ;;		slime-company-after-completion 'slime-company-just-one-space))
 #+end_src
 
 ** Lua
@@ -614,7 +617,7 @@ Define custom TODO states.  In addition to the defaults, I like to add
 a =BLOCKED= status.
 
 #+begin_src emacs-lisp
-  (setq org-todo-keywords '((sequence "TODO" "BLOCKED" "|" "DONE"))
+  (setq org-todo-keywords '((sequence "TODO" "BLOCKED" "|" "DONE")))
 #+end_src
 
 ** Code

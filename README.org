@@ -309,7 +309,9 @@ next version of Emacs, so I may as well get used to it now.
 #+begin_src emacs-lisp
   (use-package eglot
     :ensure t
-    :config (setq eglot-autoshutdown 't))
+    :config
+    (setq eglot-autoshutdown 't)
+    (setq eglot-autoreconnect nil))
 #+end_src
 
 I don't like to use these external language servers everywhere, but

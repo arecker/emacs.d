@@ -7,3 +7,8 @@ projectile-bookmarks.eld
 smex-items
 transient/**/*
 bookmarks
+README.el
+eshell/**/*
+README.html
+local.el
+tramp

@@ -398,6 +398,15 @@ Run the hook.
   (add-hook 'go-mode-hook 'eglot-ensure)
 #+end_src
 
+While editing go, run =gofmt= before each save.
+
+#+begin_src emacs-lisp
+  (defun recker/go-mode-hook ()
+    (add-hook 'before-save-hook #'gofmt-before-save))
+
+  (add-hook 'go-mode-hook 'recker/go-mode-hook)
+#+end_src
+
 ** Groovy
 
 #+begin_src emacs-lisp
@@ -590,6 +599,21 @@ Write good mode.
   (use-package writegood-mode
     :ensure t
     :bind (("C-c w" . writegood-mode)))
+#+end_src
+
+Use rest client mode for debugging web endpoints.  I use a custom
+function to launch the tool.
+
+#+begin_src emacs-lisp
+  (defun recker/restclient ()
+    (interactive)
+    "Launch restclient."
+    (get-buffer-create "*restclient*")
+    (switch-to-buffer "*restclient*")
+    (restclient-mode))
+
+  (use-package restclient
+    :ensure t)
 #+end_src
 
 Start emacs server.  You can use =emacsclient= as for the =EDITOR=

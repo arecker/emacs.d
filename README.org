@@ -138,6 +138,14 @@ Add some keybindings for functions I frequently use.
   (global-set-key (kbd "C-c r") 'replace-string)
 #+end_src
 
+Use expand region to highlight incrementally larger sections of text.
+
+#+begin_src emacs-lisp
+  (use-package expand-region
+    :ensure t
+    :bind (("C-=" . 'er/expand-region)))
+#+end_src
+
 Enable IDO for minibuffer selections.  IDO is kind of a complicated
 beast, but it allows you to move around so much more quickly.  So it's
 best to just get used to Emacs with it enabled.
@@ -311,7 +319,8 @@ next version of Emacs, so I may as well get used to it now.
     :ensure t
     :config
     (setq eglot-autoshutdown 't)
-    (setq eglot-autoreconnect nil))
+    (setq eglot-autoreconnect nil)
+    (setq eglot-confirm-server-initiated-edits nil))
 #+end_src
 
 I don't like to use these external language servers everywhere, but
@@ -518,10 +527,16 @@ Use a custom function to jump to bookmark with IDO.
 
 #+begin_src emacs-lisp
   (require 'bookmark)
+  (require 'cl-lib)
+
+  (defun recker/list-bookmarks ()
+    "List all bookmarks in alphabetical order, and filter out the junk entries I don't care about."
+    (let ((junk-entries '("org-capture-last-stored")))
+      (sort (remove-if #'(lambda (b) (member b junk-entries)) (bookmark-all-names)) #'string<)))
 
   (defun recker/ido-bookmark-jump (bookmark)
     "*Switch to bookmark BOOKMARK interactively using `ido'."
-    (interactive (list (ido-completing-read "Bookmark: " (sort (bookmark-all-names) #'string<) nil t)))
+    (interactive (list (ido-completing-read "Bookmark: " (recker/list-bookmarks) nil t)))
     (bookmark-jump bookmark))
 
   (global-set-key (kbd "C-x r b") 'recker/ido-bookmark-jump)

@@ -541,7 +541,7 @@ Use a custom function to jump to bookmark with IDO.
   (defun recker/list-bookmarks ()
     "List all bookmarks in alphabetical order, and filter out the junk entries I don't care about."
     (let ((junk-entries '("org-capture-last-stored")))
-      (sort (remove-if #'(lambda (b) (member b junk-entries)) (bookmark-all-names)) #'string<)))
+      (sort (cl-remove-if #'(lambda (b) (member b junk-entries)) (bookmark-all-names)) #'string<)))
 
   (defun recker/ido-bookmark-jump (bookmark)
     "*Switch to bookmark BOOKMARK interactively using `ido'."
@@ -654,11 +654,11 @@ from automatically running when you type, which is a strange default.
   (setq org-goto-auto-isearch nil)
 #+end_src
 
-Define custom TODO states.  In addition to the defaults, I like to add
-a =BLOCKED= status.
+Turn on the clock for measuring how long it takes to do things.
 
 #+begin_src emacs-lisp
-  (setq org-todo-keywords '((sequence "TODO" "BLOCKED" "|" "DONE")))
+  (setq org-clock-persist 'history)
+  (org-clock-persistence-insinuate)
 #+end_src
 
 ** Code
@@ -703,6 +703,7 @@ plantuml should be downloaded to =~/.plantuml/plantuml.jar=.
 Look for tasks in all org files.
 
 #+begin_src emacs-lisp
+  (setq org-directory "~/Dropbox/org")
   (setq org-agenda-files `( ,org-directory ))
 #+end_src
 

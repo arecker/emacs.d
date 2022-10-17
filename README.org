@@ -279,6 +279,15 @@ about the associated buffer.
   (setq dired-clean-confirm-killing-deleted-buffers nil)
 #+end_src
 
+Hide hidden files by defult.  Press =C-x M-o= to show them.
+
+#+begin_src emacs-lisp
+  (require 'dired-x)
+  (setq-default dired-omit-files-p t)
+  (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
+  (add-hook 'dired-mode-hook 'dired-omit-mode)
+#+end_src
+
 * Shell
 
 Use =C-x t= to open a terminal window.

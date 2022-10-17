@@ -753,9 +753,10 @@ Define capture templates for quickly creating templated notes.
 This is my catch all TODO snippet.
 
 #+begin_src emacs-lisp
-  (add-to-list 'org-capture-templates
-	       '("t" "Misc. TODO" entry (file "~/org/opsat.org")
-		 "* TODO %?\n" :empty-lines 1))
+  (let ((opsat (concat org-directory "/opsat.org")))
+    (add-to-list 'org-capture-templates
+		 `("t" "Misc. TODO" entry (file ,opsat)
+		   "* TODO %?\n" :empty-lines 1)))
 #+end_src
 
 ** Publishing

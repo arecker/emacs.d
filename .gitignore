@@ -13,3 +13,4 @@ README.html
 local.el
 tramp
 org-clock-save.el
+.cache

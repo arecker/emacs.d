@@ -41,10 +41,10 @@ like Monaco.
   (set-frame-font "Monaco 18" nil t)
 #+end_src
 
-If running on Linux, you might want something like Menlo.
+If running on Linux, you might want something like Monospace.
 
 #+begin_src emacs-lisp :tangle (if (string= system-type "gnu/linux") "yes" "no")
-  (set-frame-font "Menlo 16" nil t)
+  (set-frame-font "Monospace 13" nil t)
 #+end_src
 
 Has hell frozen over?  Am I really trying out an emacs theme?

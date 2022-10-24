@@ -853,6 +853,12 @@ Use bbdb to store addresses.
 
 ** Email
 
+Disable auto-fill mode when writing emails.
+
+#+begin_src emacs-lisp
+  (add-hook 'message-mode-hook #'turn-off-auto-fill)
+#+end_src
+
 Read with gmail's IMAP.
 
 #+begin_src emacs-lisp
@@ -865,7 +871,9 @@ Read with gmail's IMAP.
 			(nnmail-expiry-wait immediate)))
 #+end_src
 
-Send email with SMTP.
+Send email with SMTP.  These settings aren't directly tied to gnus.
+In fact you can write and send an email anywhere from Emacs with =C-x
+m=.
 
 #+begin_src emacs-lisp
 (setq smtpmail-smtp-service 587

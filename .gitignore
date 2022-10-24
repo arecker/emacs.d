@@ -14,3 +14,6 @@ local.el
 tramp
 org-clock-save.el
 .cache
+bbdb.el
+authinfo.gpg
+/network-security.data

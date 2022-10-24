@@ -568,6 +568,12 @@ Use a custom function to jump to bookmark with IDO.
 
 * Tools
 
+Set local auth file.
+
+#+begin_src emacs-lisp
+  (setq auth-sources (list (concat user-emacs-directory "authinfo.gpg")))
+#+end_src
+
 Use magit for managing git projects.
 
 #+begin_src emacs-lisp
@@ -782,6 +788,90 @@ You can set up publishing projects here, but I don't have any at the moment.
 
 #+begin_src emacs-lisp
   (setq org-publish-project-alist '())
+#+end_src
+
+* Gnus
+
+Gnus is the charming and awkward mail/news/feed client built into
+Emacs.  I use it to manage my personal email and keep up with feeds.
+
+** Startup
+
+I leave the primary select method empty, and I just define everything
+as a secondary select method.
+
+#+begin_src emacs-lisp
+(setq gnus-select-method '(nnml ""))
+(setq gnus-secondary-select-methods '())
+#+end_src
+
+Default to topic mode.
+
+#+begin_src emacs-lisp
+  (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+#+end_src
+
+Enable these powerful placebo options.
+
+#+begin_src emacs-lisp
+  (setq gnus-asynchronous t)
+  (setq gnus-use-cache t)
+  (setq gnus-check-new-newsgroups nil
+	gnus-check-bogus-newsgroups nil)
+  (setq gnus-show-threads nil
+	gnus-use-cross-reference nil
+	gnus-nov-is-evil nil)
+  (setq gnus-check-new-newsgroups nil
+	gnus-use-adaptive-scoring nil)
+  (setq gnus-summary-line-format "%U%R%z%I%(%[%4L: %-23,23f%]%) %s
+  ")
+#+end_src
+
+Don't dribble anywhere, that's gross.
+
+#+begin_src emacs-lisp
+(setq gnus-use-dribble-file nil)
+#+end_src
+
+Don't move archived messages anywhere.
+
+#+begin_src emacs-lisp
+(setq gnus-message-archive-group nil)
+#+end_src
+
+Use bbdb to store addresses.
+
+#+begin_src emacs-lisp
+  (use-package bbdb
+    :ensure t
+    :config (setq bbdb-file (concat user-emacs-directory "bbdb.el"))
+    :init
+    (bbdb-mua-auto-update-init 'message)
+    (setq bbdb-mua-auto-update-p 'query)
+    (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
+#+end_src
+
+** Email
+
+Read with gmail's IMAP.
+
+#+begin_src emacs-lisp
+  (add-to-list 'gnus-secondary-select-methods
+	       '(nnimap "alex@reckerfamily.com"
+			(nnimap-address "imap.gmail.com")
+			(nnimap-server-port "imaps")
+			(nnimap-stream ssl)
+			(nnmail-expiry-target "nnimap+alex@reckerfamily.com:[Gmail]/All Mail")
+			(nnmail-expiry-wait immediate)))
+#+end_src
+
+Send email with SMTP.
+
+#+begin_src emacs-lisp
+(setq smtpmail-smtp-service 587
+      smtpmail-smtp-user "alex@reckerfamily.com"
+      smtpmail-smtp-server "smtp.gmail.com"
+      send-mail-function 'smtpmail-send-it)
 #+end_src
 
 * Functions

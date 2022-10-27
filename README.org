@@ -47,12 +47,6 @@ If running on Linux, you might want something like Monospace.
   (set-frame-font "Monospace 13" nil t)
 #+end_src
 
-Has hell frozen over?  Am I really trying out an emacs theme?
-
-#+begin_src emacs-lisp
-  (load-theme 'modus-operandi 't nil)
-#+end_src
-
 In each buffer, emacs displays the major and minor modes in the
 modeline.  I like seeing the major mode, but the minor modes tend to
 be the same long list of plugins, so I use a package to just hide

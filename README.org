@@ -395,6 +395,13 @@ lol).
 
 ** Go
 
+Install go-mode, just for the major mode.
+
+#+begin_src emacs-lisp
+  (use-package go-mode
+    :ensure t)
+#+end_src
+
 For this to work out of the box, make sure =gopls= is executable somewhere.
 
 #+begin_src shell

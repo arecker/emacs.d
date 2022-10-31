@@ -477,16 +477,17 @@ While editing go, run =gofmt= before each save.
 
 ** Python
 
-Just install pyls
+Nothing!  I'm sick of tools, I just want to write python!
 
-#+begin_src shell
-pip install python-language-server
-#+end_src
-
-Run the hook.
+In fact, disable flymake mode!
 
 #+begin_src emacs-lisp
-  (add-hook 'python-mode-hook 'eglot-ensure)
+  (defun recker/python-mode-hook ()
+    ;; disable fly* bullshit
+    (flymake-mode -1)
+    (flycheck-mode -1))
+
+  (add-hook #'python-mode-hook #'recker/python-mode-hook)
 #+end_src
 
 ** Rst

@@ -381,6 +381,13 @@ lol).
     :mode "\\.d\\'")
 #+end_src
 
+** Docker
+
+#+begin_src emacs-lisp
+  (use-package dockerfile-mode
+    :ensure t)
+#+end_src
+
 ** Dhall
 
 #+begin_src emacs-lisp

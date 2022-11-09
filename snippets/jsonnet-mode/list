@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: list
+# key: list
+# --
+apiVersion: 'v1',
+kind: 'List',
+items: [],

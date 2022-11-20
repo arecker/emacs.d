@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: logger
+# key: logger
+# --
+handler = logging.StreamHandler(sys.stderr)
+formatter = logging.Formatter('%(levelname)s: %(message)s')
+handler.setFormatter(formatter)
+handler.setLevel(level)
+logger.addHandler(handler)

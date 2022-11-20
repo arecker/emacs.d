@@ -96,7 +96,7 @@ stash I keep on my [[https://www.alexrecker.com/quotes.html][blog]], but you can
 "fortune" or something else.
 
 #+begin_src emacs-lisp
-  (setq recker/scratch-message-command "fortune-blog")
+  (setq recker/scratch-message-command "fortune")
 
   (defun recker/scratch-message ()
     "Return a scratch message from fortune-blog."
@@ -492,8 +492,6 @@ While editing go, run =gofmt= before each save.
 ** Python
 
 Nothing!  I'm sick of tools, I just want to write python!
-
-In fact, disable flymake mode!
 
 #+begin_src emacs-lisp
   (defun recker/python-mode-hook ()

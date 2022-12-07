@@ -138,6 +138,12 @@ Add some keybindings for functions I frequently use.
   (global-set-key (kbd "C-c r") 'replace-string)
 #+end_src
 
+Upcase a region without emacs bothering you about it.
+
+#+begin_src emacs-lisp
+  (put 'upcase-region 'disabled nil)
+#+end_src
+
 Use expand region to highlight incrementally larger sections of text.
 
 #+begin_src emacs-lisp
@@ -300,6 +306,12 @@ Use =C-x t= to open a terminal window.
       (ansi-term shell)))
 
   (global-set-key (kbd "C-x t") 'recker/ansi-term)
+#+end_src
+
+Use =C-c e= to open up eshell.
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c e") 'eshell)
 #+end_src
 
 Automatically close the buffer when you exit the shell.

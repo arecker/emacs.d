@@ -743,7 +743,8 @@ plantuml should be downloaded to =~/.plantuml/plantuml.jar=.
 Look for tasks in all org files.
 
 #+begin_src emacs-lisp
-  (setq org-directory "~/Dropbox/org")
+  (setq org-directory (expand-file-name "~/Dropbox/org"))
+  (directory-files org-directory)
   (setq org-agenda-files `( ,org-directory ))
 #+end_src
 
@@ -765,6 +766,17 @@ Don't display archived items or tasks marked =DONE=.
   (setq org-agenda-skip-scheduled-if-done 't)
   (setq org-agenda-skip-deadline-if-done 't)
   (setq org-agenda-archives-mode nil)
+#+end_src
+
+Create some custom org agenda views.
+
+#+begin_src emacs-lisp
+  (setq org-agenda-custom-commands '())
+
+  (setq recker/custom-agenda '("a" "agenda"
+			       ((agenda "" ((org-deadline-warning-days 1))))))
+
+  (add-to-list 'org-agenda-custom-commands recker/custom-agenda)
 #+end_src
 
 ** Capture

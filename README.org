@@ -470,15 +470,23 @@ While editing go, run =gofmt= before each save.
 
 #+begin_src emacs-lisp
   ;; TODO: busted?
-  ;; (use-package slime
-  ;;   :ensure t
-  ;;   :config (setq inferior-lisp-program (executable-find "sbcl")))
+  (use-package slime
+    :ensure t
+    :config (setq inferior-lisp-program (executable-find "sbcl")))
 
-  ;; (use-package slime-company
-  ;;   :ensure t
-  ;;   :after (slime company)
-  ;;   :config (setq slime-company-completion 'fuzzy
-  ;;		slime-company-after-completion 'slime-company-just-one-space))
+  (use-package slime-company
+    :ensure t
+    :after (slime company)
+    :config (setq slime-company-completion 'fuzzy
+		  slime-company-after-completion 'slime-company-just-one-space))
+#+end_src
+
+** Markdown
+
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :ensure t
+    :init (add-hook #'markdown-mode-hook 'eglot-ensure))
 #+end_src
 
 ** Lua
@@ -499,6 +507,13 @@ While editing go, run =gofmt= before each save.
 
 #+begin_src emacs-lisp
   (use-package nginx-mode :ensure t)
+#+end_src
+
+** PHP
+
+#+begin_src emacs-lisp
+  (use-package php-mode
+    :ensure t)
 #+end_src
 
 ** Python

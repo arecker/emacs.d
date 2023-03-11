@@ -458,6 +458,16 @@ While editing go, run =gofmt= before each save.
     :mode "\\.hs\\'")
 #+end_src
 
+** HTML
+
+Use web mode for jinja templates.
+
+#+begin_src emacs-lisp
+  (use-package web-mode
+    :ensure t
+    :mode (".j2$"))
+#+end_src
+
 ** Jsonnet
 
 #+begin_src emacs-lisp
@@ -762,7 +772,7 @@ plantuml should be downloaded to =~/.plantuml/plantuml.jar=.
 Look for tasks in all org files.
 
 #+begin_src emacs-lisp
-  (setq org-directory (expand-file-name "~/Dropbox/org"))
+  (setq org-directory (expand-file-name "~/org"))
   (directory-files org-directory)
   (setq org-agenda-files `( ,org-directory ))
 #+end_src

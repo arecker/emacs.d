@@ -34,6 +34,12 @@ screen real estate.
   (scroll-bar-mode 0)
 #+end_src
 
+Use visual line mode everywhere.
+
+#+begin_src emacs-lisp
+  (global-visual-line-mode 1)
+#+end_src
+
 Change the font to something that looks nice on the OS.  On mac, I
 like Monaco.
 

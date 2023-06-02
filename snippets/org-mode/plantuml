@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: plantuml
+# key: plantuml
+# --
+\#+begin_src plantuml :file ~/Desktop/$1.png
+$2
+\#+end_src

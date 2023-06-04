@@ -2,6 +2,6 @@
 # name: plantuml
 # key: plantuml
 # --
-\#+begin_src plantuml :file ~/Desktop/$1.png
+#+begin_src plantuml :file ~/Desktop/$1.png
 $2
-\#+end_src
+#+end_src

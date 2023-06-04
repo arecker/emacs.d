@@ -745,6 +745,7 @@ Add some templates for code blocks.
 				       ("p" . "src python")
 				       ("r" . "src ruby")
 				       ("b" . "src bash")
+				       ("d" . "src plantuml")
 				       ("x" . "example")))
 #+end_src
 

@@ -533,6 +533,14 @@ Use web mode for jinja templates.
     :ensure t)
 #+end_src
 
+** Protobuf
+
+#+begin_src emacs-lisp
+  (use-package protobuf-mode
+    :ensure t
+    :mode ("\\.proto\\'"))
+#+end_src
+
 ** Python
 
 Nothing!  I'm sick of tools, I just want to write python!

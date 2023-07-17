@@ -443,7 +443,8 @@ While editing go, run =gofmt= before each save.
 
 #+begin_src emacs-lisp
   (defun recker/go-mode-hook ()
-    (add-hook 'before-save-hook #'gofmt-before-save))
+    (add-hook 'before-save-hook #'gofmt-before-save)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
 
   (add-hook 'go-mode-hook 'recker/go-mode-hook)
 #+end_src

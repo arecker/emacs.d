@@ -24,6 +24,14 @@ C-e= with the cursor placed directly over the text, or you can use
 
 * Appearance
 
+Theme of the week.
+
+#+begin_src emacs-lisp
+  (use-package modus-themes
+    :ensure t
+    :config (load-theme 'modus-operandi-tinted 1 nil))
+#+end_src
+
 If you're getting used to Emacs, it would be a good idea to leave the
 menu bar, tool bar, and scroll bar visible.  I hide them for maximum
 screen real estate.

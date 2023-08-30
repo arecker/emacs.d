@@ -551,7 +551,9 @@ Use web mode for jinja templates.
 
 ** Python
 
-Nothing!  I'm sick of tools, I just want to write python!
+Back to using elpy at the moment.  Eglot is a fine language server,
+but jedi-language-server has a lot of weird defaults and I don't want
+to take the time to figure out how to configure everything.
 
 #+begin_src emacs-lisp
   (defun recker/python-mode-hook ()
@@ -561,9 +563,15 @@ Nothing!  I'm sick of tools, I just want to write python!
 
   (add-hook #'python-mode-hook #'recker/python-mode-hook)
 
+  ;; Turn this on to use elpy.
+  (use-package elpy
+    :ensure t
+    :init (elpy-enable)
+    :config (setq elpy-rpc-virtualenv-path 'current))
+
   ;; comment this out to skip eglot
-  (add-hook 'python-mode-hook 'eglot-ensure)
-  (add-to-list 'eglot-server-programs '((python-mode) "jedi-language-server"))
+  ;; (add-hook 'python-mode-hook 'eglot-ensure)
+  ;; (add-to-list 'eglot-server-programs '((python-mode) "jedi-language-server"))
 #+end_src
 
 ** Rst

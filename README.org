@@ -567,7 +567,11 @@ to take the time to figure out how to configure everything.
   (use-package elpy
     :ensure t
     :init (elpy-enable)
-    :config (setq elpy-rpc-virtualenv-path 'current))
+    :config
+    (setq elpy-rpc-virtualenv-path 'current)
+    (add-hook 'elpy-mode-hook (lambda ()
+				(add-hook 'before-save-hook
+					  'elpy-format-code nil t))))
 
   ;; comment this out to skip eglot
   ;; (add-hook 'python-mode-hook 'eglot-ensure)

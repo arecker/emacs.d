@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: typing
+# key: typing
+# --
+import typing
+
+if typing.TYPE_CHECKING:

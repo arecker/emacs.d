@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: noqa
-# key: noqa
-# --
-flake8: noqa

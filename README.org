@@ -27,9 +27,9 @@ C-e= with the cursor placed directly over the text, or you can use
 Theme of the week.
 
 #+begin_src emacs-lisp
-  (use-package modus-themes
-    :ensure t
-    :config (load-theme 'modus-operandi-tinted 1 nil))
+  ;; (use-package modus-themes
+  ;;   :ensure t
+  ;;   :config (load-theme 'modus-operandi-tinted 1 nil))
 #+end_src
 
 If you're getting used to Emacs, it would be a good idea to leave the

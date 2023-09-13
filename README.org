@@ -484,8 +484,12 @@ Emmet mode.
     (setq emmet-move-cursor-between-quotes t)
     :mode ("\\.html\\'" "\\.html.j2\\'"))
 
-  (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-  (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
+  (add-to-list 'auto-mode-alist '("\\.html\\'" . html-mode))
+  (add-to-list 'auto-mode-alist '("\\.html.j2\\'" . html-mode))
+
+  (add-hook 'sgml-mode-hook 'emmet-mode)
+  (add-hook 'css-mode-hook  'emmet-mode)
+
 #+end_src
 
 ** Jsonnet

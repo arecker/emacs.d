@@ -475,12 +475,17 @@ While editing go, run =gofmt= before each save.
 
 ** HTML
 
-Use web mode for jinja templates.
+Emmet mode.
 
 #+begin_src emacs-lisp
-  (use-package web-mode
+  (use-package emmet-mode
     :ensure t
-    :mode (".j2$"))
+    :config
+    (setq emmet-move-cursor-between-quotes t)
+    :mode ("\\.html\\'" "\\.html.j2\\'"))
+
+  (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+  (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
 #+end_src
 
 ** Jsonnet

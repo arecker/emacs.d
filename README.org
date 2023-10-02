@@ -117,7 +117,7 @@ stash I keep on my [[https://www.alexrecker.com/quotes.html][blog]], but you can
     (with-temp-buffer
       (insert (shell-command-to-string recker/scratch-message-command))
       (let ((comment-start ";; "))
-	(comment-region (point-min) (point-max)))
+        (comment-region (point-min) (point-max)))
       (fill-individual-paragraphs (point-min) (point-max))
       (concat "\n" (buffer-string) "\n")))
 
@@ -181,9 +181,9 @@ which feels a lot easier on the eyes.
 
 #+begin_src emacs-lisp
   (use-package ido-vertical-mode
-	       :ensure t
-	       :config (setq ido-vertical-define-keys 'C-n-and-C-p-only)
-	       :init (ido-vertical-mode))
+               :ensure t
+               :config (setq ido-vertical-define-keys 'C-n-and-C-p-only)
+               :init (ido-vertical-mode))
 #+end_src
 
 #+caption: the find-file function operating with the helpful interactive IDO menu.
@@ -208,7 +208,7 @@ Use smex as a more helpful alternative to =M-x=.
     :ensure t
     :init (smex-initialize)
     :bind (("M-x" . 'smex)
-	   ("M-X" . 'smex-major-mode-commands)))
+           ("M-X" . 'smex-major-mode-commands)))
 #+end_src
 
 #+caption: filtering interactive commands with smex.
@@ -346,6 +346,12 @@ In all modes, clean up whitespace on save.
   (add-hook 'before-save-hook 'whitespace-cleanup)
 #+end_src
 
+Also, NEVER insert tabs.  I realize that sometimes you want tabs, but I can handle this with tools like editorconfig.
+
+#+begin_src emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+end_src
+
 I heard a rumor that eglot is going to be included by default in the
 next version of Emacs, so I may as well get used to it now.
 
@@ -379,19 +385,19 @@ lol).
   (defun recker/c-lineup-arglist-tabs-only (ignored)
     "Line up argument lists by tabs, not spaces"
     (let* ((anchor (c-langelem-pos c-syntactic-element))
-	   (column (c-langelem-2nd-pos c-syntactic-element))
-	   (offset (- (1+ column) anchor))
-	   (steps (floor offset c-basic-offset)))
+           (column (c-langelem-2nd-pos c-syntactic-element))
+           (offset (- (1+ column) anchor))
+           (steps (floor offset c-basic-offset)))
       (* (max steps 1)
-	 c-basic-offset)))
+         c-basic-offset)))
 
   (defun recker/c-mode-hook ()
     (c-add-style
      "linux-tabs-only"
      '("linux" (c-offsets-alist
-		(arglist-cont-nonempty
-		 c-lineup-gcc-asm-reg
-		 recker/c-lineup-arglist-tabs-only))))
+                (arglist-cont-nonempty
+                 c-lineup-gcc-asm-reg
+                 recker/c-lineup-arglist-tabs-only))))
     (setq indent-tabs-mode t)
     (setq show-trailing-whitespace t)
     (c-set-style "linux-tabs-only"))
@@ -422,8 +428,8 @@ lol).
     :mode "\\.dhall\\'"
     :config
     (setq dhall-format-at-save t
-	  dhall-format-arguments (\` ("--ascii"))
-	  dhall-use-header-line nil))
+          dhall-format-arguments (\` ("--ascii"))
+          dhall-use-header-line nil))
 #+end_src
 
 ** Go
@@ -512,7 +518,7 @@ Emmet mode.
     :ensure t
     :after (slime company)
     :config (setq slime-company-completion 'fuzzy
-		  slime-company-after-completion 'slime-company-just-one-space))
+                  slime-company-after-completion 'slime-company-just-one-space))
 #+end_src
 
 ** Markdown
@@ -579,8 +585,8 @@ to take the time to figure out how to configure everything.
     :config
     (setq elpy-rpc-virtualenv-path 'current)
     (add-hook 'elpy-mode-hook (lambda ()
-				(add-hook 'before-save-hook
-					  'elpy-format-code nil t))))
+                                (add-hook 'before-save-hook
+                                          'elpy-format-code nil t))))
 
   ;; comment this out to skip eglot
   ;; (add-hook 'python-mode-hook 'eglot-ensure)
@@ -743,7 +749,7 @@ Fix yasnippet in org mode.
 #+begin_src emacs-lisp
   (defun recker/fix-yas-in-org ()
     (setq-local yas-buffer-local-condition
-		'(not (org-in-src-block-p t))))
+                '(not (org-in-src-block-p t))))
 
   (add-hook 'org-mode-hook #'recker/fix-yas-in-org)
 #+end_src
@@ -780,11 +786,11 @@ Add some templates for code blocks.
 
 #+begin_src emacs-lisp
   (setq org-structure-template-alist '(("e" . "src emacs-lisp")
-				       ("p" . "src python")
-				       ("r" . "src ruby")
-				       ("b" . "src bash")
-				       ("d" . "src plantuml")
-				       ("x" . "example")))
+                                       ("p" . "src python")
+                                       ("r" . "src ruby")
+                                       ("b" . "src bash")
+                                       ("d" . "src plantuml")
+                                       ("x" . "example")))
 #+end_src
 
 Interactively add a source block by pressing =C-c C--=.
@@ -848,8 +854,8 @@ Create some custom org agenda views.
   (setq org-agenda-custom-commands '())
 
   (setq recker/custom-agenda '("a" "agenda"
-			       ((agenda "" ((org-deadline-warning-days 0)
-					    (org-agenda-span 2))))))
+                               ((agenda "" ((org-deadline-warning-days 0)
+                                            (org-agenda-span 2))))))
 
   (add-to-list 'org-agenda-custom-commands recker/custom-agenda)
 #+end_src
@@ -873,8 +879,8 @@ This is my catch all TODO snippet.
 #+begin_src emacs-lisp
   (let ((opsat (concat org-directory "/opsat.org")))
     (add-to-list 'org-capture-templates
-		 `("t" "Misc. TODO" entry (file ,opsat)
-		   "* TODO %?\n" :empty-lines 1)))
+                 `("t" "Misc. TODO" entry (file ,opsat)
+                   "* TODO %?\n" :empty-lines 1)))
 #+end_src
 
 ** Publishing
@@ -923,12 +929,12 @@ Enable these powerful placebo options.
   (setq gnus-asynchronous t)
   (setq gnus-use-cache t)
   (setq gnus-check-new-newsgroups nil
-	gnus-check-bogus-newsgroups nil)
+        gnus-check-bogus-newsgroups nil)
   (setq gnus-show-threads nil
-	gnus-use-cross-reference nil
-	gnus-nov-is-evil nil)
+        gnus-use-cross-reference nil
+        gnus-nov-is-evil nil)
   (setq gnus-check-new-newsgroups nil
-	gnus-use-adaptive-scoring nil)
+        gnus-use-adaptive-scoring nil)
   (setq gnus-summary-line-format "%U%R%z%I%(%[%4L: %-23,23f%]%) %s
   ")
 #+end_src
@@ -969,12 +975,12 @@ Read with gmail's IMAP.
 
 #+begin_src emacs-lisp
   (add-to-list 'gnus-secondary-select-methods
-	       '(nnimap "alex@reckerfamily.com"
-			(nnimap-address "imap.gmail.com")
-			(nnimap-server-port "imaps")
-			(nnimap-stream ssl)
-			(nnmail-expiry-target "nnimap+alex@reckerfamily.com:[Gmail]/All Mail")
-			(nnmail-expiry-wait immediate)))
+               '(nnimap "alex@reckerfamily.com"
+                        (nnimap-address "imap.gmail.com")
+                        (nnimap-server-port "imaps")
+                        (nnimap-stream ssl)
+                        (nnmail-expiry-target "nnimap+alex@reckerfamily.com:[Gmail]/All Mail")
+                        (nnmail-expiry-wait immediate)))
 #+end_src
 
 Send email with SMTP.  These settings aren't directly tied to gnus.
@@ -997,13 +1003,13 @@ Open today's journal entry.
     "Open today's journal entry."
     (interactive)
     (let* ((target
-	    (format-time-string "~/src/blog/entries/%Y-%m-%d.html"))
-	   (frontmatter
-	    (format-time-string "<!-- meta:title -->\n<!-- meta:banner %Y-%m-%d.jpg -->\n\n")))
+            (format-time-string "~/src/blog/entries/%Y-%m-%d.html"))
+           (frontmatter
+            (format-time-string "<!-- meta:title -->\n<!-- meta:banner %Y-%m-%d.jpg -->\n\n")))
       (if (file-exists-p target)
-	  (find-file target)
-	(progn (find-file target)
-	       (insert frontmatter)))))
+          (find-file target)
+        (progn (find-file target)
+               (insert frontmatter)))))
 
   (global-set-key (kbd "C-c t") 'recker/today)
 #+end_src
@@ -1018,10 +1024,10 @@ close).
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward "\\(\\`\\|\n\n+\\)\\([^< $\n]\\)" nil t)
-	(replace-match "\\1<p>\\2" t))
+        (replace-match "\\1<p>\\2" t))
       (goto-char (point-min))
       (while (re-search-forward "\\([^>}\n]\\)\\(\n\n+\\|\n\\'\\)" nil t)
-	(replace-match "\\1</p>\\2" t))))
+        (replace-match "\\1</p>\\2" t))))
 #+end_src
 
 Emacs has a =fill-region=, so why not an =unfill-region=?

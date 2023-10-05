@@ -12,7 +12,18 @@
 (recker/load-config "appearance")
 (recker/load-config "scratch")
 (recker/load-config "shell")
+(recker/load-config "movement")
+(recker/load-config "files")
+(recker/load-config "git")
+(recker/load-config "whitespace")
+(recker/load-config "langs")
+(recker/load-config "web")
+(recker/load-config "go")
+(recker/load-config "python")
+(recker/load-config "bookmark")
+(recker/load-config "org")
+(recker/load-config "snippets")
 (recker/load-config "gnus")
 
-;; load the old config
-(org-babel-load-file (concat user-emacs-directory "/README.org"))
+;; start the emacs server
+(server-start)

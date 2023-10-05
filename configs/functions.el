@@ -1,4 +1,5 @@
 ;; A place for miscellaneous functions to simplify configs.
+(require 'cl-lib)
 
 (defun recker/log (msg &rest args)
   "Log a MSG (and ARGS) to the mini buffer."
@@ -43,3 +44,16 @@
   (interactive "*r")
   (let ((fill-column (point-max)))
     (fill-region beg end)))
+
+(defun recker/load-configs (names)
+  "Load the configs in the order specified in NAMES.  Throw a warning if any files were left out."
+  (let ((all-configs
+         (mapcar #'(lambda (f) (file-name-sans-extension f))
+                 (cl-remove-if #'(lambda (f) (or (string-prefix-p "." f)
+                                              (not (string-suffix-p ".el" f))))
+                            (directory-files (concat user-emacs-directory "configs"))))))
+    (let ((orphaned-configs (cl-remove-if #'(lambda (c) (or (member c names) (string= c "functions"))) all-configs)))
+      (when orphaned-configs
+        (warn "Orphaned files in .emacs.d/configs: %s" orphaned-configs))))
+  (dolist (config names)
+    (recker/load-config config)))

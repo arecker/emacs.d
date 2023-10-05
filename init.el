@@ -8,22 +8,22 @@
   (recker/log "loaded custom functions (%s)" functions-file))
 
 ;; load the configs from configs/*.el
-(recker/load-config "packages")
-(recker/load-config "appearance")
-(recker/load-config "scratch")
-(recker/load-config "shell")
-(recker/load-config "movement")
-(recker/load-config "files")
-(recker/load-config "git")
-(recker/load-config "whitespace")
-(recker/load-config "langs")
-(recker/load-config "web")
-(recker/load-config "go")
-(recker/load-config "python")
-(recker/load-config "bookmark")
-(recker/load-config "org")
-(recker/load-config "snippets")
-(recker/load-config "gnus")
+(recker/load-configs '("packages"
+                       "appearance"
+                       "scratch"
+                       "shell"
+                       "movement"
+                       "files"
+                       "git"
+                       "whitespace"
+                       "langs"
+                       "web"
+                       "go"
+                       "python"
+                       "bookmark"
+                       "org"
+                       "snippets"
+                       "gnus"))
 
 ;; start the emacs server
 (server-start)

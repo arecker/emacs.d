@@ -7,17 +7,21 @@
   "List all bookmarks in alphabetical order, and filter out the junk entries I don't care about."
   (let ((junk-entries '("org-capture-last-stored")))
     (sort (cl-remove-if #'(lambda (b) (member b junk-entries))
-                        (append (bookmark-all-names) (recker/list-work-repos)))
+                        (append (bookmark-all-names) ; actual saved bookmarks
+                                ;; then all the dynamic ones
+                                (recker/list-entries-as-bookmarks ".emacs.d/configs/")
+                                (recker/list-entries-as-bookmarks "src/")
+                                (recker/list-entries-as-bookmarks "src/work/")))
           #'string<)))
 
-(defun recker/list-work-repos ()
-  "List all the repos cloned to ~/src/work/ as bookmarks."
-  (mapcar #'(lambda (n) (concat "src/work/" n))
-          (cl-remove-if #'(lambda (f) (member f '("." "..")))
-                        (directory-files (expand-file-name "~/src/work")))))
+(defun recker/list-entries-as-bookmarks (parent)
+  "List all the entries in the PARENT directory as if they were bookmarks."
+  (mapcar #'(lambda (n) (concat parent n))
+          (cl-remove-if #'(lambda (f) (string-prefix-p "." f))
+                        (directory-files (expand-file-name (concat "~/" parent))))))
 
 (defun recker/ido-bookmark-jump (bookmark)
-  "*Switch to bookmark BOOKMARK interactively using `ido'."
+  "Switch to bookmark BOOKMARK interactively using `ido'."
   (interactive (list (ido-completing-read "Bookmark: " (recker/list-bookmarks) nil t)))
   (if (member bookmark (bookmark-all-names))
       (bookmark-jump bookmark)

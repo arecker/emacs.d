@@ -63,14 +63,14 @@
                       (nnmail-expiry-wait immediate)))
 
 ;; not working yet...
-;; (add-to-list 'gnus-secondary-select-methods
-;;              '(nnimap "arecker@zendesk.com"
-;;                       (nnimap-user "arecker@zendesk.com")
-;;                       (nnimap-address "imap.gmail.com")
-;;                       (nnimap-server-port "imaps")
-;;                       (nnimap-stream ssl)
-;;                       (nnmail-expiry-target "nnimap+arecker@zendesk.com:[Gmail]/All Mail")
-;;                       (nnmail-expiry-wait immediate)))
+(add-to-list 'gnus-secondary-select-methods
+             '(nnimap "arecker@zendesk.com"
+                      (nnimap-user "arecker@zendesk.com")
+                      (nnimap-address "imap.gmail.com")
+                      (nnimap-server-port "imaps")
+                      (nnimap-stream ssl)
+                      (nnmail-expiry-target "nnimap+arecker@zendesk.com:[Gmail]/All Mail")
+                      (nnmail-expiry-wait immediate)))
 
 ;; sending mail (does this by shelling out to msmpt, which will look
 ;; at the sender address to figure out which outgoing server to use

@@ -62,7 +62,6 @@
                       (nnmail-expiry-target "nnimap+alex@reckerfamily.com:[Gmail]/All Mail")
                       (nnmail-expiry-wait immediate)))
 
-;; not working yet...
 (add-to-list 'gnus-secondary-select-methods
              '(nnimap "arecker@zendesk.com"
                       (nnimap-user "arecker@zendesk.com")

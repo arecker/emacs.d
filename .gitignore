@@ -17,3 +17,4 @@ org-clock-save.el
 bbdb.el
 authinfo.gpg
 /network-security.data
+gnus

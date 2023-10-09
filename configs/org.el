@@ -7,6 +7,8 @@
 
 (add-hook 'org-mode-hook #'recker/fix-yas-in-org)
 
+(add-hook 'org-mode-hook #'turn-on-auto-fill)
+
 (setq org-adapt-indentation nil)
 (setq org-cycle-separator-lines -1)
 (setq org-goto-auto-isearch nil)

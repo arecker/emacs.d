@@ -59,7 +59,7 @@
                       (nnimap-address "imap.gmail.com")
                       (nnimap-server-port "imaps")
                       (nnimap-stream ssl)
-                      (nnmail-expiry-target "nnimap+alex@reckerfamily.com:[Gmail]/All Mail")
+                      (nnmail-expiry-target "nnimap+alex@reckerfamily.com:[Gmail]/Trash")
                       (nnmail-expiry-wait immediate)))
 
 (add-to-list 'gnus-secondary-select-methods
@@ -68,7 +68,7 @@
                       (nnimap-address "imap.gmail.com")
                       (nnimap-server-port "imaps")
                       (nnimap-stream ssl)
-                      (nnmail-expiry-target "nnimap+arecker@zendesk.com:[Gmail]/All Mail")
+                      (nnmail-expiry-target "nnimap+arecker@zendesk.com:[Gmail]/Trash")
                       (nnmail-expiry-wait immediate)))
 
 ;; sending mail (does this by shelling out to msmpt, which will look

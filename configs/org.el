@@ -58,10 +58,15 @@
 (global-set-key (kbd "C-c c") 'org-capture)
 (setq org-capture-templates '())
 
+;; general task
 (let ((opsat (concat org-directory "/opsat.org")))
   (add-to-list 'org-capture-templates
-               `("t" "Misc. TODO" entry (file ,opsat)
+               `("t" "TODO" entry (file ,opsat)
                  "* TODO %?\n" :empty-lines 1)))
+
+;; daily mental health check-in
+(add-to-list 'org-capture-templates
+             `("m" "Mental Health Check-in" plain (file+olp+datetree ,(concat org-directory "/therapy.org"))))
 
 ;; prettify code exported to HTML
 (use-package htmlize :ensure t)

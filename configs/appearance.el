@@ -7,7 +7,7 @@
 ;; I sometimes use this theme (or other themes)
 ;; (use-package modus-themes
 ;;   :ensure t
-;;   :config (load-theme 'modus-operandi-tinted 1 nil))
+;;   :init (load-theme 'modus-operandi-tinted 1 nil))
 
 ;; Use monaco font if running on MacOS
 (when (string= system-type "darwin")

@@ -13,6 +13,7 @@
 (setq org-cycle-separator-lines -1)
 (setq org-goto-auto-isearch nil)
 (setq org-clock-persist 'history)
+(org-indent-mode 0)
 (org-clock-persistence-insinuate)
 
 (global-set-key (kbd "C-c C--") #'org-insert-structure-template)
@@ -58,10 +59,14 @@
 (global-set-key (kbd "C-c c") 'org-capture)
 (setq org-capture-templates '())
 
-;; general task
-(let ((opsat (concat org-directory "/opsat.org")))
+;; personal/work task
+(let ((opsat (concat org-directory "/opsat.org"))
+      (work (concat org-directory "/work.org")))
   (add-to-list 'org-capture-templates
-               `("t" "TODO" entry (file ,opsat)
+               `("t" "Personal Task" entry (file ,opsat)
+                 "* TODO %?\n" :empty-lines 1))
+  (add-to-list 'org-capture-templates
+               `("w" "Work Task" entry (file ,work)
                  "* TODO %?\n" :empty-lines 1)))
 
 ;; daily mental health check-in

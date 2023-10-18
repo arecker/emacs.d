@@ -71,10 +71,18 @@
 
 ;; daily mental health check-in
 (add-to-list 'org-capture-templates
-             `("m" "Mental Health Check-in" plain (file+olp+datetree ,(concat org-directory "/therapy.org"))))
+             `("m" "Mental Health Check-in" plain (file+olp+datetree ,(concat org-directory "/therapy.org.gpg"))))
+
+;; custom todo states
+(setq org-todo-keywords '((sequence "TODO" "WIP" "BLOCKED" "DONE")))
 
 ;; prettify code exported to HTML
 (use-package htmlize :ensure t)
 
 ;; org publish is interesting, I should look into that.
 (setq org-publish-project-alist '())
+
+;; blog experiment
+(let ((config (expand-file-name "~/src/blog-org/config.el")))
+  (if (file-exists-p config)
+      (load-file config)))

@@ -1,3 +1,9 @@
+;; keep passwords in ~/.password-store/authinfo.gpg (and work)
+(setq auth-sources
+      (list
+       (concat (expand-file-name "~/.password-store/") "authinfo.gpg")
+       (concat (expand-file-name "~/.password-store-work/") "authinfo.gpg")))
+
 ;; hide startup files in .emacs.d/gnus/
 ;; little known fact, there are an infinite number of gnus directories
 ;; and they WILL make their way to your home directory whether you

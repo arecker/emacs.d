@@ -25,6 +25,10 @@
                                      ("d" . "src plantuml")
                                      ("x" . "example")))
 
+;; other languages
+(org-babel-do-load-languages 'org-babel-load-languages '((python . t)
+                                                         (ruby . t)))
+
 ;; diagrams with plantuml
 ;; the plantuml jar should be located here:
 (setq org-plantuml-jar-path "~/.plantuml/plantuml.jar")
@@ -34,6 +38,10 @@
   :init
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
   (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
+
+;; export to JIRA
+(use-package ox-jira
+  :ensure t)
 
 (setq org-directory (expand-file-name "~/org"))
 (directory-files org-directory)

@@ -10,9 +10,9 @@
 ;;   :init (load-theme 'modus-operandi-tinted 1 nil))
 
 ;; uncomment this if you want transluscent windows
-(let ((alpha 85))
-  (set-frame-parameter (selected-frame) 'alpha (list alpha alpha))
-  (add-to-list 'default-frame-alist (list 'alpha alpha alpha)))
+;; (let ((alpha 80))
+;;   (set-frame-parameter (selected-frame) 'alpha (list alpha alpha))
+;;   (add-to-list 'default-frame-alist (list 'alpha alpha alpha)))
 
 ;; Use monaco font if running on MacOS
 (when (string= system-type "darwin")

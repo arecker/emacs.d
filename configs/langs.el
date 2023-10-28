@@ -13,7 +13,7 @@
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode)
-  :config (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+  :config (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc ruby-rubocop)))
 
 (use-package flyspell
   :config (setq ispell-program-name (executable-find "ispell"))

@@ -14,18 +14,6 @@
     (load-file filepath)
     (recker/log "loaded %s config (%s)" filestem filepath)))
 
-(defun recker/today ()
-  "Open today's journal entry."
-  (interactive)
-  (let* ((target
-          (format-time-string "~/src/blog/entries/%Y-%m-%d.html"))
-         (frontmatter
-          (format-time-string "<!-- meta:title -->\n<!-- meta:banner %Y-%m-%d.jpg -->\n\n")))
-    (if (file-exists-p target)
-        (find-file target)
-      (progn (find-file target)
-             (insert frontmatter)))))
-
 (global-set-key (kbd "C-c t") 'recker/today)
 
 (defun recker/add-p-tags-to-buffer ()

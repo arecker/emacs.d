@@ -17,7 +17,6 @@
                        "git"
                        "whitespace"
                        "langs"
-                       "web"
                        "go"
                        "python"
                        "bookmark"

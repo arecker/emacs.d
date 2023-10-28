@@ -1,4 +1,5 @@
 (setq org-agenda-files `( ,org-directory ))
+(setq org-agenda-file-regexp "\\`[^.].*\\.org\\\(\\.gpg\\\)?\\'")
 
 (global-set-key (kbd "C-c a") 'org-agenda)
 (setq org-agenda-start-with-follow-mode nil)

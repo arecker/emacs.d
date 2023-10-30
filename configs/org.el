@@ -29,3 +29,6 @@
 (org-clock-persistence-insinuate)
 
 (setq org-todo-keywords '((sequence "TODO" "WIP" "BLOCKED" "DONE")))
+
+(with-eval-after-load 'org
+  (bind-key (kbd "C-c l") #'org-store-link))

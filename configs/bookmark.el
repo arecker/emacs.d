@@ -10,7 +10,7 @@
                         (append (bookmark-all-names) ; actual saved bookmarks
                                 ;; then all the dynamic ones
                                 (recker/list-entries-as-bookmarks "org/")
-                                (recker/list-entries-as-bookmarks ".emacs.d/configs/")
+                                (recker/list-files-as-bookmarks ".emacs.d/configs/" ".el")
                                 (recker/list-entries-as-bookmarks "src/")
                                 (recker/list-entries-as-bookmarks "src/work/")))
           #'string<)))
@@ -20,6 +20,11 @@
   (mapcar #'(lambda (n) (concat parent n))
           (cl-remove-if #'(lambda (f) (string-prefix-p "." f))
                         (directory-files (expand-file-name (concat "~/" parent))))))
+
+(defun recker/list-files-as-bookmarks (parent pattern)
+  "List all the files matching pattern as if they were bookmarks."
+  (mapcar #'(lambda (s) (string-remove-prefix (expand-file-name "~/") s))
+          (directory-files-recursively (expand-file-name (concat "~/" parent)) pattern nil)))
 
 (defun recker/ido-bookmark-jump (bookmark)
   "Switch to bookmark BOOKMARK interactively using `ido'."

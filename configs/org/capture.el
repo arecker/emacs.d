@@ -1,23 +1,37 @@
+(defun recker/opsat-generate-todays-template ()
+  (format-time-string "* TODO %A, %B %d %Y [/]\nDEADLINE: <%Y-%m-%d %a>\n%?"))
+
 (defun recker/build-opsat-today-capture ()
   `("o" "Today"
     entry
     (file+olp+datetree ,(concat org-directory "/opsat.org"))
-    ,(format-time-string "* TODO %A, %B %d %Y [/]\nDEADLINE: <%Y-%m-%d %a>\n%?")
+    (function recker/opsat-generate-todays-template)
     :tree-type month
     :immediate-finish t))
+
+(defun recker/opsat-find-todays-capture ()
+  (goto-char (org-find-exact-headline-in-buffer (format-time-string "%A, %B %d %Y") (current-buffer) t))
+  (org-end-of-subtree))
 
 (defun recker/build-opsat-task-capture ()
   `("t" "Task"
     checkitem
-    (file+headline ,(concat org-directory "/opsat.org") ,(format-time-string "%A, %B %d %Y"))
+    (file+function ,(concat org-directory "/opsat.org") recker/opsat-find-todays-capture)
     nil))
+
+(defun recker/find-blog-capture ()
+  "Opens today's blog entry."
+  (find-file (expand-file-name (format-time-string "~/src/blog/entries/%Y-%m-%d.html")))
+  (goto-char (point-min))
+  (insert (format-time-string "<!-- meta:title -->\n<!-- meta:banner %Y-%m-%d.jpg -->\n\n"))
+  (goto-char (point-max)))
 
 (defun recker/build-blog-capture ()
   `("b"
     "Blog"
     plain
-    (file ,(expand-file-name (format-time-string "~/src/blog/entries/%Y-%m-%d.html")))
-    ,(format-time-string "<!-- meta:title -->\n<!-- meta:banner %Y-%m-%d.jpg -->\n\n%?")
+    (function recker/find-blog-capture)
+    ""
     :immediate-finish t
     :jump-to-captured t))
 

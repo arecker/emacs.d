@@ -28,6 +28,6 @@
 
 (org-clock-persistence-insinuate)
 
-(setq org-todo-keywords '((sequence "TODO" "WIP" "BLOCKED" "DONE")))
+(setq org-todo-keywords '((sequence "TODO" "DONE")))
 
 (global-set-key (kbd "C-c l") #'org-store-link)

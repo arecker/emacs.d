@@ -14,8 +14,6 @@
     (load-file filepath)
     (recker/log "loaded %s config (%s)" filestem filepath)))
 
-(global-set-key (kbd "C-c t") 'recker/today)
-
 (defun recker/add-p-tags-to-buffer ()
   "Automatically wrap all paragraphs in buffer in <p></p> tags."
   (interactive)

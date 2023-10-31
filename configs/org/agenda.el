@@ -10,4 +10,8 @@
 (setq org-deadline-warning-days 5)
 (setq org-agenda-span 'week)
 
-(setq org-agenda-custom-commands '())
+(setq org-agenda-custom-commands
+      '(("w" "Work Projects"
+         ((tags-todo "work")))
+        ("h" "Hack Projects"
+         ((tags-todo "hack")))))

@@ -2,7 +2,6 @@
 (global-auto-revert-mode t)
 
 ;; handy functions
-(global-set-key (kbd "C-c l") 'sort-lines)
 (global-set-key (kbd "C-c r") 'replace-string)
 
 ;; upcase a region without emacs bothering you

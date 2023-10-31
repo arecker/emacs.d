@@ -30,5 +30,4 @@
 
 (setq org-todo-keywords '((sequence "TODO" "WIP" "BLOCKED" "DONE")))
 
-(with-eval-after-load 'org
-  (bind-key (kbd "C-c l") #'org-store-link))
+(global-set-key (kbd "C-c l") #'org-store-link)

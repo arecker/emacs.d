@@ -1,5 +1,5 @@
 (defun recker/opsat-template ()
-  (format-time-string "* TODO %? [/]\nDEADLINE: <%Y-%m-%d %a>\n%?"))
+  (format-time-string "* TODO %? [/]\nDEADLINE: <%Y-%m-%d %a>\n"))
 
 (defun recker/blog-target ()
   "Opens today's blog entry."
@@ -13,8 +13,9 @@
 (setq org-capture-templates
       '(("o" "Task" entry (file+olp+datetree "opsat.org") (function recker/opsat-template))
         ("b" "Blog" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)
-        ("h" "Hack" entry (file "hack.org") "* TODO %? [/]\n" :empty-lines 1)
+        ("h" "Hack" entry (file+olp+datetree "hack.org") "* TODO %? [/]\n")
         ("m" "Therapy" plain (file+olp+datetree "therapy.org.gpg"))
-        ("w" "Work" entry (file "work.org.gpg") "* TODO %?\n" :empty-lines 1 :jump-to-captured t)))
+        ("w" "Work" entry (file+olp+datetree "work.org.gpg") "* TODO %?\n" :jump-to-captured t)
+        ("B" "Bible" entry (file+olp+datetree "bible.org") "* %?" :jump-to-captured t)))
 
 (global-set-key (kbd "C-c c") 'org-capture)

@@ -116,7 +116,7 @@
 
 ;; run this for eglot to work:
 ;; gem install solargraph
-(add-hook 'ruby-mode-hook 'eglot-ensure)
+;; (add-hook 'ruby-mode-hook 'eglot-ensure)
 
 (use-package terraform-mode
   :ensure t)

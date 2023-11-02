@@ -31,3 +31,5 @@
 (setq org-todo-keywords '((sequence "TODO" "DONE")))
 
 (global-set-key (kbd "C-c l") #'org-store-link)
+
+(setq org-startup-with-inline-images t)

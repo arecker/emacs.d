@@ -1,5 +1,7 @@
 (require 'org-tempo)
 
+(require 'org-attach-git)               ; automatically git commit attachments
+
 (setq org-directory (expand-file-name "~/org"))
 
 (recker/load-config "org/babel")

@@ -10,8 +10,15 @@
 (setq org-deadline-warning-days 5)
 (setq org-agenda-span 'week)
 
+;; Speed settings
+(setq org-agenda-inhibit-startup t)
+(setq org-agenda-use-tag-inheritance nil)
+(setq org-agenda-ignore-properties '(effort appt stats category))
+
 (setq org-agenda-custom-commands
       '(("w" "Work Projects"
          ((tags-todo "work")))
         ("h" "Hack Projects"
-         ((tags-todo "hack")))))
+         ((tags-todo "hack")))
+        ("C" "Worship Notes"
+         ((tags-todo "worship")))))

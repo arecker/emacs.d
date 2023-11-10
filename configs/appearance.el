@@ -14,7 +14,7 @@
 ;;   (set-frame-parameter (selected-frame) 'alpha (list alpha alpha))
 ;;   (add-to-list 'default-frame-alist (list 'alpha alpha alpha)))
 
-;; Use monaco font if running on MacOS
+;; use monaco font if running on MacOS
 (when (string= system-type "darwin")
   (set-frame-font "Monaco 18" nil t))
 

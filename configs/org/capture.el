@@ -13,7 +13,7 @@
         ("j" "Journaling")
         ("jb" "Blog" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)
         ("jm" "Therapy" plain (file+olp+datetree "therapy.org.gpg"))
-        ("jt" "Thoughts" plain (file+olp+datetree "thoughts.org.gpg"))
+        ("jt" "Thoughts" entry (file+olp+datetree "thoughts.org.gpg") "* %^{Topic}\n%?")
         ("w" "Work")
         ("wt" "Work - Task" entry (file+olp+datetree "work.org.gpg") "* TODO %^{Task}\n%?")
         ("wm" "Work - Meeting" entry (file+olp+datetree "work.org.gpg") "* %^{Meeting title}\nSCHEDULED: %T\n%?" :jump-to-captured t)

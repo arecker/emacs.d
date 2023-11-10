@@ -28,6 +28,8 @@
 
 (setq org-clock-persist 'history)
 
+(setq org-log-into-drawer 't)
+
 (org-clock-persistence-insinuate)
 
 (setq org-todo-keywords '((sequence "TODO" "DONE")))

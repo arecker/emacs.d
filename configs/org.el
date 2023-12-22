@@ -45,7 +45,8 @@
   (format-time-string "<!-- meta:title -->\n<!-- meta:banner %Y-%m-%d.jpg -->\n\n"))
 
 (setq org-capture-templates
-      '(("b" "Blog" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)))
+      '(("t" "Task" entry (file "misc.org") "* TODO %?\nSCHEDULED: %t")
+        ("b" "Blog Entry" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)))
 
 (global-set-key (kbd "C-c c") 'org-capture)
 

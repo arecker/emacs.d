@@ -9,7 +9,7 @@
     (sort (cl-remove-if #'(lambda (b) (member b junk-entries))
                         (append (bookmark-all-names) ; actual saved bookmarks
                                 ;; then all the dynamic ones
-                                (recker/list-entries-as-bookmarks "Dropbox/org/")
+                                (recker/list-files-as-bookmarks "org/" ".org")
                                 (recker/list-files-as-bookmarks ".emacs.d/configs/" ".el")
                                 (recker/list-entries-as-bookmarks "src/")
                                 (recker/list-entries-as-bookmarks "src/work/")))

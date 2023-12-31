@@ -65,7 +65,7 @@
 (setq org-agenda-skip-deadline-if-done 't)
 (setq org-agenda-archives-mode nil)
 (setq org-deadline-warning-days 5)
-(setq org-agenda-span 'week)
+(setq org-agenda-span '1)
 
 ;; Speed settings
 (setq org-agenda-inhibit-startup t)
@@ -79,40 +79,43 @@
         ("s" "social" tags-todo "social")
         ("w" "work" tags-todo "work")))
 
-(defvar my/org-habit-show-graphs-everywhere nil
-  "If non-nil, show habit graphs in all types of agenda buffers.
+(setq org-use-tag-inheritance 't)
+(setq org-agenda-tag-filter-preset '())
 
-Normally, habits display consistency graphs only in
-\"agenda\"-type agenda buffers, not in other types of agenda
-buffers.  Set this variable to any non-nil variable to show
-consistency graphs in all Org mode agendas.")
-(setq my/org-habit-show-graphs-everywhere t)
+;; (defvar my/org-habit-show-graphs-everywhere nil
+;;   "If non-nil, show habit graphs in all types of agenda buffers.
 
-(defun my/org-agenda-mark-habits ()
-  "Mark all habits in current agenda for graph display.
+;; Normally, habits display consistency graphs only in
+;; \"agenda\"-type agenda buffers, not in other types of agenda
+;; buffers.  Set this variable to any non-nil variable to show
+;; consistency graphs in all Org mode agendas.")
+;; (setq my/org-habit-show-graphs-everywhere t)
 
-This function enforces `my/org-habit-show-graphs-everywhere' by
-marking all habits in the current agenda as such.  When run just
-before `org-agenda-finalize' (such as by advice; unfortunately,
-`org-agenda-finalize-hook' is run too late), this has the effect
-of displaying consistency graphs for these habits.
+;; (defun my/org-agenda-mark-habits ()
+;;   "Mark all habits in current agenda for graph display.
 
-When `my/org-habit-show-graphs-everywhere' is nil, this function
-has no effect."
-  (when (and my/org-habit-show-graphs-everywhere
-         (not (get-text-property (point) 'org-series)))
-    (let ((cursor (point))
-          item data)
-      (while (setq cursor (next-single-property-change cursor 'org-marker))
-        (setq item (get-text-property cursor 'org-marker))
-        (when (and item (org-is-habit-p item))
-          (with-current-buffer (marker-buffer item)
-            (setq data (org-habit-parse-todo item)))
-          (put-text-property cursor
-                             (next-single-property-change cursor 'org-marker)
-                             'org-habit-p data))))))
+;; This function enforces `my/org-habit-show-graphs-everywhere' by
+;; marking all habits in the current agenda as such.  When run just
+;; before `org-agenda-finalize' (such as by advice; unfortunately,
+;; `org-agenda-finalize-hook' is run too late), this has the effect
+;; of displaying consistency graphs for these habits.
 
-(advice-add #'org-agenda-finalize :before #'my/org-agenda-mark-habits)
+;; When `my/org-habit-show-graphs-everywhere' is nil, this function
+;; has no effect."
+;;   (when (and my/org-habit-show-graphs-everywhere
+;;          (not (get-text-property (point) 'org-series)))
+;;     (let ((cursor (point))
+;;           item data)
+;;       (while (setq cursor (next-single-property-change cursor 'org-marker))
+;;         (setq item (get-text-property cursor 'org-marker))
+;;         (when (and item (org-is-habit-p item))
+;;           (with-current-buffer (marker-buffer item)
+;;             (setq data (org-habit-parse-todo item)))
+;;           (put-text-property cursor
+;;                              (next-single-property-change cursor 'org-marker)
+;;                              'org-habit-p data))))))
+
+;; (advice-add #'org-agenda-finalize :before #'my/org-agenda-mark-habits)
 
 ;;;;;;;;;;;;;
 ;; PUBLISH ;;

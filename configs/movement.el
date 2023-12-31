@@ -1,6 +1,8 @@
 (setq delete-selection-mode 't)
 (global-auto-revert-mode t)
 
+(setq confirm-kill-emacs #'yes-or-no-p)
+
 ;; handy functions
 (global-set-key (kbd "C-c r") 'replace-string)
 

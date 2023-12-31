@@ -47,6 +47,7 @@
 (setq org-capture-templates
       '(("t" "Misc Task" entry (file "misc.org") "* TODO %?\nSCHEDULED: %t")
         ("w" "Work Task" entry (file "work.org") "* TODO %?\nSCHEDULED: %t" :jump-to-captured t :empty-lines-after 1)
+        ("s" "Social Engagement" entry (file "social.org") "* TODO %?\nSCHEDULED: %t" :empty-lines-after 1)
         ("b" "Blog Entry" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)))
 
 (global-set-key (kbd "C-c c") 'org-capture)
@@ -75,6 +76,7 @@
       '(("c" "chores" tags-todo "chores")
         ("h" "habits" tags-todo "habits")
         ("m" "misc" tags-todo "misc")
+        ("s" "social" tags-todo "social")
         ("w" "work" tags-todo "work")))
 
 (defvar my/org-habit-show-graphs-everywhere nil

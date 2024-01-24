@@ -48,7 +48,10 @@
       '(("t" "Misc Task" entry (file "misc.org") "* TODO %?\nSCHEDULED: %t")
         ("w" "Work Task" entry (file "work.org") "* TODO %?\nSCHEDULED: %t" :jump-to-captured t :empty-lines-after 1)
         ("s" "Social Engagement" entry (file "social.org") "* TODO %?\nSCHEDULED: %t" :empty-lines-after 1)
-        ("b" "Blog Entry" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)))
+        ("b" "Blog Entry" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)
+        ("h" "Hobby Task" entry (file "hobby.org") "* TODO %?\nSCHEDULED: %t")
+        ("j" "Journal Entry" plain (file+olp+datetree "journal.org"))
+        ("B" "Bible Study" plain (file+olp+datetree "bible.org") "" :immediate-finish t :jump-to-captured t)))
 
 (global-set-key (kbd "C-c c") 'org-capture)
 
@@ -64,8 +67,8 @@
 (setq org-agenda-skip-scheduled-if-done 't)
 (setq org-agenda-skip-deadline-if-done 't)
 (setq org-agenda-archives-mode nil)
-(setq org-deadline-warning-days 5)
-(setq org-agenda-span '1)
+(setq org-deadline-warning-days 3)
+(setq org-agenda-span 2)
 
 ;; Speed settings
 (setq org-agenda-inhibit-startup t)

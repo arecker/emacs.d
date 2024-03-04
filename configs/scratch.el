@@ -13,11 +13,27 @@
 
 (defun recker/scratch-message ()
   "Return a scratch message from fortune-blog."
+  (concat "\n"
+          (recker/random-scratch-ascii)
+          "\n\n"
+          (recker/scratch-lisp-comment
+           (shell-command-to-string recker/scratch-message-command))))
+
+(defun recker/random-scratch-ascii ()
+  "Return a lisp random ascii image from emacs.d/ascii."
+  (let* ((ascii-files (file-expand-wildcards (concat user-emacs-directory "ascii/*.txt")))
+         (choice (expand-file-name (nth (random (length ascii-files)) ascii-files))))
+    (recker/scratch-lisp-comment (with-temp-buffer
+                                   (insert-file-contents-literally choice)
+                                   (buffer-string)))))
+
+(defun recker/scratch-lisp-comment (text)
+  "Turn text into a lisp comment."
   (with-temp-buffer
-    (insert (shell-command-to-string recker/scratch-message-command))
+    (insert text)
     (let ((comment-start ";; "))
       (comment-region (point-min) (point-max)))
-    (fill-individual-paragraphs (point-min) (point-max))
-    (concat "\n" (buffer-string) "\n")))
+    (concat "\n" (buffer-string) "\n")
+    (buffer-string)))
 
 (setq initial-scratch-message (recker/scratch-message))

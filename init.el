@@ -26,3 +26,4 @@
 
 ;; start the emacs server
 (server-start)
+(put 'downcase-region 'disabled nil)

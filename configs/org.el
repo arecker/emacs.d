@@ -46,7 +46,7 @@
 
 (setq org-capture-templates
       '(("t" "Misc Task" entry (file "misc.org") "* TODO %?\nSCHEDULED: %t")
-        ("w" "Work Task" entry (file "work.org") "* TODO %?\nSCHEDULED: %t" :jump-to-captured t :empty-lines-after 1)
+        ("w" "Work Task" entry (file "work.org") "* TODO %?\nSCHEDULED: %t")
         ("s" "Social Engagement" entry (file "social.org") "* TODO %?\nSCHEDULED: %t" :empty-lines-after 1)
         ("b" "Blog Entry" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)
         ("h" "Hobby Task" entry (file "hobby.org") "* TODO %?\nSCHEDULED: %t")
@@ -125,4 +125,4 @@
 
 (global-set-key (kbd "C-c l") #'org-store-link)
 
-(setq org-startup-with-inline-images t)
+(setq org-startup-with-inline-images nil)

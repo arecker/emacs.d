@@ -14,6 +14,8 @@
 (defun recker/scratch-message ()
   "Return a scratch message from fortune-blog."
   (concat "\n"
+          (recker/scratch-lisp-comment (format-time-string "%A, %B %-d %Y"))
+          "\n\n"
           (recker/random-scratch-ascii)
           "\n\n"
           (recker/scratch-lisp-comment

@@ -38,4 +38,12 @@
     (concat "\n" (buffer-string) "\n")
     (buffer-string)))
 
+(defun recker/refresh-scratch-buffer ()
+  "Redraw the *scratch* buffer."
+  (interactive)
+  (save-excursion
+    (switch-to-buffer "*scratch*")
+    (erase-buffer)
+    (insert (recker/scratch-message))))
+
 (setq initial-scratch-message (recker/scratch-message))

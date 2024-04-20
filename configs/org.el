@@ -46,10 +46,10 @@
 
 (setq org-capture-templates
       '(("t" "personal task" entry (file "personal.org") "* TODO %?\nSCHEDULED: %t")
-        ("w" "work Task" entry (file "work.org") "* TODO %?\nSCHEDULED: %t")
-        ("j" "Journal Entry" plain (file+olp+datetree "journal.org") "%^{Grattitude}\n\n%^{Reflection}")
-        ("b" "Blog Entry" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)
-        ("B" "Bible Study" plain (file+olp+datetree "bible.org"))))
+        ("w" "work task" entry (file "work.org") "* TODO %?\nSCHEDULED: %t")
+        ("j" "journal Entry" plain (file+olp+datetree "journal.org") "%^{Grattitude}\n\n%^{Reflection}")
+        ("b" "blog Entry" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)
+        ("B" "bible study" plain (file+olp+datetree "bible.org"))))
 
 (global-set-key (kbd "C-c c") 'org-capture)
 
@@ -66,31 +66,30 @@
 (setq org-agenda-skip-deadline-if-done 't)
 (setq org-agenda-archives-mode nil)
 (setq org-deadline-warning-days 3)
-(setq org-agenda-span 5)
+(setq org-agenda-span 2)
 
 ;; Speed settings
 (setq org-agenda-inhibit-startup t)
 (setq org-agenda-use-tag-inheritance nil)
 (setq org-agenda-ignore-properties '(effort appt stats category))
 
-(defun recker/org-agenda-skip-tag(tag)
+(defun recker/org-agenda-if-tag(tag)
   "Skip entries that are tagged TAG"
   (let* ((entry-tags (org-get-tags-at (point))))
-    (if (member tag entry-tags)
+    (if (not (member tag entry-tags))
         (progn (outline-next-heading) (point))
       nil)))
 
 (setq org-agenda-custom-commands
-      '(("p" "personal tasks" tags-todo "personal")
-        ("P" "personal agenda"
-         agenda ""
-         ((org-agenda-skip-function '(recker/org-agenda-skip-tag "work"))
+      '(("p" "personal agenda"
+         ((agenda)
+          (tags-todo "personal"))
+         ((org-agenda-skip-function '(recker/org-agenda-if-tag "personal"))
           (org-agenda-overriding-header "Personal Agenda")))
-        ("w" "work tasks" tags-todo "work")
-        ("W" "work agenda"
-         agenda ""
-         ((org-agenda-skip-function '(recker/org-agenda-skip-tag "personal"))
-          (org-agenda-overriding-header "Work Agenda")))))
+        ("w" "work agenda"
+         ((agenda)
+          (tags-todo "work"))
+         ((org-agenda-skip-function '(recker/org-agenda-if-tag "work"))))))
 
 (setq org-use-tag-inheritance 't)
 (setq org-agenda-tag-filter-preset '())

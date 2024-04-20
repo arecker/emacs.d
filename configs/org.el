@@ -47,8 +47,8 @@
 (setq org-capture-templates
       '(("t" "personal task" entry (file "personal.org") "* TODO %?\nSCHEDULED: %t")
         ("w" "work task" entry (file "work.org") "* TODO %?\nSCHEDULED: %t")
-        ("j" "journal Entry" plain (file+olp+datetree "journal.org") "%^{Grattitude}\n\n%^{Reflection}")
-        ("b" "blog Entry" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)
+        ("j" "journal entry" plain (file+olp+datetree "journal.org") "%^{Grattitude}\n\n%^{Reflection}")
+        ("b" "blog entry" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)
         ("B" "bible study" plain (file+olp+datetree "bible.org"))))
 
 (global-set-key (kbd "C-c c") 'org-capture)

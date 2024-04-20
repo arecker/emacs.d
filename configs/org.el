@@ -73,9 +73,24 @@
 (setq org-agenda-use-tag-inheritance nil)
 (setq org-agenda-ignore-properties '(effort appt stats category))
 
+(defun recker/org-agenda-skip-tag(tag)
+  "Skip entries that are tagged TAG"
+  (let* ((entry-tags (org-get-tags-at (point))))
+    (if (member tag entry-tags)
+        (progn (outline-next-heading) (point))
+      nil)))
+
 (setq org-agenda-custom-commands
-      '(("p" "personal agenda" agenda "personal")
-        ("w" "work agenda" agenda "work")))
+      '(("p" "personal tasks" tags-todo "personal")
+        ("P" "personal agenda"
+         agenda ""
+         ((org-agenda-skip-function '(recker/org-agenda-skip-tag "work"))
+          (org-agenda-overriding-header "Personal Agenda")))
+        ("w" "work tasks" tags-todo "work")
+        ("W" "work agenda"
+         agenda ""
+         ((org-agenda-skip-function '(recker/org-agenda-skip-tag "personal"))
+          (org-agenda-overriding-header "Work Agenda")))))
 
 (setq org-use-tag-inheritance 't)
 (setq org-agenda-tag-filter-preset '())

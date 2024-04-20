@@ -45,13 +45,11 @@
   (format-time-string "<!-- meta:title -->\n<!-- meta:banner %Y-%m-%d.jpg -->\n\n"))
 
 (setq org-capture-templates
-      '(("t" "Misc Task" entry (file "misc.org") "* TODO %?\nSCHEDULED: %t")
-        ("w" "Work Task" entry (file "work.org") "* TODO %?\nSCHEDULED: %t")
-        ("s" "Social Engagement" entry (file "social.org") "* TODO %?\nSCHEDULED: %t" :empty-lines-after 1)
+      '(("t" "personal task" entry (file "misc.org") "* TODO %?\nSCHEDULED: %t")
+        ("w" "work Task" entry (file "work.org") "* TODO %?\nSCHEDULED: %t")
+        ("j" "Journal Entry" plain (file+olp+datetree "journal.org") "%^{Grattitude}\n\n%^{Reflection}")
         ("b" "Blog Entry" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)
-        ("h" "Hobby Task" entry (file "hobby.org") "* TODO %?\nSCHEDULED: %t")
-        ("j" "Journal Entry" plain (file+olp+datetree "journal.org"))
-        ("B" "Bible Study" plain (file+olp+datetree "bible.org") "" :immediate-finish t :jump-to-captured t)))
+        ("B" "Bible Study" plain (file+olp+datetree "bible.org"))))
 
 (global-set-key (kbd "C-c c") 'org-capture)
 
@@ -68,7 +66,7 @@
 (setq org-agenda-skip-deadline-if-done 't)
 (setq org-agenda-archives-mode nil)
 (setq org-deadline-warning-days 3)
-(setq org-agenda-span 2)
+(setq org-agenda-span 5)
 
 ;; Speed settings
 (setq org-agenda-inhibit-startup t)
@@ -76,11 +74,10 @@
 (setq org-agenda-ignore-properties '(effort appt stats category))
 
 (setq org-agenda-custom-commands
-      '(("c" "chores" tags-todo "chores")
-        ("h" "habits" tags-todo "habits")
-        ("m" "misc" tags-todo "misc")
-        ("s" "social" tags-todo "social")
-        ("w" "work" tags-todo "work")))
+      '(("p" "personal tasks" tags-todo "personal")
+        ("w" "work tasks" tags-todo "work")
+        ("P" "personal agenda" agenda "personal")
+        ("W" "work agenda" agenda "work")))
 
 (setq org-use-tag-inheritance 't)
 (setq org-agenda-tag-filter-preset '())

@@ -45,7 +45,7 @@
   (format-time-string "<!-- meta:title -->\n<!-- meta:banner %Y-%m-%d.jpg -->\n\n"))
 
 (setq org-capture-templates
-      '(("t" "personal task" entry (file "misc.org") "* TODO %?\nSCHEDULED: %t")
+      '(("t" "personal task" entry (file "personal.org") "* TODO %?\nSCHEDULED: %t")
         ("w" "work Task" entry (file "work.org") "* TODO %?\nSCHEDULED: %t")
         ("j" "Journal Entry" plain (file+olp+datetree "journal.org") "%^{Grattitude}\n\n%^{Reflection}")
         ("b" "Blog Entry" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)
@@ -74,10 +74,8 @@
 (setq org-agenda-ignore-properties '(effort appt stats category))
 
 (setq org-agenda-custom-commands
-      '(("p" "personal tasks" tags-todo "personal")
-        ("w" "work tasks" tags-todo "work")
-        ("P" "personal agenda" agenda "personal")
-        ("W" "work agenda" agenda "work")))
+      '(("p" "personal agenda" agenda "personal")
+        ("w" "work agenda" agenda "work")))
 
 (setq org-use-tag-inheritance 't)
 (setq org-agenda-tag-filter-preset '())

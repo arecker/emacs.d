@@ -26,5 +26,5 @@
     (unless (member chosen-venv existing-venvs)
       (let ((symlink-src (expand-file-name (read-directory-name "Path to venv: "))))
         (make-symbolic-link symlink-src symlink-dest)))
-    (pyvenv-activate chosen-venv)
+    (pyvenv-workon chosen-venv)
     (message "activated python environment \"%s\"" chosen-venv)))

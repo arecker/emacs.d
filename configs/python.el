@@ -15,3 +15,16 @@
                                    ("pyls" "--stdio")
                                    ("pyright" "--stdio")
                                    ("jedi-language-server"))))))
+
+(defun recker/python-workon ()
+  (interactive)
+  "Activate a python environment.  If it's not in the WORKON_HOME list, create a symlink to a venv."
+  (let* ((workon-home (or (getenv "$WORKON_HOME") (expand-file-name "~/.virtualenvs")))
+         (existing-venvs (directory-files workon-home nil directory-files-no-dot-files-regexp))
+         (chosen-venv (completing-read "Python Environment: " existing-venvs nil 'confirm))
+         (symlink-dest (concat (file-name-as-directory workon-home) chosen-venv)))
+    (unless (member chosen-venv existing-venvs)
+      (let ((symlink-src (expand-file-name (read-directory-name "Path to venv: "))))
+        (make-symbolic-link symlink-src symlink-dest)))
+    (pyvenv-activate chosen-venv)
+    (message "activated python environment \"%s\"" chosen-venv)))

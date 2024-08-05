@@ -2,4 +2,9 @@
 # name: pdb
 # key: pdb
 # --
-import pdb; pdb.set_trace()
+try:
+    import ipdb as pdb
+except ImportError:
+    import pdb
+
+pdb.set_trace()

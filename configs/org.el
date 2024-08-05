@@ -16,7 +16,8 @@
 (global-set-key (kbd "C-c C--") #'org-insert-structure-template)
 
 (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
-                                                         (ruby . t)))
+                                                         (ruby . t)
+                                                         (shell . t)))
 
 (setq org-structure-template-alist '(("e" . "src emacs-lisp")
                                      ("p" . "src python")
@@ -47,7 +48,7 @@
 (setq org-capture-templates
       '(("t" "personal task" entry (file "personal.org") "* TODO %?\nSCHEDULED: %t")
         ("w" "work task" entry (file "work.org") "* TODO %?\nSCHEDULED: %t")
-        ("j" "journal entry" plain (file+olp+datetree "journal.org.gpg") "%^{Grattitude}\n\n%^{Reflection}")
+        ("j" "journal entry" plain (file+olp+datetree "journal.org.gpg") "%^{Grattitude}\n\n%?")
         ("b" "blog entry" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)
         ("B" "bible study" plain (file+olp+datetree "bible.org"))))
 

@@ -13,8 +13,12 @@
                `(python-mode . ,(eglot-alternatives
                                  '(("pylsp")
                                    ("pyls" "--stdio")
-                                   ("pyright" "--stdio")
+                                   ("pyright-langserver" "--stdio")
                                    ("jedi-language-server"))))))
+
+;; Make an environment
+;; python -m venv --copies ./venv
+;; ./venv/bin/pip install pyright isort pyflakes
 
 (defun recker/python-workon ()
   (interactive)

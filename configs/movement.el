@@ -1,6 +1,9 @@
 (setq delete-selection-mode 't)
 (global-auto-revert-mode t)
 
+;; this silly thing that always gets automatically inserted in my init.el
+(put 'downcase-region 'disabled nil)
+
 (setq confirm-kill-emacs #'yes-or-no-p)
 
 ;; handy functions

@@ -48,12 +48,6 @@ The Emacs package manager does a nice job.  With the help of John
 Wiegley's [[https://github.com/jwiegley/use-package][use-package]], we can simultaneously declare a package we need
 and configure the package /after/ it installs and loads.
 
-#+begin_example
-  (use-package exec-path-from-shell
-    :ensure t
-    :config (exec-path-from-shell-initialize))
-#+end_example
-
 As far as package maintenance, I sometimes run =M-x
 package-list-packages= to bring up the packages screen.  You can press
 =U= then =x= at this screen to pull down any updates that are ready,
@@ -86,6 +80,28 @@ still working.
   (recker/configure-packages)
 #+end_src
 
+* Application
+
+If you're using Emacs through a CLI, I'd recommend you close it out
+and download the real thing instead (if you're running a mac, [[https://emacsformacosx.com/][Emacs
+for Mac OS X]] is great no-frills package).  Flipping between emacs
+and the terminal is still fine, though.  Especially since with this
+config, running the command =emacsclient= will connect to the running
+Emacs process seamlessly.  You can even export =EDITOR=emacsclient= in
+your environment so other tools can get on the same page.
+
+#+begin_src emacs-lisp
+  (defun recker/configure-application ()
+
+    ;; prompt when quitting (protects from fat fingers)
+    (setq-default confirm-kill-emacs #'yes-or-no-p)
+
+    ;; start the server
+    (server-start))
+
+  (recker/configure-application)
+#+end_src
+
 * Appearance
 
 Default Emacs gets a lot of crap for its "ugly" UI.  I find it cozy
@@ -93,7 +109,7 @@ and nostalgic.  In an effort to maintain that unmistakable aesthetic,
 I make just a few modest tweaks to the appearance.
 
 #+begin_src emacs-lisp
-  (defun recker/setup-appearance ()
+  (defun recker/configure-appearance ()
     "Configure the Emacs UI."
 
     ;; Suppress widgets
@@ -120,7 +136,7 @@ I make just a few modest tweaks to the appearance.
         :init (rich-minority-mode 't)
         :config (setq rm-blacklist ""))))
 
-  (recker/setup-appearance)
+  (recker/configure-appearance)
 #+end_src
 
 * Movement
@@ -199,6 +215,40 @@ slate to focus.
     (mapc #'(lambda (b) (unless (string= (buffer-name b) "*scratch*") (kill-buffer b))) (buffer-list)))
 
   (global-set-key (kbd "C-x P") 'recker/purge-buffers)
+#+end_src
+
+In Emacs, you spend much of your time selecting things in the
+minibuffer.  "Interactive Do" ([[https://www.gnu.org/software/emacs/manual/html_mono/ido.html][IDO]] for short) can enhance this
+experience.  IDO comes with Emacs, but I install some packages to
+display options vertically instead of horizontally, and also to plug
+the interface in to [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Imenu.html][Imenu]].
+
+#+begin_src emacs-lisp
+  (defun recker/configure-ido ()
+    (setq ido-enable-flex-matching t)
+    (setq ido-everywhere t)
+    (ido-mode t)
+    (use-package ido-vertical-mode
+      :ensure t
+      :config (setq ido-vertical-define-keys 'C-n-and-C-p-only)
+      :init (ido-vertical-mode))
+    (use-package idomenu
+      :ensure t
+      :bind ("C-c i" . idomenu)))
+
+  (recker/configure-ido)
+#+end_src
+
+The =M-x= menu also carries a lot of weight in the Emacs workflow.
+Transparently swapping out this command with the smex package adds
+value to this interface without changing the intuitive experience.
+
+#+begin_src emacs-lisp
+  (use-package smex
+    :ensure t
+    :init (smex-initialize)
+    :bind (("M-x" . 'smex)
+           ("M-X" . 'smex-major-mode-commands)))
 #+end_src
 
 * Files

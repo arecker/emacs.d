@@ -15,25 +15,6 @@
   :ensure t
   :bind (("C-=" . 'er/expand-region)))
 
-;; IDO
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
-(ido-mode t)
-(use-package ido-vertical-mode          ;IDO + vertical mode
-  :ensure t
-  :config (setq ido-vertical-define-keys 'C-n-and-C-p-only)
-  :init (ido-vertical-mode))
-(use-package idomenu                    ;IDO + imenu
-  :ensure t
-  :bind ("C-c i" . idomenu))
-
-;; smex (M-x)
-(use-package smex
-  :ensure t
-  :init (smex-initialize)
-  :bind (("M-x" . 'smex)
-         ("M-X" . 'smex-major-mode-commands)))
-
 ;; autocomplete
 (use-package company
   :ensure t

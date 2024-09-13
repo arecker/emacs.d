@@ -5,14 +5,9 @@
 
 * Introduction
 
-This is my Emacs configuration.  [[https://orgmode.org/worg/org-contrib/babel/][Org Babel]], a native feature of Emacs
-that can run code snippets embedded in rich text documents, spurred a
-fad in the Emacs community where users define their personal configs
-in README documents like this one.
+This is my Emacs configuration.  [[https://orgmode.org/worg/org-contrib/babel/][Org Babel]], a native feature of Emacs that can run code snippets embedded in rich text documents, spurred a fad in the Emacs community where users define their personal configs in README documents like this one.
 
-In that spirit, I tried to contain my actual lisp code in this
-document, save for one function that you need in =init.el= to kick off
-the process.
+In that spirit, I tried to contain my actual lisp code in this document, save for one function that you need in =init.el= to kick off the process.
 
 #+begin_example
 (defun recker/load-config ()
@@ -25,14 +20,9 @@ the process.
 (recker/load-config)
 #+end_example
 
-From here on, all lisp code snippets with syntax highlighting are run
-on startup in the order they appear.
+From here on, all lisp code snippets with syntax highlighting are run on startup in the order they appear.
 
-One more note before we get going.  You are free to use this as a
-starting place for your own configuration.  All of my custom functions
-begin with the =recker/= prefix.  To change it, just perform a string
-replace on =(defun recker/= within this document.  Beyond that, just
-update these global variables with your own info.
+One more note before we get going.  You are free to use this as a starting place for your own configuration.  All of my custom functions begin with the =recker/= prefix.  To change it, just perform a string replace on =(defun recker/= within this document.  Beyond that, just update these global variables with your own info.
 
 #+begin_src emacs-lisp
   (setq user-full-name "Alex Recker")
@@ -41,18 +31,11 @@ update these global variables with your own info.
 
 * Packages
 
-First, we setup the Emacs package manager.  This occurs at the top of
-the file so we can install packages as we need them.
+First, we setup the Emacs package manager.  This occurs at the top of the file so we can install packages as we need them.
 
-The Emacs package manager does a nice job.  With the help of John
-Wiegley's [[https://github.com/jwiegley/use-package][use-package]], we can simultaneously declare a package we need
-and configure the package /after/ it installs and loads.
+The Emacs package manager does a nice job.  With the help of John Wiegley's [[https://github.com/jwiegley/use-package][use-package]], we can simultaneously declare a package we need and configure the package /after/ it installs and loads.
 
-As far as package maintenance, I sometimes run =M-x
-package-list-packages= to bring up the packages screen.  You can press
-=U= then =x= at this screen to pull down any updates that are ready,
-and it's also a good idea to restart Emacs to make sure everything is
-still working.
+As far as package maintenance, I sometimes run =M-x package-list-packages= to bring up the packages screen.  You can press =U= then =x= at this screen to pull down any updates that are ready, and it's also a good idea to restart Emacs to make sure everything is still working.
 
 #+begin_src emacs-lisp
   (require 'package)
@@ -82,13 +65,7 @@ still working.
 
 * Application
 
-If you're using Emacs through a CLI, I'd recommend you close it out
-and download the real thing instead (if you're running a mac, [[https://emacsformacosx.com/][Emacs
-for Mac OS X]] is great no-frills package).  Flipping between emacs
-and the terminal is still fine, though.  Especially since with this
-config, running the command =emacsclient= will connect to the running
-Emacs process seamlessly.  You can even export =EDITOR=emacsclient= in
-your environment so other tools can get on the same page.
+If you're using Emacs through a CLI, I'd recommend you close it out and download the real thing instead (if you're running a mac, [[https://emacsformacosx.com/][Emacs for Mac OS X]] is great no-frills package).  Flipping between emacs and the terminal is still fine, though.  Especially since with this config, running the command =emacsclient= will connect to the running Emacs process seamlessly.  You can even export =EDITOR=emacsclient= in your environment so other tools can get on the same page.
 
 #+begin_src emacs-lisp
   (defun recker/configure-application ()
@@ -104,9 +81,7 @@ your environment so other tools can get on the same page.
 
 * Appearance
 
-Default Emacs gets a lot of crap for its "ugly" UI.  I find it cozy
-and nostalgic.  In an effort to maintain that unmistakable aesthetic,
-I make just a few modest tweaks to the appearance.
+Default Emacs gets a lot of crap for its "ugly" UI.  I find it cozy and nostalgic.  In an effort to maintain that unmistakable aesthetic, I make just a few modest tweaks to the appearance.
 
 #+begin_src emacs-lisp
   (defun recker/configure-appearance ()
@@ -141,13 +116,7 @@ I make just a few modest tweaks to the appearance.
 
 * Movement
 
-The [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html][buffer]] would have to be the most common form of transportation in
-the Emacs world.  Suppressing the more boisterous default splash
-screen, I've made the =*scratch*= buffer my home.  With these configs,
-I've made it so that this buffer can never be deleted.  I wrote a good
-amount of custom code to print a different ascii image and output from
-the infamous =fortune= command on every launch.  It's also a great
-place to quickly test lisp expressions or paste random text.
+The [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html][buffer]] would have to be the most common form of transportation in the Emacs world.  Suppressing the more boisterous default splash screen, I've made the =*scratch*= buffer my home.  With these configs, I've made it so that this buffer can never be deleted.  I wrote a good amount of custom code to print a different ascii image and output from the infamous =fortune= command on every launch.  It's also a great place to quickly test lisp expressions or paste random text.
 
 #+begin_src emacs-lisp
   ;; don't show the splash screen
@@ -201,10 +170,7 @@ place to quickly test lisp expressions or paste random text.
   (setq initial-scratch-message (recker/scratch-message))
 #+end_src
 
-Where =C-x p= deletes the current buffer, I added my own function that
-deletes /all/ buffers which you can call by =C-x P=.  Just like my
-browser tabs, sometimes I get a little overwhelmed and I need a clean
-slate to focus.
+Where =C-x p= deletes the current buffer, I added my own function that deletes /all/ buffers which you can call by =C-x P=.  Just like my browser tabs, sometimes I get a little overwhelmed and I need a clean slate to focus.
 
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-x k") 'kill-this-buffer)
@@ -217,11 +183,7 @@ slate to focus.
   (global-set-key (kbd "C-x P") 'recker/purge-buffers)
 #+end_src
 
-In Emacs, you spend much of your time selecting things in the
-minibuffer.  "Interactive Do" ([[https://www.gnu.org/software/emacs/manual/html_mono/ido.html][IDO]] for short) can enhance this
-experience.  IDO comes with Emacs, but I install some packages to
-display options vertically instead of horizontally, and also to plug
-the interface in to [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Imenu.html][Imenu]].
+In Emacs, you spend much of your time selecting things in the minibuffer.  "Interactive Do" ([[https://www.gnu.org/software/emacs/manual/html_mono/ido.html][IDO]] for short) can enhance this experience.  IDO comes with Emacs, but I install some packages to display options vertically instead of horizontally, and also to plug the interface in to [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Imenu.html][Imenu]].
 
 #+begin_src emacs-lisp
   (defun recker/configure-ido ()
@@ -239,9 +201,7 @@ the interface in to [[https://www.gnu.org/software/emacs/manual/html_node/emacs/
   (recker/configure-ido)
 #+end_src
 
-The =M-x= menu also carries a lot of weight in the Emacs workflow.
-Transparently swapping out this command with the smex package adds
-value to this interface without changing the intuitive experience.
+The =M-x= menu also carries a lot of weight in the Emacs workflow.  Transparently swapping out this command with the smex package adds value to this interface without changing the intuitive experience.
 
 #+begin_src emacs-lisp
   (use-package smex
@@ -253,10 +213,7 @@ value to this interface without changing the intuitive experience.
 
 * Files
 
-Unfortunately, Emacs litters the filesystem with "backup" files.  I
-can appreciate that it's trying to be helpful, but it drives me nuts
-so I turn it off.  Another edge case - if a file changes while I'm
-looking at it, I make Emacs re-render the buffer live.
+Unfortunately, Emacs litters the filesystem with "backup" files.  I can appreciate that it's trying to be helpful, but it drives me nuts so I turn it off.  Another edge case - if a file changes while I'm looking at it, I make Emacs re-render the buffer live.
 
 #+begin_src emacs-lisp
   (setq make-backup-files nil)
@@ -264,17 +221,13 @@ looking at it, I make Emacs re-render the buffer live.
   (global-auto-revert-mode t)
 #+end_src
 
-Speaking of backing up files, tell emacs version control to follow
-symlinks if the file is under version control.
+Speaking of backing up files, tell emacs version control to follow symlinks if the file is under version control.
 
 #+begin_src emacs-lisp
   (setq vc-follow-symlinks 't)
 #+end_src
 
-And while we're at it, install [[https://magit.vc/][magit]] for working with git.  This is
-not an understatement - magit is truly a beautiful piece of software.
-The way I have it configured, you can open the interface with =C-x g=
-(it will open git for the current file or prompt you for a git project).
+And while we're at it, install [[https://magit.vc/][magit]] for working with git.  This is not an understatement - magit is truly a beautiful piece of software.  The way I have it configured, you can open the interface with =C-x g= (it will open git for the current file or prompt you for a git project).
 
 #+begin_src emacs-lisp
   (use-package magit
@@ -282,13 +235,7 @@ The way I have it configured, you can open the interface with =C-x g=
     :bind ("C-x g" . magit-status))
 #+end_src
 
-Emacs has a great file manager called [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html][dired]].  To activate it, visit a
-directory just as you would open a file.  Not wanting to interfere
-with greatness, I make just a few changes to the default behavior.  I
-like to hide hidden files by default (you can see these by pressing
-=C-x M-o=), hide the =.= and =..= pointers that you see by default,
-and blow through extra confirmations when you delete a file with a
-visiting buffer.
+Emacs has a great file manager called [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html][dired]].  To activate it, visit a directory just as you would open a file.  Not wanting to interfere with greatness, I make just a few changes to the default behavior.  I like to hide hidden files by default (you can see these by pressing =C-x M-o=), hide the =.= and =..= pointers that you see by default, and blow through extra confirmations when you delete a file with a visiting buffer.
 
 #+begin_src emacs-lisp
   (require 'dired-x)

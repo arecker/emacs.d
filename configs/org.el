@@ -115,7 +115,9 @@
 
 (add-hook 'org-mode-hook #'recker/fix-yas-in-org)
 
-(add-hook 'org-mode-hook #'turn-on-auto-fill)
+(add-hook 'org-mode-hook #'turn-off-auto-fill)
+
+(global-visual-line-mode)
 
 (org-indent-mode 0)
 

@@ -1,0 +1,250 @@
+#+TITLE: Emacs Configuration
+#+AUTHOR: Alex Recker
+#+OPTIONS: num:nil
+#+PROPERTY: header-args :results silent
+
+* Introduction
+
+This is my Emacs configuration.  [[https://orgmode.org/worg/org-contrib/babel/][Org Babel]], a native feature of Emacs
+that can run code snippets embedded in rich text documents, spurred a
+fad in the Emacs community where users define their personal configs
+in README documents like this one.
+
+In that spirit, I tried to contain my actual lisp code in this
+document, save for one function that you need in =init.el= to kick off
+the process.
+
+#+begin_example
+(defun recker/load-config ()
+  "Tangle configuration and load it."
+  (let ((config (concat (file-name-as-directory user-emacs-directory) "README.org")))
+    (if (file-exists-p config)
+        (org-babel-load-file config)
+      (warn (concat config " not found - not loading")))))
+
+(recker/load-config)
+#+end_example
+
+From here on, all lisp code snippets with syntax highlighting are run
+on startup in the order they appear.
+
+One more note before we get going.  You are free to use this as a
+starting place for your own configuration.  All of my custom functions
+begin with the =recker/= prefix.  To change it, just perform a string
+replace on =(defun recker/= within this document.  Beyond that, just
+update these global variables with your own info.
+
+#+begin_src emacs-lisp
+  (setq user-full-name "Alex Recker")
+  (setq user-mail-address "alex@reckerfamily.com")
+#+end_src
+
+* Packages
+
+First, we setup the Emacs package manager.  This occurs at the top of
+the file so we can install packages as we need them.
+
+The Emacs package manager does a nice job.  With the help of John
+Wiegley's [[https://github.com/jwiegley/use-package][use-package]], we can simultaneously declare a package we need
+and configure the package /after/ it installs and loads.
+
+#+begin_example
+  (use-package exec-path-from-shell
+    :ensure t
+    :config (exec-path-from-shell-initialize))
+#+end_example
+
+As far as package maintenance, I sometimes run =M-x
+package-list-packages= to bring up the packages screen.  You can press
+=U= then =x= at this screen to pull down any updates that are ready,
+and it's also a good idea to restart Emacs to make sure everything is
+still working.
+
+#+begin_src emacs-lisp
+  (require 'package)
+
+  (defun recker/configure-packages ()
+    "Set up the package manager."
+
+    ;; set and load custom file first (this is gitignored)
+    (setq custom-file (concat user-emacs-directory "custom.el"))
+    (if (file-exists-p custom-file) (load custom-file)
+      (warn "couldn't find custom file %s" custom-file))
+
+    ;; set the repo URLs
+    (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                             ("melpa" . "https://melpa.org/packages/")))
+
+    ;; initialize the package manager
+    (package-initialize)
+
+    ;; install use-package
+    (unless (package-installed-p 'use-package)
+      (package-refresh-contents)
+      (package-install 'use-package)))
+
+  (recker/configure-packages)
+#+end_src
+
+* Appearance
+
+Default Emacs gets a lot of crap for its "ugly" UI.  I find it cozy
+and nostalgic.  In an effort to maintain that unmistakable aesthetic,
+I make just a few modest tweaks to the appearance.
+
+#+begin_src emacs-lisp
+  (defun recker/setup-appearance ()
+    "Configure the Emacs UI."
+
+    ;; Suppress widgets
+    (menu-bar-mode 0)
+    (tool-bar-mode 0)
+    (scroll-bar-mode 0)
+
+    ;; Set font
+    (when (string= system-type "darwin")
+      (set-frame-font "Monaco 18" nil t))
+    (when (string= system-type "gnu/linux")
+      (set-frame-font "Monospace 13" nil t))
+
+    ;; Full screen by default
+    (unless (eq (frame-parameter (selected-frame) 'fullscreen) 'maximized)
+      (toggle-frame-maximized))
+
+    ;; Use this package to hide minor modes.  I like to know which major
+    ;; mode I'm editing, but the minor mode list gets a little too
+    ;; cluttered trying to list all the plugins I have running.
+    (unless (bound-and-true-p rich-minority-mode) ;it breaks if it runs twice?
+      (use-package rich-minority
+        :ensure t
+        :init (rich-minority-mode 't)
+        :config (setq rm-blacklist ""))))
+
+  (recker/setup-appearance)
+#+end_src
+
+* Movement
+
+The [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html][buffer]] would have to be the most common form of transportation in
+the Emacs world.  Suppressing the more boisterous default splash
+screen, I've made the =*scratch*= buffer my home.  With these configs,
+I've made it so that this buffer can never be deleted.  I wrote a good
+amount of custom code to print a different ascii image and output from
+the infamous =fortune= command on every launch.  It's also a great
+place to quickly test lisp expressions or paste random text.
+
+#+begin_src emacs-lisp
+  ;; don't show the splash screen
+  (setq inhibit-splash-screen 't)
+
+  ;; never kill the scratch buffer
+  (defun recker/not-scratch-p ()
+    "Return NIL if the current buffer is the *scratch* buffer."
+    (not (equal (buffer-name (current-buffer)) "*scratch*")))
+
+  (add-hook 'kill-buffer-query-functions 'recker/not-scratch-p)
+
+  ;; display the output of "fortune" as the scratch message
+  (setq recker/scratch-message-command "fortune")
+
+  (defun recker/scratch-message ()
+    "Return a scratch message from fortune-blog."
+    (concat "\n"
+            (recker/scratch-lisp-comment (format-time-string "%A, %B %-d %Y"))
+            "\n\n"
+            (recker/random-scratch-ascii)
+            "\n\n"
+            (recker/scratch-lisp-comment
+             (shell-command-to-string recker/scratch-message-command))))
+
+  (defun recker/random-scratch-ascii ()
+    "Return a lisp random ascii image from emacs.d/ascii."
+    (let* ((ascii-files (file-expand-wildcards (concat user-emacs-directory "ascii/*.txt")))
+           (choice (expand-file-name (nth (random (length ascii-files)) ascii-files))))
+      (recker/scratch-lisp-comment (with-temp-buffer
+                                     (insert-file-contents-literally choice)
+                                     (buffer-string)))))
+
+  (defun recker/scratch-lisp-comment (text)
+    "Turn text into a lisp comment."
+    (with-temp-buffer
+      (insert text)
+      (let ((comment-start ";; "))
+        (comment-region (point-min) (point-max)))
+      (concat "\n" (buffer-string) "\n")
+      (buffer-string)))
+
+  (defun recker/refresh-scratch-buffer ()
+    "Redraw the *scratch* buffer."
+    (interactive)
+    (save-excursion
+      (switch-to-buffer "*scratch*")
+      (erase-buffer)
+      (insert (recker/scratch-message))))
+
+  (setq initial-scratch-message (recker/scratch-message))
+#+end_src
+
+Where =C-x p= deletes the current buffer, I added my own function that
+deletes /all/ buffers which you can call by =C-x P=.  Just like my
+browser tabs, sometimes I get a little overwhelmed and I need a clean
+slate to focus.
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x k") 'kill-this-buffer)
+
+  (defun recker/purge-buffers ()
+    "Delete all buffers, except for *scratch*."
+    (interactive)
+    (mapc #'(lambda (b) (unless (string= (buffer-name b) "*scratch*") (kill-buffer b))) (buffer-list)))
+
+  (global-set-key (kbd "C-x P") 'recker/purge-buffers)
+#+end_src
+
+* Files
+
+Unfortunately, Emacs litters the filesystem with "backup" files.  I
+can appreciate that it's trying to be helpful, but it drives me nuts
+so I turn it off.  Another edge case - if a file changes while I'm
+looking at it, I make Emacs re-render the buffer live.
+
+#+begin_src emacs-lisp
+  (setq make-backup-files nil)
+  (setq auto-save-default nil)
+  (global-auto-revert-mode t)
+#+end_src
+
+Speaking of backing up files, tell emacs version control to follow
+symlinks if the file is under version control.
+
+#+begin_src emacs-lisp
+  (setq vc-follow-symlinks 't)
+#+end_src
+
+And while we're at it, install [[https://magit.vc/][magit]] for working with git.  This is
+not an understatement - magit is truly a beautiful piece of software.
+The way I have it configured, you can open the interface with =C-x g=
+(it will open git for the current file or prompt you for a git project).
+
+#+begin_src emacs-lisp
+  (use-package magit
+    :ensure t
+    :bind ("C-x g" . magit-status))
+#+end_src
+
+Emacs has a great file manager called [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html][dired]].  To activate it, visit a
+directory just as you would open a file.  Not wanting to interfere
+with greatness, I make just a few changes to the default behavior.  I
+like to hide hidden files by default (you can see these by pressing
+=C-x M-o=), hide the =.= and =..= pointers that you see by default,
+and blow through extra confirmations when you delete a file with a
+visiting buffer.
+
+#+begin_src emacs-lisp
+  (require 'dired-x)
+  (setq dired-use-ls-dired nil)
+  (setq dired-clean-confirm-killing-deleted-buffers nil)
+  (setq-default dired-omit-files-p t)
+  (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
+  (add-hook 'dired-mode-hook 'dired-omit-mode)
+#+end_src

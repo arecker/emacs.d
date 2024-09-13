@@ -1,5 +1,4 @@
 (setq delete-selection-mode 't)
-(global-auto-revert-mode t)
 
 ;; this silly thing that always gets automatically inserted in my init.el
 (put 'downcase-region 'disabled nil)
@@ -34,16 +33,6 @@
   :init (smex-initialize)
   :bind (("M-x" . 'smex)
          ("M-X" . 'smex-major-mode-commands)))
-
-;; buffers
-(global-set-key (kbd "C-x k") 'kill-this-buffer)
-
-(defun recker/purge-buffers ()
-  "Delete all buffers, except for *scratch*."
-  (interactive)
-  (mapc #'(lambda (b) (unless (string= (buffer-name b) "*scratch*") (kill-buffer b))) (buffer-list)))
-
-(global-set-key (kbd "C-x P") 'recker/purge-buffers)
 
 ;; autocomplete
 (use-package company

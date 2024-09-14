@@ -130,7 +130,7 @@ The [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html][bu
   (add-hook 'kill-buffer-query-functions 'recker/not-scratch-p)
 
   ;; display the output of "fortune" as the scratch message
-  (setq recker/scratch-message-command "fortune")
+  (setq recker/scratch-message-command "fortune --wrap 72 --comment ';; '")
 
   (defun recker/scratch-message ()
     "Return a scratch message from fortune-blog."
@@ -139,8 +139,7 @@ The [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html][bu
             "\n\n"
             (recker/random-scratch-ascii)
             "\n\n"
-            (recker/scratch-lisp-comment
-             (shell-command-to-string recker/scratch-message-command))))
+            (shell-command-to-string recker/scratch-message-command)))
 
   (defun recker/random-scratch-ascii ()
     "Return a lisp random ascii image from emacs.d/ascii."
@@ -209,6 +208,33 @@ The =M-x= menu also carries a lot of weight in the Emacs workflow.  Transparentl
     :init (smex-initialize)
     :bind (("M-x" . 'smex)
            ("M-X" . 'smex-major-mode-commands)))
+#+end_src
+
+For quickly jumping around a buffer, standard =isearch= can't be beat.  But as a small luxury, sometimes I use the swiper package to quickly fuzzy search a buffer.  I bind this to a similar keystroke as isearch so it's easy to remember.
+
+#+begin_src emacs-lisp
+  (use-package swiper
+    :ensure t
+    :bind ("C-c s" . swiper))
+#+end_src
+
+Use company mode for autocomplete.  Without a direct way to call company mode, this plugin feels more magical to me.  But other language modes seem to know where to find it without any needed interference, so that's good.
+
+#+begin_src emacs-lisp
+  (use-package company
+    :ensure t
+    :init (add-hook 'after-init-hook 'global-company-mode))
+#+end_src
+
+Use [[https://github.com/bbatsov/projectile][projectile]] for moving around git repos.  From the outside, this plugin feels huge and robust.  Compared to everything it /can/ do, I barely use it.  I'm content to leverage the project wide file search with =C-c p f= and the compile interface with =C-c p P= (all the projectile commands fall under the same =C-c p= prefix).
+
+#+begin_src emacs-lisp
+  (use-package projectile
+    :ensure t
+    :config
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+    (setq projectile-completion-system 'ido)
+    :init (projectile-mode t))
 #+end_src
 
 * Files

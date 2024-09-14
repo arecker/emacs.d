@@ -135,6 +135,7 @@
 
 (setq org-todo-keywords '((sequence "TODO" "DONE")))
 
-(global-set-key (kbd "C-c l") #'org-store-link)
+;; (global-set-key (kbd "C-c l") #'org-store-link)
+(global-set-key (kbd "C-c l") #'sort-lines)
 
 (setq org-startup-with-inline-images nil)

@@ -32,3 +32,5 @@
 
 ;; start the emacs server
 (server-start)
+
+(global-visual-line-mode)

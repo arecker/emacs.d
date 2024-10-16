@@ -279,6 +279,8 @@ Emacs has the built-in capability to send email.  From anywhere, press =C-x m= t
   (setq message-sendmail-extra-arguments '("--read-envelope-from"))
 #+end_src
 
+[[file:screenshots/email.png]]
+
 I read email with Gnus.  It is both the worst and best tool for the job.  My own journey into Gnus, from what I hear, is typical.  I opened it once, felt disgusted, closed it out for a few months and tried other things, then occasionally retreated to Gnus to see if it was really as bad as I remember.  Curiosity (or Stockholm syndrome) eventually got the best of me, and I concluded it was both the worst and best option for what I needed to do.
 
 Without further ado, here are my very minimal settings for Gnus.  Let's get all the tuning stuff out of the way.
@@ -381,3 +383,4 @@ Some basic usability tips.
 1. Open folders by hitting =RET= over the folder, open messages by hitting =RET= over the message
 2. Trash mail by pressing =E= (expire) to mark it, then =q= to exit the folder.  Expiring is done in batches
 3. Archive mail by moving the message to the IMAP folder (=B m=, then choose the folder interactively).
+4. Compose a new message by pressing =m= at the topic screen.  Depending on where your cursor is, the corresponding styles and settings will apply.

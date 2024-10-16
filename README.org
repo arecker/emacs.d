@@ -27,6 +27,7 @@ One more note before we get going.  You are free to use this as a starting place
 #+begin_src emacs-lisp
   (setq user-full-name "Alex Recker")
   (setq user-mail-address "alex@reckerfamily.com")
+  (setq recker/work-mail-address "arecker@zendesk.com")
 #+end_src
 
 * Packages
@@ -116,7 +117,7 @@ Default Emacs gets a lot of crap for its "ugly" UI.  I find it cozy and nostalgi
 
 * Movement
 
-The [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html][buffer]] would have to be the most common form of transportation in the Emacs world.  Suppressing the more boisterous default splash screen, I've made the =*scratch*= buffer my home.  With these configs, I've made it so that this buffer can never be deleted.  I wrote a good amount of custom code to print a different ascii image and output from the infamous =fortune= command on every launch.  It's also a great place to quickly test lisp expressions or paste random text.
+The [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html][buffer]] would have to be the most common form of transportation in the Emacs world.  Suppressing the more boisterous default splash screen, I've made the =*scratch*= buffer my home.  With these configs, I've made it so that this buffer can never be deleted.  I wrote a good amount of custom code to print output from the infamous =fortune= command (or another command if you want) on every launch.  It's also a great place to quickly test lisp expressions or paste random text.
 
 #+begin_src emacs-lisp
   ;; don't show the splash screen
@@ -137,17 +138,7 @@ The [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html][bu
     (concat "\n"
             (recker/scratch-lisp-comment (format-time-string "%A, %B %-d %Y"))
             "\n\n"
-            (recker/random-scratch-ascii)
-            "\n\n"
             (shell-command-to-string recker/scratch-message-command)))
-
-  (defun recker/random-scratch-ascii ()
-    "Return a lisp random ascii image from emacs.d/ascii."
-    (let* ((ascii-files (file-expand-wildcards (concat user-emacs-directory "ascii/*.txt")))
-           (choice (expand-file-name (nth (random (length ascii-files)) ascii-files))))
-      (recker/scratch-lisp-comment (with-temp-buffer
-                                     (insert-file-contents-literally choice)
-                                     (buffer-string)))))
 
   (defun recker/scratch-lisp-comment (text)
     "Turn text into a lisp comment."
@@ -271,3 +262,122 @@ Emacs has a great file manager called [[https://www.gnu.org/software/emacs/manua
   (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
   (add-hook 'dired-mode-hook 'dired-omit-mode)
 #+end_src
+
+* Email
+
+Emacs has the built-in capability to send email.  From anywhere, press =C-x m= to open the compose mail screen, do your business, then hit the ubiquitous =C-c C-c= to let it rip.  Rather than sending the email directly, I configure Emacs to instead shell out to the CLI program [[https://wiki.archlinux.org/title/Msmtp][msmtp]], which is smart enough to use different settings based on the "From" address.  I've tried a lot of solutions over the years, and I've settled on this solution as my favorite.  If =msmtp= isn't installed or if it's configured wrongly, Emacs will throw a pretty obvious error message.
+
+#+begin_src emacs-lisp
+  (setq smtpmail-smtp-service 587
+        smtpmail-smtp-user user-mail-address
+        smtpmail-smtp-server "smtp.gmail.com"
+        send-mail-function 'smtpmail-send-it)
+  (setq message-send-mail-function 'message-send-mail-with-sendmail)
+  (setq sendmail-program "msmtp")
+  (setq mail-host-address "smtp.gmail.com")
+  (setq message-sendmail-f-is-evil 't)
+  (setq message-sendmail-extra-arguments '("--read-envelope-from"))
+#+end_src
+
+I read email with Gnus.  It is both the worst and best tool for the job.  My own journey into Gnus, from what I hear, is typical.  I opened it once, felt disgusted, closed it out for a few months and tried other things, then occasionally retreated to Gnus to see if it was really as bad as I remember.  Curiosity (or Stockholm syndrome) eventually got the best of me, and I concluded it was both the worst and best option for what I needed to do.
+
+Without further ado, here are my very minimal settings for Gnus.  Let's get all the tuning stuff out of the way.
+
+#+begin_src emacs-lisp
+  ;; keep passwords in ~/.password-store/authinfo.gpg (and work)
+  (setq auth-sources
+        (list
+         (concat (expand-file-name "~/.password-store/") "authinfo.gpg")
+         (concat (expand-file-name "~/.password-store-work/") "authinfo.gpg")))
+
+  ;; hide startup files in .emacs.d/gnus/
+  ;; little known fact, there are an infinite number of gnus directories
+  ;; and they WILL make their way to your home directory whether you
+  ;; want it or not
+  (let ((gnus-dir (concat user-emacs-directory "gnus/")))
+    (setq gnus-startup-file (concat gnus-dir "newsrc"))
+    (setq gnus-home-directory (concat gnus-dir "gnus")
+          nnfolder-directory (concat gnus-dir "gnus/Mail/archive")
+          message-directory (concat gnus-dir "gnus/Mail")
+          nndraft-directory (concat gnus-dir "gnus/Drafts")
+          gnus-cache-directory (concat gnus-dir "gnus/cache")))
+
+  ;; If you experience dribble, talk to your doctor.
+  (setq gnus-use-dribble-file nil)
+
+  ;; set primary method to empty so the program doesn't absolutely
+  ;; EXPLODE when you open it
+  (setq gnus-select-method '(nnml ""))
+
+  ;; set topic mode (the only readable mode) as the default
+  (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+
+  ;; Don't move archived messages anywhere
+  (setq gnus-message-archive-group nil)
+
+  ;; powerful placebo settings for faster perceived speed
+  (setq gnus-asynchronous t)
+  (setq gnus-use-cache t)
+  (setq gnus-check-new-newsgroups nil
+        gnus-check-bogus-newsgroups nil)
+  (setq gnus-show-threads nil
+        gnus-use-cross-reference nil
+        gnus-nov-is-evil nil)
+  (setq gnus-check-new-newsgroups nil
+        gnus-use-adaptive-scoring nil)
+
+  ;; Look at this fucking variable lol
+  (setq gnus-summary-line-format "%U%R%z%I%(%[%4L: %-23,23f%]%) %s
+  ")
+
+  ;; Use this nerdy bullshit to save email addresseses for autocompletion
+  (use-package bbdb
+    :ensure t
+    :config (setq bbdb-file (concat user-emacs-directory "bbdb.el"))
+    :init
+    (bbdb-mua-auto-update-init 'message)
+    (setq bbdb-mua-auto-update-p 'query)
+    (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
+
+  ;; auto filled messages look like shit on most normal mail clients, so
+  ;; just turn it off to appease all the filthy casuals I email
+  (add-hook 'message-mode-hook #'turn-off-auto-fill)
+#+end_src
+
+Finally we've arrived at the backends.  If you desire, you can hook it up to RSS and other fun backends.  I just use mail, but I occasionally revisit this list when I want to play with something new.
+
+#+begin_src emacs-lisp
+  (setq gnus-secondary-select-methods '())
+
+  ;; personal email
+  (add-to-list 'gnus-secondary-select-methods
+               `(nnimap ,user-mail-address
+                        (nnimap-address "imap.gmail.com")
+                        (nnimap-server-port "imaps")
+                        (nnimap-stream ssl)
+                        (nnmail-expiry-target ,(format "nnimap+%s:[Gmail]/Trash" user-mail-address))
+                        (nnmail-expiry-wait immediate)))
+
+  ;; work email
+  (add-to-list 'gnus-secondary-select-methods
+               `(nnimap ,recker/work-mail-address
+                        (nnimap-user ,recker/work-mail-address)
+                        (nnimap-address "imap.gmail.com")
+                        (nnimap-server-port "imaps")
+                        (nnimap-stream ssl)
+                        (nnmail-expiry-target ,(format "nnimap+%s:[Gmail]/Trash" recker/work-mail-address))
+                        (nnmail-expiry-wait immediate)))
+#+end_src
+
+If all went according to plan, Gnus should be ready to use.  Just run =M-x gnus=, and if all went according to plan, you should see something resembling Email folders.  There are only a few remaining things that regrettably have to be done manually.
+
+1. Make your topics.  From the screen, I struggle through the [[https://www.gnu.org/software/emacs/manual/html_node/gnus/Topic-Commands.html][topic commands]] to separate the IMAP folders into personal and work.  I then use =U= to "unsubscribe" from the ones I don't care about (which really just hides them).
+2. Fix posting styles.  With your cursor hovering on a topic or folder, press =G c= to open the customize menu (this is a useful interface, have a look around).  From there I add "address" to personal and work topics as a posting style, this is needed for msmtp to correctly route to the right settings.
+
+[[file:screenshots/gnus.png]]
+
+Some basic usability tips.
+
+1. Open folders by hitting =RET= over the folder, open messages by hitting =RET= over the message
+2. Trash mail by pressing =E= (expire) to mark it, then =q= to exit the folder.  Expiring is done in batches
+3. Archive mail by moving the message to the IMAP folder (=B m=, then choose the folder interactively).

@@ -28,7 +28,10 @@
 
 (use-package plantuml-mode
   :ensure t
-  :config (setq org-plantuml-jar-path "~/.plantuml/plantuml.jar")
+  :config
+  (setq org-plantuml-jar-path "~/.plantuml/plantuml.jar")
+  (setq plantuml-default-exec-mode 'jar)
+  (setq plantuml-jar-path "~/.plantuml/plantuml.jar")
   :init
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
   (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
@@ -46,8 +49,8 @@
   (format-time-string "<!-- meta:title -->\n<!-- meta:banner %Y-%m-%d.jpg -->\n\n"))
 
 (setq org-capture-templates
-      '(("t" "personal task" entry (file "personal.org") "* TODO %?\nSCHEDULED: %t")
-        ("w" "work task" entry (file "work.org") "* TODO %?\nSCHEDULED: %t")
+      '(("t" "todays tasks" entry (file "tasks.org") "* TODO %<%A, %B %d %Y> [/]\nSCHEDULED: %t")
+        ("m" "miscellaneous task" entry (file "tasks.org") "* TODO %?\nSCHEDULED: %t")
         ("j" "journal entry" plain (file+olp+datetree "journal.org.gpg") "%^{Grattitude}\n\n%?")
         ("b" "blog entry" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)
         ("B" "bible study" plain (file+olp+datetree "bible.org"))))
@@ -69,6 +72,16 @@
 (setq org-deadline-warning-days 3)
 (setq org-agenda-span 2)
 
+
+(defun recker/org-agenda-switch-to-narrowed-subtree ()
+  (interactive)
+  (org-agenda-switch-to)
+  (org-narrow-to-subtree))
+
+(add-hook 'org-agenda-mode-hook
+          (lambda ()
+                  (local-set-key (kbd "RET") 'recker/org-agenda-switch-to-narrowed-subtree)))
+
 ;; Speed settings
 (setq org-agenda-inhibit-startup t)
 (setq org-agenda-use-tag-inheritance nil)
@@ -81,16 +94,16 @@
         (progn (outline-next-heading) (point))
       nil)))
 
-(setq org-agenda-custom-commands
-      '(("p" "personal agenda"
-         ((agenda)
-          (tags-todo "personal"))
-         ((org-agenda-skip-function '(recker/org-agenda-if-tag "personal"))
-          (org-agenda-overriding-header "Personal Agenda")))
-        ("w" "work agenda"
-         ((agenda)
-          (tags-todo "work"))
-         ((org-agenda-skip-function '(recker/org-agenda-if-tag "work"))))))
+(setq org-agenda-custom-commands '())
+      ;; '(("p" "personal agenda"
+      ;;    ((agenda)
+      ;;     (tags-todo "personal"))
+      ;;    ((org-agenda-skip-function '(recker/org-agenda-if-tag "personal"))
+      ;;     (org-agenda-overriding-header "Personal Agenda")))
+      ;;   ("w" "work agenda"
+      ;;    ((agenda)
+      ;;     (tags-todo "work"))
+      ;;    ((org-agenda-skip-function '(recker/org-agenda-if-tag "work"))))))
 
 (setq org-use-tag-inheritance 't)
 (setq org-agenda-tag-filter-preset '())

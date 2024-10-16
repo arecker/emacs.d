@@ -27,8 +27,7 @@
                        "python"
                        "bookmark"
                        "org"
-                       "snippets"
-                       "gnus"))
+                       "snippets"))
 
 ;; start the emacs server
 (server-start)

@@ -23,6 +23,7 @@
 (defun recker/python-workon ()
   (interactive)
   "Activate a python environment.  If it's not in the WORKON_HOME list, create a symlink to a venv."
+  ;; TODO: install a LSP by prompt
   (let* ((workon-home (or (getenv "$WORKON_HOME") (expand-file-name "~/.virtualenvs")))
          (existing-venvs (directory-files workon-home nil directory-files-no-dot-files-regexp))
          (chosen-venv (completing-read "Python Environment: " existing-venvs nil 'confirm))

@@ -20,14 +20,10 @@
 
 ;; load the configs from configs/*.el
 (recker/load-configs '("shell"
-                       "movement"
-                       "whitespace"
                        "langs"
                        "go"
                        "python"
-                       "bookmark"
-                       "org"
-                       "snippets"))
+                       "org"))
 
 ;; start the emacs server
 (server-start)

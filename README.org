@@ -115,6 +115,39 @@ Default Emacs gets a lot of crap for its "ugly" UI.  I find it cozy and nostalgi
   (recker/configure-appearance)
 #+end_src
 
+* Text
+
+Automatically clean-up whitespace on save.  Trailing whitespace is annoying, and it shouldn't be there in the first place.  Also, don't insert tabs unless the major mode really wants to (golang, for example, will do its own thing).
+
+#+begin_src emacs-lisp
+  (add-hook 'before-save-hook 'whitespace-cleanup)
+  (setq-default indent-tabs-mode nil)
+#+end_src
+
+Bind the build in function =replace-string= to =C-c r=.  By default, delete the selected text when you hit "backspace".  Also, use =upcase-region= without Emacs bothering you about some nuance that I've never bothered to read closely - the function works just fine for me.
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c r") 'replace-string)
+  (setq delete-selection-mode 't)
+  (put 'upcase-region 'disabled nil)
+#+end_src
+
+Bind the handy =expand-region= tool to =C-\==.  This tool can highlight incrementally larger portions of text like quotes, parentheses, and function definitions.
+
+#+begin_src emacs-lisp
+  (use-package expand-region
+    :ensure t
+    :bind (("C-=" . 'er/expand-region)))
+#+end_src
+
+Use yasnippet for managing snippets of text.  To create a new snippet, run =M-x yas-new-snippet=.  This will open a buffer where, [[https://joaotavora.github.io/yasnippet/snippet-development.html][following some simple syntax rules]], you can create dynamic snippets for any editing mode in Emacs.  These are saved within the =snippets/= directory of your emacs configuration.
+
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :init (yas-global-mode))
+#+end_src
+
 * Movement
 
 The [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html][buffer]] would have to be the most common form of transportation in the Emacs world.  Suppressing the more boisterous default splash screen, I've made the =*scratch*= buffer my home.  With these configs, I've made it so that this buffer can never be deleted.  I wrote a good amount of custom code to print output from the infamous =fortune= command (or another command if you want) on every launch.  It's also a great place to quickly test lisp expressions or paste random text.
@@ -261,6 +294,52 @@ Emacs has a great file manager called [[https://www.gnu.org/software/emacs/manua
   (setq-default dired-omit-files-p t)
   (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
   (add-hook 'dired-mode-hook 'dired-omit-mode)
+#+end_src
+
+I make good use of the Emacs bookmarks system.  To create a bookmark for a file, just press =C-x r m=.  To visit a bookmark, press =C-x r b= (with my customization in place, you will have the chance to choose a bookmark with IDO fuzzy search, so it's very convenient).  On top of that, every file/directory created in the following paths automatically gets a bookmark entry.  These entries blend seamlessly with your existing bookmarks.
+
+- =~/org"=
+- =~/src/=
+- =~/src/work=
+
+#+begin_src emacs-lisp
+  (require 'bookmark)
+  (require 'cl-lib)
+
+  (setq bookmark-save-flag 1)
+
+  (defun recker/list-bookmarks ()
+    "List all bookmarks in alphabetical order, and filter out the junk entries I don't care about."
+    (let ((junk-entries '("org-capture-last-stored")))
+      (sort (cl-remove-if #'(lambda (b) (member b junk-entries))
+                          (append (bookmark-all-names) ; actual saved bookmarks
+                                  ;; then all the dynamic ones
+                                  (recker/list-files-as-bookmarks "org/" ".org")
+                                  (recker/list-entries-as-bookmarks "src/")
+                                  (recker/list-entries-as-bookmarks "src/work/")))
+            #'string<)))
+
+  (defun recker/list-entries-as-bookmarks (parent)
+    "List all the entries in the PARENT directory as if they were bookmarks."
+    (mapcar #'(lambda (n) (concat parent n))
+            (cl-remove-if #'(lambda (f) (string-prefix-p "." f))
+                          (directory-files (expand-file-name (concat "~/" parent))))))
+
+  (defun recker/list-files-as-bookmarks (parent pattern)
+    "List all the files matching pattern as if they were bookmarks."
+    (mapcar #'(lambda (s) (string-remove-prefix (expand-file-name "~/") s))
+            (directory-files-recursively (expand-file-name (concat "~/" parent)) pattern nil)))
+
+  (defun recker/ido-bookmark-jump (bookmark)
+    "Switch to bookmark BOOKMARK interactively using `ido'."
+    (interactive (list (ido-completing-read "Bookmark: " (recker/list-bookmarks) nil t)))
+    (if (member bookmark (bookmark-all-names))
+        (bookmark-jump bookmark)
+      ;; If it's not in the actual bookmark file, just treat the key
+      ;; like a relative path (ex. src/work/azdrain => ~/src/work/azdrain)
+      (find-file (expand-file-name (concat "~/" bookmark)))))
+
+  (global-set-key (kbd "C-x r b") 'recker/ido-bookmark-jump)
 #+end_src
 
 * Email

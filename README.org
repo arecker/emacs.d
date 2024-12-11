@@ -463,3 +463,66 @@ Some basic usability tips.
 2. Trash mail by pressing =E= (expire) to mark it, then =q= to exit the folder.  Expiring is done in batches
 3. Archive mail by moving the message to the IMAP folder (=B m=, then choose the folder interactively).
 4. Compose a new message by pressing =m= at the topic screen.  Depending on where your cursor is, the corresponding styles and settings will apply.
+
+* Org
+
+Emacs ships with "org mode", which can be thought of as markdown on steroids.  I shift from periods of heavy usage to light usage depending on my mood.  Truthfully, this is one of org mode's greatest strengths: whether you decide to jot a few notes in a meeting or move your entire life into org files, org mode can help you achieve your goals.  I recommend [[https://youtu.be/sQS06Qjnkcc?si=Y2U34q5fqwY-qfsh][Rainor's youtube series]].  You will grow to love his straight forward, well-organized presentation of the basics as well as his fantastic accent.
+
+Inject some built-in libraries and load some modules.
+
+#+begin_src emacs-lisp
+  (require 'org-tempo)
+
+  ;; uncomment this to automatically commit attachments to a git repo
+  ;; (require 'org-attach-git)
+
+  (setq org-modules '(ol-bbdb
+                      ol-bibtex
+                      ol-docview
+                      ol-doi
+                      ol-eww
+                      ol-gnus
+                      org-habit
+                      ol-info
+                      ol-irc
+                      ol-mhe
+                      ol-rmail
+                      ol-w3m))
+#+end_src
+
+Though not required, it's a good idea to make a directory for org files.  I keep mine in =~/org=.
+
+#+begin_src emacs-lisp
+  (setq org-directory (expand-file-name "~/org"))
+#+end_src
+
+Org can run code snippets within your documents.  Tumble down this rabbit hole, starting with [[https://howardism.org/Technical/Emacs/literate-devops.html][this very popular blog post]].  Here is where I load the languages I use and assign them to the insert block command (=C-c C--=).  Also, I don't want org to confirm each time I run a code snippet - because life is too short for that.
+
+#+begin_src emacs-lisp
+  (setq org-confirm-babel-evaluate nil)
+
+  (global-set-key (kbd "C-c C--") #'org-insert-structure-template)
+
+  ;; this gives org permission to run these languages (it doesn't need
+  ;; permission for lisp (org-babel-do-load-languages
+  'org-babel-load-languages '((python . t) (ruby . t) (shell . t)))
+
+  ;; this shows up in the menu prompt after hitting the
+  org-insert-structure-template (setq org-structure-template-alist
+  '(("e" . "src emacs-lisp") ("p" . "src python") ("r" . "src ruby")
+  ("b" . "src bash") ("d" . "src plantuml") ("x" . "example")))
+#+end_src
+
+I like to make diagrams within org using [[https://plantuml.com/][PlantUML]].  I download the =plantuml.jar= from the website and place it in =~/.plantuml/plantuml.jar=.  This plugin gives you a major mode where you can evaluate the diagram code, and it also incorporates with org mode if you give the snippet a =:file <some/path>.png= header and hit =C-c C-c= over the snippet.
+
+#+begin_src emacs-lisp
+  (use-package plantuml-mode
+    :ensure t
+    :config
+    (setq org-plantuml-jar-path "~/.plantuml/plantuml.jar")
+    (setq plantuml-default-exec-mode 'jar)
+    (setq plantuml-jar-path "~/.plantuml/plantuml.jar")
+    :init
+    (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+    (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
+#+end_src

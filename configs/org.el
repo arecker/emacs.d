@@ -1,40 +1,6 @@
-(require 'org-tempo)
-
-;; (require 'org-attach-git)               ; automatically git commit attachments
-
-(setq org-directory (expand-file-name "~/org"))
-
-;; Modules
-(setq org-modules '(ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus org-habit ol-info ol-irc ol-mhe ol-rmail ol-w3m))
-
-
 ;;;;;;;;;;;
 ;; BABEL ;;
 ;;;;;;;;;;;
-(setq org-confirm-babel-evaluate nil)
-
-(global-set-key (kbd "C-c C--") #'org-insert-structure-template)
-
-(org-babel-do-load-languages 'org-babel-load-languages '((python . t)
-                                                         (ruby . t)
-                                                         (shell . t)))
-
-(setq org-structure-template-alist '(("e" . "src emacs-lisp")
-                                     ("p" . "src python")
-                                     ("r" . "src ruby")
-                                     ("b" . "src bash")
-                                     ("d" . "src plantuml")
-                                     ("x" . "example")))
-
-(use-package plantuml-mode
-  :ensure t
-  :config
-  (setq org-plantuml-jar-path "~/.plantuml/plantuml.jar")
-  (setq plantuml-default-exec-mode 'jar)
-  (setq plantuml-jar-path "~/.plantuml/plantuml.jar")
-  :init
-  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
-  (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
 
 ;;;;;;;;;;;;;
 ;; CAPTURE ;;

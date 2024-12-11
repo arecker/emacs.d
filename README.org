@@ -504,13 +504,18 @@ Org can run code snippets within your documents.  Tumble down this rabbit hole, 
   (global-set-key (kbd "C-c C--") #'org-insert-structure-template)
 
   ;; this gives org permission to run these languages (it doesn't need
-  ;; permission for lisp (org-babel-do-load-languages
-  'org-babel-load-languages '((python . t) (ruby . t) (shell . t)))
+  ;; permissions for lisp)
+  (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
+                                                           (ruby . t)
+                                                           (shell . t)))
 
   ;; this shows up in the menu prompt after hitting the
-  org-insert-structure-template (setq org-structure-template-alist
-  '(("e" . "src emacs-lisp") ("p" . "src python") ("r" . "src ruby")
-  ("b" . "src bash") ("d" . "src plantuml") ("x" . "example")))
+  (setq org-structure-template-alist '(("e" . "src emacs-lisp")
+                                       ("p" . "src python")
+                                       ("r" . "src ruby")
+                                       ("b" . "src bash")
+                                       ("d" . "src plantuml")
+                                       ("x" . "example")))
 #+end_src
 
 I like to make diagrams within org using [[https://plantuml.com/][PlantUML]].  I download the =plantuml.jar= from the website and place it in =~/.plantuml/plantuml.jar=.  This plugin gives you a major mode where you can evaluate the diagram code, and it also incorporates with org mode if you give the snippet a =:file <some/path>.png= header and hit =C-c C-c= over the snippet.

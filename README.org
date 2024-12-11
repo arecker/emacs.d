@@ -509,7 +509,8 @@ Org can run code snippets within your documents.  Tumble down this rabbit hole, 
                                                            (ruby . t)
                                                            (shell . t)))
 
-  ;; this shows up in the menu prompt after hitting the
+  ;; this shows up in the menu prompt after hitting the hot key for
+  ;; inserting a code block
   (setq org-structure-template-alist '(("e" . "src emacs-lisp")
                                        ("p" . "src python")
                                        ("r" . "src ruby")

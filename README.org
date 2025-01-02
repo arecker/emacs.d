@@ -5,7 +5,13 @@
 
 * Introduction
 
-This is my Emacs configuration.  [[https://orgmode.org/worg/org-contrib/babel/][Org Babel]], a native feature of Emacs that can run code snippets embedded in rich text documents, spurred a fad in the Emacs community where users define their personal configs in README documents like this one.
+This is my Emacs configuration.  Before you even open Emacs, clone this repo in your home directory like this:
+
+#+begin_src bash
+  git clone git@github.com:arecker/emacs.d.git ~/.emacs.d
+#+end_src
+
+So where is the config?  The document you are reading /is/ the config.  [[https://orgmode.org/worg/org-contrib/babel/][Org Babel]], a native feature of Emacs that can run code snippets embedded in rich text documents, spurred a fad in the Emacs community where users define their personal configs in README documents like this one.
 
 In that spirit, I tried to contain my actual lisp code in this document, save for one function that you need in =init.el= to kick off the process.
 

@@ -30,6 +30,12 @@ One more note before we get going.  You are free to use this as a starting place
   (setq recker/work-mail-address "arecker@zendesk.com")
 #+end_src
 
+Start the emacs server in the background.  As long as this is running, you can set your shell =EDITOR= as =emacsclient= and your terminal will very gracefully hand over editing duties to your running Emacs application (example: git commits from the terminal).
+
+#+begin_src emacs-lisp
+  (server-start)
+#+end_src
+
 * Packages
 
 First, we setup the Emacs package manager.  This occurs at the top of the file so we can install packages as we need them.
@@ -132,6 +138,12 @@ Bind the build in function =replace-string= to =C-c r=.  By default, delete the 
   (put 'upcase-region 'disabled nil)
 #+end_src
 
+Bind =C-c l= to the sort lines function.  Sorry if this breaks some other workflow I don't yet know about, but for some reason I find myself alphabetizing strings often enough to like this here.
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c l") #'sort-lines)
+#+end_src
+
 Bind the handy =expand-region= tool to =C-\==.  This tool can highlight incrementally larger portions of text like quotes, parentheses, and function definitions.
 
 #+begin_src emacs-lisp
@@ -146,6 +158,14 @@ Use yasnippet for managing snippets of text.  To create a new snippet, run =M-x 
   (use-package yasnippet
     :ensure t
     :init (yas-global-mode))
+#+end_src
+
+Employ spell checking.  Just make sure the =ispell= tool is installed.  You can keep your own list of exceptions in =~/.ispell_words= and Emacs is smart enough to add to this when you ask for it.
+
+#+begin_src emacs-lisp
+  (use-package flyspell
+    :config (setq ispell-program-name (executable-find "ispell"))
+    :init (add-hook 'text-mode-hook #'(lambda () (flyspell-mode 1))))
 #+end_src
 
 * Movement
@@ -204,6 +224,12 @@ Where =C-x p= deletes the current buffer, I added my own function that deletes /
     (mapc #'(lambda (b) (unless (string= (buffer-name b) "*scratch*") (kill-buffer b))) (buffer-list)))
 
   (global-set-key (kbd "C-x P") 'recker/purge-buffers)
+#+end_src
+
+I don't know what this mode does, but at this point I'm too afraid to ask (or take it out of my config).
+
+#+begin_src emacs-lisp
+  (global-visual-line-mode)
 #+end_src
 
 In Emacs, you spend much of your time selecting things in the minibuffer.  "Interactive Do" ([[https://www.gnu.org/software/emacs/manual/html_mono/ido.html][IDO]] for short) can enhance this experience.  IDO comes with Emacs, but I install some packages to display options vertically instead of horizontally, and also to plug the interface in to [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Imenu.html][Imenu]].
@@ -342,6 +368,249 @@ I make good use of the Emacs bookmarks system.  To create a bookmark for a file,
   (global-set-key (kbd "C-x r b") 'recker/ido-bookmark-jump)
 #+end_src
 
+* Shell
+
+It has been said that Emacs makes a pretty good operating system but lacks a decent editor.  Add to that, it makes a decent terminal emulator as well.  Using these settings, mash the =C-x t= command to open a bash shell.  Exiting the shell also closes the buffer.  For a less standard but more amusing =eshell= variety, press =C-c e=.  While eshell can't render output from tools like =top=, you can call lisp functions and interact with remote file systems, which is kind of neat.
+
+#+begin_src emacs-lisp
+  ;; This tool feels controversial.  It's here simply to sync the PATH
+  ;; environment variable from the system with what Emacs sees.  One day
+  ;; I'll have the time and bravery to disable it and test things out.
+  (use-package exec-path-from-shell
+    :ensure t
+    :config (exec-path-from-shell-initialize))
+
+  ;; C-x t to open terminal
+  (defun recker/ansi-term ()
+    "Launch ansi-term with current shell."
+    (interactive)
+    (let ((shell (or (getenv "SHELL") "/bin/bash")))
+      (ansi-term shell)))
+
+  (global-set-key (kbd "C-x t") 'recker/ansi-term)
+
+  ;; C-c e to open eshell
+  (global-set-key (kbd "C-c e") 'eshell)
+
+  ;; Automatically close the buffer when the shell exits
+  (defun recker/handle-term-exit (&optional process-name msg)
+    (message "%s | %s" process-name msg)
+    (kill-buffer (current-buffer)))
+
+  (advice-add 'term-handle-exit :after 'recker/handle-term-exit)
+#+end_src
+
+* Programming
+
+Emacs is or is about to adopt [[https://github.com/joaotavora/eglot][eglot]] as its official LSP implementation.  For now I just make sure it's installed.  Some of the following language modes call out to this underlying process to handle their own smarts (so long as the underlying tool is installed).  Since I don't use LSP for every language I work with, I'll annotate this with greater details where it applies.  The greater majority of extra language modes provide nothing more than indentation defaults, syntax highlighting, and a mode bar label to simply remind you what you're working on.
+
+#+begin_src emacs-lisp
+  (use-package eglot
+    :ensure t
+    :config
+    (setq eglot-autoshutdown 't)
+    (setq eglot-autoreconnect nil)
+    (setq eglot-confirm-server-initiated-edits nil))
+#+end_src
+
+For these more lightweight language modes, I setup /flycheck/.  It will do its best to show red squiggly lines where your code doesn't make sense according to it's generic backends (I have disabled some notoriously buggy and obnoxious ones and I will not hesitate to add to this list).
+
+#+begin_src emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :init (global-flycheck-mode)
+    :config (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc ruby-rubocop)))
+#+end_src
+
+Enable [[https://editorconfig.org/][EditorConfig]] if it's there.  I don't like junking up projects with new dotfiles, so I might not always be the guy to add one of these.  But EditorConfig is a decent project and enough of my coworkers use it to make it worth installing on my end.
+
+#+begin_src emacs-lisp
+  (use-package editorconfig
+    :ensure t
+    :config (editorconfig-mode 1))
+#+end_src
+
+** Python
+
+First, Disable flycheck and flymake (Emacs' native python mode seems to always want to turn it on) and turn on eglot mode instead.
+
+#+begin_src emacs-lisp
+  (defun recker/python-mode-hook ()
+    ;; disable fly* bullshit
+    (flymake-mode -1)
+    (flycheck-mode -1))
+
+  (add-hook #'python-mode-hook #'recker/python-mode-hook)
+  (add-hook 'python-mode-hook 'eglot-ensure)
+#+end_src
+
+Next, setup eglot with a hierarchy of LSP programs it should prefer.  Why so many?  Some of these are slow to support newer versions of python, so you may have to occasionally spin the roulette wheel.  Rest assured that when you find one that works, eglot should get in line.
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 `(python-mode . ,(eglot-alternatives
+                                   '(("pylsp")
+                                     ("pyls" "--stdio")
+                                     ("pyright-langserver" "--stdio")
+                                     ("jedi-language-server"))))))
+#+end_src
+
+Now that eglot is happy, you have to setup your python environment (which ideally should be a virtualenv).  I run this function on a venv path to symlink to a place where Emacs can find it and activate it for eglot.
+
+#+begin_src emacs-lisp
+  (defun recker/python-workon ()
+    (interactive)
+    "Activate a python environment.  If it's not in the WORKON_HOME list, create a symlink to a venv."
+    ;; TODO: install a LSP by prompt
+    (let* ((workon-home (or (getenv "$WORKON_HOME") (expand-file-name "~/.virtualenvs")))
+           (existing-venvs (directory-files workon-home nil directory-files-no-dot-files-regexp))
+           (chosen-venv (completing-read "Python Environment: " existing-venvs nil 'confirm))
+           (symlink-dest (concat (file-name-as-directory workon-home) chosen-venv)))
+      (unless (member chosen-venv existing-venvs)
+        (let ((symlink-src (expand-file-name (read-directory-name "Path to venv: "))))
+          (make-symbolic-link symlink-src symlink-dest)))
+      (pyvenv-workon chosen-venv)
+      (message "activated python environment \"%s\"" chosen-venv)))
+#+end_src
+
+After creating the environment (but before opening a python file and triggering eglot), jump into the project and run this shell command.
+
+#+begin_src bash
+  ./venv/bin/pip install pylsp isort pyflakes
+#+end_src
+
+** Go
+
+I'm definitely not a go expert, but given the language's growing popularity I'm trying to lean into the ecosystem and improve my skills here.  Thankfully it works pretty seamlessly with eglot so it doesn't require a lot of code.  This works as long as you run =go install golang.org/x/tools/gopls@latest= from a shell within in the project.
+
+#+begin_src emacs-lisp
+  (use-package go-mode :ensure t)
+
+  (add-hook 'go-mode-hook 'eglot-ensure)
+
+  (defun recker/go-mode-hook ()
+    (add-hook 'before-save-hook #'gofmt-before-save)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+
+  (add-hook 'go-mode-hook 'recker/go-mode-hook)
+#+end_src
+
+** Others
+
+Here are all the random languages with lightweight modes.  Not the most exciting block of code in my config, but it's necessary.
+
+#+begin_src emacs-lisp
+  (use-package d-mode
+    :ensure t
+    :mode "\\.d\\'")
+
+  (use-package dockerfile-mode
+    :ensure t
+    :mode ("\\Dockerfile\\'"))
+
+  (use-package groovy-mode
+    :ensure t
+    :mode ("\\Jenkinsfile\\'" "\\.groovy\\'"))
+
+  (use-package haskell-mode
+    :ensure t
+    :mode "\\.hs\\'")
+
+  (use-package dhall-mode
+    :ensure t
+    :mode "\\.dhall\\'"
+    :config
+    (setq dhall-format-at-save t
+          dhall-format-arguments (\` ("--ascii"))
+          dhall-use-header-line nil))
+
+  (use-package jsonnet-mode
+    :ensure t
+    :mode ("\\.jsonnet\\'" "\\.libsonnet\\'"))
+
+  (use-package bats-mode
+    :ensure t
+    :mode ("\\.bats\\'"))
+
+  (use-package slime
+    :ensure t
+    :config (setq inferior-lisp-program (executable-find "sbcl")))
+
+  (use-package slime-company
+    :ensure t
+    :after (slime company)
+    :config (setq slime-company-completion 'fuzzy
+                  slime-company-after-completion 'slime-company-just-one-space))
+
+  (use-package markdown-mode
+    :ensure t
+    :init (add-hook #'markdown-mode-hook 'eglot-ensure))
+
+  (use-package lua-mode
+    :ensure t
+    :mode ("\\.lua\\'" "\\.p8\\'"))
+
+  (use-package nftables-mode :ensure t)
+
+  (use-package nginx-mode :ensure t)
+
+  (use-package php-mode
+    :ensure t)
+
+  (use-package protobuf-mode
+    :ensure t
+    :mode ("\\.proto\\'"))
+
+  (use-package rst
+    :ensure t
+    :mode (("\\.rst$" . rst-mode)))
+
+  ;; ruby
+  (setq ruby-deep-indent-paren nil)
+
+  ;; run this for eglot to work:
+  ;; gem install solargraph
+  ;; (add-hook 'ruby-mode-hook 'eglot-ensure)
+
+  (use-package terraform-mode
+    :ensure t)
+
+  (use-package company-terraform
+    :ensure t)
+
+  (use-package yaml-mode
+    :ensure t
+    :mode ("\\.yml\\'" "\\.yaml\\'"))
+#+end_src
+
+I don't pretend to write a lot of C, let alone contribute to anything as import as Linux.  But after stumbling on the very funny and sarcastic [[https://www.kernel.org/doc/html/v4.10/process/coding-style.html#you-ve-made-a-mess-of-it][linux kernel style guide]], I decided to honor this great writing by including the snippet in my config.  Plus, in case I ever accidentally commit some code to the Linux kernel, maybe Linus will think I'm cool and offer to adopt me as his son.
+
+#+begin_src emacs-lisp
+  ;; C (from linux kernel standards)
+  (defun recker/c-lineup-arglist-tabs-only (ignored)
+    "Line up argument lists by tabs, not spaces."
+    (let* ((anchor (c-langelem-pos c-syntactic-element))
+           (column (c-langelem-2nd-pos c-syntactic-element))
+           (offset (- (1+ column) anchor))
+           (steps (floor offset c-basic-offset)))
+      (* (max steps 1)
+         c-basic-offset)))
+
+  (defun recker/c-mode-hook ()
+    (c-add-style
+     "linux-tabs-only"
+     '("linux" (c-offsets-alist
+                (arglist-cont-nonempty
+                 c-lineup-gcc-asm-reg
+                 recker/c-lineup-arglist-tabs-only))))
+    (setq indent-tabs-mode t)
+    (setq show-trailing-whitespace t)
+    (c-set-style "linux-tabs-only"))
+
+  (add-hook 'c-mode-hook #'recker/c-mode-hook)
+#+end_src
+
 * Email
 
 Emacs has the built-in capability to send email.  From anywhere, press =C-x m= to open the compose mail screen, do your business, then hit the ubiquitous =C-c C-c= to let it rip.  Rather than sending the email directly, I configure Emacs to instead shell out to the CLI program [[https://wiki.archlinux.org/title/Msmtp][msmtp]], which is smart enough to use different settings based on the "From" address.  I've tried a lot of solutions over the years, and I've settled on this solution as my favorite.  If =msmtp= isn't installed or if it's configured wrongly, Emacs will throw a pretty obvious error message.
@@ -468,7 +737,7 @@ Some basic usability tips.
 
 Emacs ships with "org mode", which can be thought of as markdown on steroids.  I shift from periods of heavy usage to light usage depending on my mood.  Truthfully, this is one of org mode's greatest strengths: whether you decide to jot a few notes in a meeting or move your entire life into org files, org mode can help you achieve your goals.  I recommend [[https://youtu.be/sQS06Qjnkcc?si=Y2U34q5fqwY-qfsh][Rainor's youtube series]].  You will grow to love his straight forward, well-organized presentation of the basics as well as his fantastic accent.
 
-Inject some built-in libraries and load some modules.
+Inject some built-in libraries, load some modules, and enable some random settings.
 
 #+begin_src emacs-lisp
   (require 'org-tempo)
@@ -488,6 +757,26 @@ Inject some built-in libraries and load some modules.
                       ol-mhe
                       ol-rmail
                       ol-w3m))
+
+  ;; hack to fix yasnippet in org
+  (defun recker/fix-yas-in-org ()
+    (setq-local yas-buffer-local-condition
+                '(not (org-in-src-block-p t))))
+
+  (add-hook 'org-mode-hook #'recker/fix-yas-in-org)
+
+  (add-hook 'org-mode-hook #'turn-off-auto-fill)
+
+  (org-indent-mode 0)
+  (org-clock-persistence-insinuate)
+
+  (setq org-startup-with-inline-images nil)
+  (setq org-adapt-indentation nil)
+  (setq org-cycle-separator-lines -1)
+  (setq org-goto-auto-isearch nil)
+  (setq org-clock-persist 'history)
+  (setq org-log-into-drawer 't)
+  (setq org-todo-keywords '((sequence "TODO" "DONE")))
 #+end_src
 
 Though not required, it's a good idea to make a directory for org files.  I keep mine in =~/org=.
@@ -531,4 +820,110 @@ I like to make diagrams within org using [[https://plantuml.com/][PlantUML]].  I
     :init
     (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
     (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
+#+end_src
+
+The capture feature is handy.  From anywhere in emacs, just hit =C-c c= and a secondary menu will present your note taking templates.  You can use this menu to squirrel away quick notes and thoughts in predefined places without stealing your focus.  I use this tool for writing journals, blog posts, and work tasks (the blog post one requires a custom function).
+
+#+begin_src emacs-lisp
+  (defun recker/blog-target ()
+    "Opens today's blog entry."
+    (find-file (expand-file-name (format-time-string "~/src/blog/entries/%Y-%m-%d.html")))
+    (goto-char (point-min)))
+
+  (defun recker/blog-template ()
+    "Return the metadata for today's blog post."
+    (format-time-string "<!-- meta:title -->\n<!-- meta:banner %Y-%m-%d.jpg -->\n\n"))
+
+  (setq org-capture-templates
+        '(("t" "todays tasks" entry (file "tasks.org") "* TODO %<%A, %B %d %Y> [/]\nSCHEDULED: %t")
+          ("m" "miscellaneous task" entry (file "tasks.org") "* TODO %?\nSCHEDULED: %t")
+          ("j" "journal entry" plain (file+olp+datetree "journal.org.gpg") "%^{Grattitude}\n\n%?")
+          ("b" "blog entry" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)))
+
+  (global-set-key (kbd "C-c c") 'org-capture)
+#+end_src
+
+The agenda screen is is great.  From anywhere in emacs just hit =C-c a= and you'll be greeted by a secondary pop-up menu where you can mash =a= to view the default agenda or any other custom agendas you manage to string together.  Items in these views act like hyperlinks to the original item in your notes (I have a small customization in these configs that jumps to these in /narrowed/ view).  I don't have any custom agendas at work these days, but in the past I've used =:personal:= and =:work:= tags to make a personal and work agenda view.  I left the code commented out for learning reasons.
+
+#+begin_src emacs-lisp
+  (setq org-agenda-files `( ,org-directory ))
+  (setq org-agenda-file-regexp "\\`[^.].*\\.org\\\(\\.gpg\\\)?\\'")
+
+  (global-set-key (kbd "C-c a") 'org-agenda)
+  (setq org-agenda-start-with-follow-mode nil)
+
+  (setq org-agenda-skip-scheduled-if-done 't)
+  (setq org-agenda-skip-deadline-if-done 't)
+  (setq org-agenda-archives-mode nil)
+  (setq org-deadline-warning-days 3)
+  (setq org-agenda-span 2)
+
+
+  (defun recker/org-agenda-switch-to-narrowed-subtree ()
+    (interactive)
+    (org-agenda-switch-to)
+    (org-narrow-to-subtree))
+
+  (add-hook 'org-agenda-mode-hook
+            (lambda ()
+              (local-set-key (kbd "RET") 'recker/org-agenda-switch-to-narrowed-subtree)))
+
+  ;; Speed settings
+  (setq org-agenda-inhibit-startup t)
+  (setq org-agenda-use-tag-inheritance nil)
+  (setq org-agenda-ignore-properties '(effort appt stats category))
+
+  (defun recker/org-agenda-if-tag(tag)
+    "Skip entries that are tagged TAG"
+    (let* ((entry-tags (org-get-tags-at (point))))
+      (if (not (member tag entry-tags))
+          (progn (outline-next-heading) (point))
+        nil)))
+
+  (setq org-agenda-custom-commands '())
+  ;; '(("p" "personal agenda"
+  ;;    ((agenda)
+  ;;     (tags-todo "personal"))
+  ;;    ((org-agenda-skip-function '(recker/org-agenda-if-tag "personal"))
+  ;;     (org-agenda-overriding-header "Personal Agenda")))
+  ;;   ("w" "work agenda"
+  ;;    ((agenda)
+  ;;     (tags-todo "work"))
+  ;;    ((org-agenda-skip-function '(recker/org-agenda-if-tag "work"))))))
+
+  (setq org-use-tag-inheritance 't)
+  (setq org-agenda-tag-filter-preset '())
+#+end_src
+
+You can use =C-c e= to publish notes to various formats (plain text, HTML, and even PDF if you have latex installed).  While not currently a critical part of my workflow, I occasionally export my notes just to see what they look like in HTML for vanity's sake or as a fun party trick.
+
+#+begin_src emacs-lisp
+  ;; this package makes source code a lot prettier when explorted
+  (use-package htmlize :ensure t)
+
+  ;; bigger projects can be defined here
+  (setq org-publish-project-alist '())
+#+end_src
+
+* Functions
+
+A junk drawer of Emacs functions that I use, despite having nowhere to categorize them.
+
+#+begin_src emacs-lisp
+  (defun recker/add-p-tags-to-buffer ()
+    "Automatically wrap all paragraphs in buffer in <p></p> tags."
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "\\(\\`\\|\n\n+\\)\\([^< $\n]\\)" nil t)
+        (replace-match "\\1<p>\\2" t))
+      (goto-char (point-min))
+      (while (re-search-forward "\\([^>}\n]\\)\\(\n\n+\\|\n\\'\\)" nil t)
+        (replace-match "\\1</p>\\2" t))))
+
+  (defun recker/unfill-region (beg end)
+    "Unfill the region, joining text paragraphs into a single logical line."
+    (interactive "*r")
+    (let ((fill-column (point-max)))
+      (fill-region beg end)))
 #+end_src

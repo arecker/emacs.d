@@ -36,12 +36,6 @@ One more note before we get going.  You are free to use this as a starting place
   (setq recker/work-mail-address "arecker@zendesk.com")
 #+end_src
 
-Start the emacs server in the background.  As long as this is running, you can set your shell =EDITOR= as =emacsclient= and your terminal will very gracefully hand over editing duties to your running Emacs application (example: git commits from the terminal).
-
-#+begin_src emacs-lisp
-  (server-start)
-#+end_src
-
 * Packages
 
 First, we setup the Emacs package manager.  This occurs at the top of the file so we can install packages as we need them.

@@ -477,7 +477,7 @@ Now that eglot is happy, you have to setup your python environment (which ideall
 After creating the environment (but before opening a python file and triggering eglot), jump into the project and run this shell command.
 
 #+begin_src bash
-  ./venv/bin/pip install pylsp isort pyflakes
+  ./venv/bin/pip install pyright isort pyflakes
 #+end_src
 
 ** Go
@@ -777,6 +777,18 @@ Inject some built-in libraries, load some modules, and enable some random settin
   (setq org-clock-persist 'history)
   (setq org-log-into-drawer 't)
   (setq org-todo-keywords '((sequence "TODO" "DONE")))
+#+end_src
+
+Emacs makes for a great pomodoro timer.  While looking at an org item, use =C-c C-x ;= to start a timer.  With this code, a peaceful gong sound will play when the timer is done.
+
+#+begin_src emacs-lisp
+  (setq org-clock-sound (concat user-emacs-directory "sounds/gong.wav"))
+  (defun recker/play-sound (orgin-fn sound)
+    (cl-destructuring-bind (_ _ file) sound
+      (make-process :name (concat "play-sound-" file)
+                    :connection-type 'pipe
+                    :command `("afplay" ,file))))
+  (advice-add 'play-sound :around 'recker/play-sound)
 #+end_src
 
 Though not required, it's a good idea to make a directory for org files.  I keep mine in =~/org=.

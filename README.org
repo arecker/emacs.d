@@ -847,7 +847,7 @@ The capture feature is handy.  From anywhere in emacs, just hit =C-c c= and a se
     (format-time-string "<!-- meta:title -->\n<!-- meta:banner %Y-%m-%d.jpg -->\n\n"))
 
   (setq org-capture-templates
-        '(("w" "task" entry (file+olp+datetree "work.org") "* TODO %?\nSCHEDULED: %t")
+        '(("t" "task" entry (file+olp+datetree "work.org") "* TODO %?\nSCHEDULED: %t")
           ("m" "meeting" entry (file+olp+datetree "work.org") "* %?\nSCHEDULED: %t")
           ("j" "journal" plain (file+olp+datetree "journal.org.gpg") "%^{Grattitude}\n\n%?")
           ("b" "blog" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)))
@@ -876,9 +876,9 @@ The agenda screen is is great.  From anywhere in emacs just hit =C-c a= and you'
     (org-agenda-switch-to)
     (org-narrow-to-subtree))
 
-  (add-hook 'org-agenda-mode-hook
-            (lambda ()
-              (local-set-key (kbd "RET") 'recker/org-agenda-switch-to-narrowed-subtree)))
+  ;; (add-hook 'org-agenda-mode-hook
+  ;;           (lambda ()
+  ;;             (local-set-key (kbd "RET") 'recker/org-agenda-switch-to-narrowed-subtree)))
 
   ;; Speed settings
   (setq org-agenda-inhibit-startup t)

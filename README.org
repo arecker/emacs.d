@@ -847,10 +847,10 @@ The capture feature is handy.  From anywhere in emacs, just hit =C-c c= and a se
     (format-time-string "<!-- meta:title -->\n<!-- meta:banner %Y-%m-%d.jpg -->\n\n"))
 
   (setq org-capture-templates
-        '(("t" "todays tasks" entry (file "tasks.org") "* TODO %<%A, %B %d %Y> [/]\nSCHEDULED: %t")
-          ("m" "miscellaneous task" entry (file "tasks.org") "* TODO %?\nSCHEDULED: %t")
-          ("j" "journal entry" plain (file+olp+datetree "journal.org.gpg") "%^{Grattitude}\n\n%?")
-          ("b" "blog entry" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)))
+        '(("w" "task" entry (file+olp+datetree "work.org") "* TODO %?\nSCHEDULED: %t")
+          ("m" "meeting" entry (file+olp+datetree "work.org") "* %?\nSCHEDULED: %t")
+          ("j" "journal" plain (file+olp+datetree "journal.org.gpg") "%^{Grattitude}\n\n%?")
+          ("b" "blog" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)))
 
   (global-set-key (kbd "C-c c") 'org-capture)
 #+end_src

@@ -216,7 +216,7 @@ The [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html][bu
 Where =C-x p= deletes the current buffer, I added my own function that deletes /all/ buffers which you can call by =C-x P=.  Just like my browser tabs, sometimes I get a little overwhelmed and I need a clean slate to focus.
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-x k") 'kill-this-buffer)
+  (global-set-key (kbd "C-x k") 'kill-current-buffer)
 
   (defun recker/purge-buffers ()
     "Delete all buffers, except for *scratch*."
@@ -848,7 +848,7 @@ The capture feature is handy.  From anywhere in emacs, just hit =C-c c= and a se
 
   (setq org-capture-templates
         '(("t" "task" entry (file+olp+datetree "work.org") "* TODO %?\nSCHEDULED: %t")
-          ("m" "meeting" entry (file+olp+datetree "work.org") "* %?\nSCHEDULED: %t")
+          ("m" "meeting" entry (file+olp+datetree "work.org") "* TODO %?\nSCHEDULED: %t")
           ("j" "journal" plain (file+olp+datetree "journal.org.gpg") "%^{Grattitude}\n\n%?")
           ("b" "blog" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)))
 

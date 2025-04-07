@@ -70,6 +70,14 @@ As far as package maintenance, I sometimes run =M-x package-list-packages= to br
   (recker/configure-packages)
 #+end_src
 
+While we are still at the top, use this package to make sure Emacs is using the same PATH as our system.
+
+#+begin_src emacs-lisp
+  (use-package exec-path-from-shell
+    :ensure t
+    :config (exec-path-from-shell-initialize))
+#+end_src
+
 * Application
 
 If you're using Emacs through a CLI, I'd recommend you close it out and download the real thing instead (if you're running a mac, [[https://emacsformacosx.com/][Emacs for Mac OS X]] is great no-frills package).  Flipping between emacs and the terminal is still fine, though.  Especially since with this config, running the command =emacsclient= will connect to the running Emacs process seamlessly.  You can even export =EDITOR=emacsclient= in your environment so other tools can get on the same page.
@@ -103,7 +111,7 @@ Default Emacs gets a lot of crap for its "ugly" UI.  I find it cozy and nostalgi
     (when (string= system-type "darwin")
       (set-frame-font "Monaco 18" nil t))
     (when (string= system-type "gnu/linux")
-      (set-frame-font "Monospace 13" nil t))
+      (set-frame-font "Noto Sans Mono 14" nil t))
 
     ;; Full screen by default
     (unless (eq (frame-parameter (selected-frame) 'fullscreen) 'maximized)
@@ -373,13 +381,6 @@ I make good use of the Emacs bookmarks system.  To create a bookmark for a file,
 It has been said that Emacs makes a pretty good operating system but lacks a decent editor.  Add to that, it makes a decent terminal emulator as well.  Using these settings, mash the =C-x t= command to open a bash shell.  Exiting the shell also closes the buffer.  For a less standard but more amusing =eshell= variety, press =C-c e=.  While eshell can't render output from tools like =top=, you can call lisp functions and interact with remote file systems, which is kind of neat.
 
 #+begin_src emacs-lisp
-  ;; This tool feels controversial.  It's here simply to sync the PATH
-  ;; environment variable from the system with what Emacs sees.  One day
-  ;; I'll have the time and bravery to disable it and test things out.
-  (use-package exec-path-from-shell
-    :ensure t
-    :config (exec-path-from-shell-initialize))
-
   ;; C-x t to open terminal
   (defun recker/ansi-term ()
     "Launch ansi-term with current shell."

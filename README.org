@@ -383,10 +383,9 @@ It has been said that Emacs makes a pretty good operating system but lacks a dec
 #+begin_src emacs-lisp
   ;; C-x t to open terminal
   (defun recker/ansi-term ()
-    "Launch ansi-term with current shell."
+    "Launch ansi-term with bash."
     (interactive)
-    (let ((shell (or (getenv "SHELL") "/bin/bash")))
-      (ansi-term shell)))
+    (ansi-term "/bin/bash"))
 
   (global-set-key (kbd "C-x t") 'recker/ansi-term)
 

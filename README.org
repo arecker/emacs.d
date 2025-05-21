@@ -430,6 +430,24 @@ Enable [[https://editorconfig.org/][EditorConfig]] if it's there.  I don't like 
     :config (editorconfig-mode 1))
 #+end_src
 
+_Hail Satan!_
+
+#+begin_src emacs-lisp
+  (use-package copilot-chat
+    :ensure t
+    :init
+    (setq copilot-chat-backend 'curl)
+    (setq copilot-chat-frontend 'org)
+    :config (setq copilot-chat-org-prompt
+                  (with-temp-buffer
+                    (insert-file-contents-literally (concat user-emacs-directory "prompts/copilot-chat.txt"))
+                    (buffer-string)))
+    :bind (:map global-map
+                ("C-c C-y" . copilot-chat-yank)
+                ("C-c M-y" . copilot-chat-yank-pop)
+                ("C-c C-M-y" . (lambda () (interactive) (copilot-chat-yank-pop -1)))))
+#+end_src
+
 ** Python
 
 First, Disable flycheck and flymake (Emacs' native python mode seems to always want to turn it on) and turn on eglot mode instead.

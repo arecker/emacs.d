@@ -113,9 +113,9 @@ Default Emacs gets a lot of crap for its "ugly" UI.  I find it cozy and nostalgi
     (when (string= system-type "gnu/linux")
       (set-frame-font "Noto Sans Mono 14" nil t))
 
-    ;; Full screen by default
-    (unless (eq (frame-parameter (selected-frame) 'fullscreen) 'maximized)
-      (toggle-frame-maximized))
+    ;; Uncomment this for full screen by default
+    ;; (unless (eq (frame-parameter (selected-frame) 'fullscreen) 'maximized)
+    ;;   (toggle-frame-maximized))
 
     ;; Use this package to hide minor modes.  I like to know which major
     ;; mode I'm editing, but the minor mode list gets a little too
@@ -438,14 +438,25 @@ _Hail Satan!_
     :init
     (setq copilot-chat-backend 'curl)
     (setq copilot-chat-frontend 'org)
+    (setq copilot-chat-default-model "claude-sonnet-4.5")
     :config (setq copilot-chat-org-prompt
                   (with-temp-buffer
-                    (insert-file-contents-literally (concat user-emacs-directory "prompts/copilot-chat.txt"))
+                    (insert-file-contents-literally (concat user-emacs-directory "prompts/chef.txt"))
                     (buffer-string)))
+    :after (request org markdown-mode)
     :bind (:map global-map
                 ("C-c C-y" . copilot-chat-yank)
                 ("C-c M-y" . copilot-chat-yank-pop)
                 ("C-c C-M-y" . (lambda () (interactive) (copilot-chat-yank-pop -1)))))
+#+end_src
+
+MCP server stuff.
+
+#+begin_src emacs-lisp
+  (use-package mcp
+    :ensure t
+    :config (require 'mcp-hub)
+    :hook (after-init . mcp-hub-start-all-server))
 #+end_src
 
 ** Python
@@ -867,7 +878,7 @@ The capture feature is handy.  From anywhere in emacs, just hit =C-c c= and a se
   (setq org-capture-templates
         '(("t" "task" entry (file+olp+datetree "work.org") "* TODO %?\nSCHEDULED: %t")
           ("m" "meeting" entry (file+olp+datetree "work.org") "* TODO %?\nSCHEDULED: %t")
-          ("j" "journal" plain (file+olp+datetree "journal.org.gpg") "%^{Grattitude}\n\n%?")
+          ("j" "journal" plain (file+olp+datetree "journal.org.gpg") "%?")
           ("b" "blog" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)))
 
   (global-set-key (kbd "C-c c") 'org-capture)
@@ -886,7 +897,7 @@ The agenda screen is is great.  From anywhere in emacs just hit =C-c a= and you'
   (setq org-agenda-skip-deadline-if-done 't)
   (setq org-agenda-archives-mode nil)
   (setq org-deadline-warning-days 3)
-  (setq org-agenda-span 2)
+  (setq org-agenda-span 5)
 
 
   (defun recker/org-agenda-switch-to-narrowed-subtree ()

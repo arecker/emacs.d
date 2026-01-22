@@ -16,14 +16,14 @@ So where is the config?  The document you are reading /is/ the config.  [[https:
 In that spirit, I tried to contain my actual lisp code in this document, save for one function that you need in =init.el= to kick off the process.
 
 #+begin_example
-(defun recker/load-config ()
-  "Tangle configuration and load it."
-  (let ((config (concat (file-name-as-directory user-emacs-directory) "README.org")))
-    (if (file-exists-p config)
-        (org-babel-load-file config)
-      (warn (concat config " not found - not loading")))))
+  (defun recker/load-config ()
+    "Tangle configuration and load it."
+    (let ((config (concat (file-name-as-directory user-emacs-directory) "README.org")))
+      (if (file-exists-p config)
+          (org-babel-load-file config)
+        (warn (concat config " not found - not loading")))))
 
-(recker/load-config)
+  (recker/load-config)
 #+end_example
 
 From here on, all lisp code snippets with syntax highlighting are run on startup in the order they appear.
@@ -57,7 +57,8 @@ As far as package maintenance, I sometimes run =M-x package-list-packages= to br
 
     ;; set the repo URLs
     (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                             ("melpa" . "https://melpa.org/packages/")))
+                             ("melpa" . "https://melpa.org/packages/")
+                             ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 
     ;; initialize the package manager
     (package-initialize)
@@ -457,6 +458,27 @@ MCP server stuff.
     :ensure t
     :config (require 'mcp-hub)
     :hook (after-init . mcp-hub-start-all-server))
+#+end_src
+
+Claude Code AI slop.
+
+#+begin_src emacs-lisp
+  ;; install required inheritenv dependency:
+  (use-package inheritenv :ensure t)
+
+  ;; for eat terminal backend:
+  (use-package eat :ensure t)
+
+  (use-package claude-code
+    :ensure nil
+    :load-path "~/.emacs.d/elpa/claude-code"
+    :init
+    (unless (file-directory-p (expand-file-name "elpa/claude-code" user-emacs-directory))
+      (package-vc-install "https://github.com/stevemolitor/claude-code.el"))
+    (setq vc-suppress-confirm t)
+    (setq claude-code-terminal-backend 'eat)
+    :config (claude-code-mode)
+    :bind-keymap ("C-c v" . claude-code-command-map))
 #+end_src
 
 ** Python

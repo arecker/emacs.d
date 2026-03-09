@@ -990,3 +990,11 @@ A junk drawer of Emacs functions that I use, despite having nowhere to categoriz
     (let ((fill-column (point-max)))
       (fill-region beg end)))
 #+end_src
+
+And sometimes the random functions get promoted to tools!
+
+#+begin_src emacs-lisp
+  (use-package simple-timer
+    :vc (:url "https://github.com/arecker/simple-timer.el")
+    :config (setq simple-timer-sound-file "~/.emacs.d/sounds/gong.wav"))
+#+end_src

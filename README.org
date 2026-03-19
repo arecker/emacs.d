@@ -466,8 +466,8 @@ Claude Code AI slop.
   ;; install required inheritenv dependency:
   (use-package inheritenv :ensure t)
 
-  ;; for eat terminal backend:
-  (use-package eat :ensure t)
+  ;; for vterm terminal backend:
+  (use-package vterm :ensure t)
 
   (use-package claude-code
     :ensure nil
@@ -476,9 +476,21 @@ Claude Code AI slop.
     (unless (file-directory-p (expand-file-name "elpa/claude-code" user-emacs-directory))
       (package-vc-install "https://github.com/stevemolitor/claude-code.el"))
     (setq vc-suppress-confirm t)
-    (setq claude-code-terminal-backend 'eat)
+    (setq claude-code-terminal-backend 'vterm)
     :config (claude-code-mode)
     :bind-keymap ("C-c v" . claude-code-command-map))
+
+  (use-package claude-code-extras
+    :ensure nil
+    :load-path "~/.emacs.d/elpa/claude-code-emacs"
+    :after claude-code
+    :init
+    (unless (file-directory-p (expand-file-name "elpa/claude-code-emacs" user-emacs-directory))
+      (package-vc-install "https://github.com/lsy83971/claude-code-emacs"))
+    :config
+    (require 'claude-code-manager)
+    (define-key claude-code-command-map (kbd "L") #'claude-code-manager)
+    (remove-hook 'claude-code-start-hook #'claude-code--auto-open-input))
 #+end_src
 
 

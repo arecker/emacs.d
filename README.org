@@ -463,34 +463,20 @@ MCP server stuff.
 Claude Code AI slop.
 
 #+begin_src emacs-lisp
-  ;; install required inheritenv dependency:
-  (use-package inheritenv :ensure t)
-
-  ;; for vterm terminal backend:
+  ;; Terminal backend (vterm or eat)
   (use-package vterm :ensure t)
 
-  (use-package claude-code
+  (use-package claude-code-ide
     :ensure nil
-    :load-path "~/.emacs.d/elpa/claude-code"
-    :init
-    (unless (file-directory-p (expand-file-name "elpa/claude-code" user-emacs-directory))
-      (package-vc-install "https://github.com/stevemolitor/claude-code.el"))
-    (setq vc-suppress-confirm t)
-    (setq claude-code-terminal-backend 'vterm)
-    :config (claude-code-mode)
-    :bind-keymap ("C-c v" . claude-code-command-map))
-
-  (use-package claude-code-extras
-    :ensure nil
-    :load-path "~/.emacs.d/elpa/claude-code-emacs"
-    :after claude-code
-    :init
-    (unless (file-directory-p (expand-file-name "elpa/claude-code-emacs" user-emacs-directory))
-      (package-vc-install "https://github.com/lsy83971/claude-code-emacs"))
+    :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
+    :after (vterm)
+    :custom
+    (claude-code-ide-terminal-backend 'vterm)
+    (claude-code-ide-use-side-window nil)
+    (claude-code-ide-debug t)  ; Enable debug logging
     :config
-    (require 'claude-code-manager)
-    (define-key claude-code-command-map (kbd "L") #'claude-code-manager)
-    (remove-hook 'claude-code-start-hook #'claude-code--auto-open-input))
+    (claude-code-ide-emacs-tools-setup)
+    :bind ("C-c v" . claude-code-ide-menu))
 #+end_src
 
 
@@ -756,6 +742,21 @@ Without further ado, here are my very minimal settings for Gnus.  Let's get all 
   ;; auto filled messages look like shit on most normal mail clients, so
   ;; just turn it off to appease all the filthy casuals I email
   (add-hook 'message-mode-hook #'turn-off-auto-fill)
+
+  ;; Archive function for Gnus
+  (defun recker/gnus-summary-archive ()
+    "Archive the current message to Gmail's All Mail folder."
+    (interactive)
+    (let* ((group (gnus-group-real-name gnus-newsgroup-name))
+           (method (gnus-find-method-for-group gnus-newsgroup-name))
+           (server (nth 1 method))
+           (archive-group (format "nnimap+%s:[Gmail]/All Mail" server)))
+      (gnus-summary-move-article nil archive-group)))
+
+  ;; Bind 'a' to archive in summary mode
+  (add-hook 'gnus-summary-mode-hook
+            (lambda ()
+              (local-set-key (kbd "a") 'recker/gnus-summary-archive)))
 #+end_src
 
 Finally we've arrived at the backends.  If you desire, you can hook it up to RSS and other fun backends.  I just use mail, but I occasionally revisit this list when I want to play with something new.
@@ -794,7 +795,7 @@ Some basic usability tips.
 
 1. Open folders by hitting =RET= over the folder, open messages by hitting =RET= over the message
 2. Trash mail by pressing =E= (expire) to mark it, then =q= to exit the folder.  Expiring is done in batches
-3. Archive mail by moving the message to the IMAP folder (=B m=, then choose the folder interactively).
+3. Archive mail by pressing =a= to move it to the All Mail folder
 4. Compose a new message by pressing =m= at the topic screen.  Depending on where your cursor is, the corresponding styles and settings will apply.
 
 * Org

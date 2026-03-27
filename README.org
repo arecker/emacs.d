@@ -473,7 +473,7 @@ Claude Code AI slop.
     :custom
     (claude-code-ide-terminal-backend 'vterm)
     (claude-code-ide-use-side-window nil)
-    (claude-code-ide-debug t)  ; Enable debug logging
+    (claude-code-ide-use-ediff nil)
     :config
     (claude-code-ide-emacs-tools-setup)
     :bind ("C-c v" . claude-code-ide-menu))

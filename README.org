@@ -470,11 +470,10 @@ Claude Code AI slop.
     :ensure nil
     :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
     :after (vterm)
-    :custom
-    (claude-code-ide-terminal-backend 'vterm)
-    (claude-code-ide-use-side-window nil)
-    (claude-code-ide-use-ediff nil)
     :config
+    (setq claude-code-ide-terminal-backend 'vterm)
+    (setq claude-code-ide-use-side-window nil)
+    (setq claude-code-ide-use-ediff nil)
     (claude-code-ide-emacs-tools-setup)
     :bind ("C-c v" . claude-code-ide-menu))
 #+end_src

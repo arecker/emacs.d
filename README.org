@@ -473,7 +473,9 @@ Claude Code AI slop.
     :config
     (setq claude-code-ide-terminal-backend 'vterm)
     (setq claude-code-ide-use-side-window nil)
-    (setq claude-code-ide-use-ediff nil)
+    (setq claude-code-ide-use-ide-diff nil)
+    (setq claude-code-ide-show-claude-window-in-ediff nil)
+    (setq claude-code-ide-focus-claude-after-ediff nil)
     (claude-code-ide-emacs-tools-setup)
     :bind ("C-c v" . claude-code-ide-menu))
 #+end_src

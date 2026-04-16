@@ -913,10 +913,25 @@ The capture feature is handy.  From anywhere in emacs, just hit =C-c c= and a se
     (format-time-string "<!-- meta:title -->\n<!-- meta:banner %Y-%m-%d.jpg -->\n\n"))
 
   (setq org-capture-templates
-        '(("t" "task" entry (file "work.org") "* TODO %?\nSCHEDULED: %t")
-          ("m" "meeting" entry (file "work.org") "* TODO %?\nSCHEDULED: %t")
+        '(("t" "task" entry (file+olp+datetree "work.org") "* TODO %?\nSCHEDULED: %t")
+          ("m" "meeting" entry (file+olp+datetree "work.org") "* TODO %?\nSCHEDULED: %t")
+          ("h" "habit" entry (file "daily.org")
+           "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a> .+1d>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:END:")
+          ("e" "emotions" plain (file+olp+datetree "emotions.org")
+           "- Joy: %^{Joy}\n- Anger: %^{Anger}\n- Sad: %^{Sad}\n- Fear: %^{Fear}\n- Disgust: %^{Disgust}\n- Behaviors: %^{Behaviors}\n" :immediate-finish t :jump-to-captured t)
           ("j" "journal" plain (file+olp+datetree "journal.org.gpg") "%?")
           ("b" "blog" plain (function recker/blog-target) (function recker/blog-template) :immediate-finish t :jump-to-captured t)))
+
+  (defun recker/trigger-emotion-capture ()
+    "Wait for the habit to roll over, then fire the capture."
+    (when (and (string= org-state "DONE")
+               (string-match-p "track emotions" (org-get-heading t t)))
+      (run-at-time "1 sec" nil (lambda () (org-capture nil "e")))))
+
+  (add-hook 'org-after-todo-state-change-hook #'recker/trigger-emotion-capture)
+
+  (require 'org-habit)
+  (setq org-habit-graph-column 50)
 
   (global-set-key (kbd "C-c c") 'org-capture)
 #+end_src
@@ -935,7 +950,11 @@ The agenda screen is is great.  From anywhere in emacs just hit =C-c a= and you'
   (setq org-agenda-archives-mode nil)
   (setq org-deadline-warning-days 3)
   (setq org-agenda-span 5)
-
+  (setq org-agenda-sorting-strategy
+        '((agenda time-up category-keep)
+          (todo category-keep)
+          (tags category-keep)
+          (search category-keep)))
 
   (defun recker/org-agenda-switch-to-narrowed-subtree ()
     (interactive)
@@ -959,15 +978,18 @@ The agenda screen is is great.  From anywhere in emacs just hit =C-c a= and you'
         nil)))
 
   (setq org-agenda-custom-commands '())
-  ;; '(("p" "personal agenda"
-  ;;    ((agenda)
-  ;;     (tags-todo "personal"))
-  ;;    ((org-agenda-skip-function '(recker/org-agenda-if-tag "personal"))
-  ;;     (org-agenda-overriding-header "Personal Agenda")))
-  ;;   ("w" "work agenda"
-  ;;    ((agenda)
-  ;;     (tags-todo "work"))
-  ;;    ((org-agenda-skip-function '(recker/org-agenda-if-tag "work"))))))
+
+  (add-to-list 'org-agenda-custom-commands
+               '("w" "Work"
+                 ((agenda))
+                 ((org-agenda-skip-function '(recker/org-agenda-if-tag "work")))))
+
+  (add-to-list 'org-agenda-custom-commands
+               '("h" "Habits"
+                 ((agenda ""
+                          ((org-agenda-span 'day)
+                           (org-agenda-files '("daily.org"))
+                           (org-agenda-overriding-header "Daily Habit Tracker"))))))
 
   (setq org-use-tag-inheritance 't)
   (setq org-agenda-tag-filter-preset '())

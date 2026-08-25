@@ -474,7 +474,16 @@ Claude Code AI slop, via [[https://github.com/xenodium/agent-shell][agent-shell]
 #+begin_src emacs-lisp
   (use-package agent-shell
     :ensure t
-    :bind ("C-c v" . agent-shell-anthropic-start-claude-code))
+    :bind ("C-c v" . agent-shell-anthropic-start-claude-code)
+    :config
+    (with-eval-after-load 'agent-shell-completion
+      (defun recker/agent-shell-use-company (orig-fn)
+        "Trigger company instead of the default completion UI, when available."
+        (if (bound-and-true-p company-mode)
+            (when (memq (char-before) '(?@ ?/))
+              (company-manual-begin))
+          (funcall orig-fn)))
+      (advice-add 'agent-shell--trigger-completion-at-point :around #'recker/agent-shell-use-company)))
 #+end_src
 
 ** Python

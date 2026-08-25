@@ -254,7 +254,10 @@ In Emacs, you spend much of your time selecting things in the minibuffer.  "Inte
       :init (ido-vertical-mode))
     (use-package idomenu
       :ensure t
-      :bind ("C-c i" . idomenu)))
+      :bind ("C-c i" . idomenu))
+    (use-package ido-completing-read+
+      :ensure t
+      :config (ido-ubiquitous-mode t)))
 
   (recker/configure-ido)
 #+end_src
@@ -292,7 +295,6 @@ Use [[https://github.com/bbatsov/projectile][projectile]] for moving around git 
     :ensure t
     :config
     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-    (setq projectile-completion-system 'ido)
     :init (projectile-mode t))
 #+end_src
 
@@ -420,7 +422,9 @@ For these more lightweight language modes, I setup /flycheck/.  It will do its b
   (use-package flycheck
     :ensure t
     :init (global-flycheck-mode)
-    :config (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc ruby-rubocop)))
+    :config
+    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc ruby-rubocop))
+    (setq flycheck-global-modes '(not lisp-interaction-mode)))
 #+end_src
 
 Enable [[https://editorconfig.org/][EditorConfig]] if it's there.  I don't like junking up projects with new dotfiles, so I might not always be the guy to add one of these.  But EditorConfig is a decent project and enough of my coworkers use it to make it worth installing on my end.

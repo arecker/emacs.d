@@ -464,26 +464,18 @@ MCP server stuff.
     :hook (after-init . mcp-hub-start-all-server))
 #+end_src
 
-Claude Code AI slop.
+Claude Code AI slop, via [[https://github.com/xenodium/agent-shell][agent-shell]], which talks to Claude over ACP and renders natively instead of emulating a terminal.  Before this works, install its external dependencies:
 
-#+begin_src emacs-lisp
-  ;; Terminal backend (vterm or eat)
-  (use-package vterm :ensure t)
-
-  (use-package claude-code-ide
-    :ensure nil
-    :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
-    :after (vterm)
-    :config
-    (setq claude-code-ide-terminal-backend 'vterm)
-    (setq claude-code-ide-use-side-window nil)
-    (setq claude-code-ide-use-ide-diff nil)
-    (setq claude-code-ide-show-claude-window-in-ediff nil)
-    (setq claude-code-ide-focus-claude-after-ediff nil)
-    (claude-code-ide-emacs-tools-setup)
-    :bind ("C-c v" . claude-code-ide-menu))
+#+begin_src bash
+  brew install claude-code
+  npm install -g @agentclientprotocol/claude-agent-acp
 #+end_src
 
+#+begin_src emacs-lisp
+  (use-package agent-shell
+    :ensure t
+    :bind ("C-c v" . agent-shell-anthropic-start-claude-code))
+#+end_src
 
 ** Python
 

@@ -421,10 +421,35 @@ For these more lightweight language modes, I setup /flycheck/.  It will do its b
 #+begin_src emacs-lisp
   (use-package flycheck
     :ensure t
-    :init (global-flycheck-mode)
     :config
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc ruby-rubocop))
-    (setq flycheck-global-modes '(not lisp-interaction-mode)))
+
+    ;; emacs-lisp-mode-hook also fires for lisp-interaction-mode (i.e. *scratch*),
+    ;; since the latter is derived from the former, so guard against it here.
+    (add-hook 'emacs-lisp-mode-hook
+              (lambda ()
+                (unless (derived-mode-p 'lisp-interaction-mode)
+                  (flycheck-mode 1))))
+
+    (dolist (hook '(c-mode-hook
+                     d-mode-hook
+                     dockerfile-mode-hook
+                     groovy-mode-hook
+                     haskell-mode-hook
+                     dhall-mode-hook
+                     jsonnet-mode-hook
+                     bats-mode-hook
+                     lisp-mode-hook
+                     lua-mode-hook
+                     nftables-mode-hook
+                     nginx-mode-hook
+                     php-mode-hook
+                     protobuf-mode-hook
+                     rst-mode-hook
+                     ruby-mode-hook
+                     terraform-mode-hook
+                     yaml-mode-hook))
+      (add-hook hook 'flycheck-mode)))
 #+end_src
 
 Enable [[https://editorconfig.org/][EditorConfig]] if it's there.  I don't like junking up projects with new dotfiles, so I might not always be the guy to add one of these.  But EditorConfig is a decent project and enough of my coworkers use it to make it worth installing on my end.
@@ -469,6 +494,7 @@ Claude Code AI slop, via [[https://github.com/xenodium/agent-shell][agent-shell]
 #+begin_src bash
   brew install claude-code
   npm install -g @agentclientprotocol/claude-agent-acp
+  brew install terminal-notifier
 #+end_src
 
 #+begin_src emacs-lisp
@@ -484,6 +510,10 @@ Claude Code AI slop, via [[https://github.com/xenodium/agent-shell][agent-shell]
               (company-manual-begin))
           (funcall orig-fn)))
       (advice-add 'agent-shell--trigger-completion-at-point :around #'recker/agent-shell-use-company)))
+
+  (use-package agent-shell-macext
+    :vc (:url "https://github.com/cxa/agent-shell-macext")
+    :hook (agent-shell-mode . agent-shell-macext-setup))
 #+end_src
 
 ** Python
@@ -492,9 +522,8 @@ First, Disable flycheck and flymake (Emacs' native python mode seems to always w
 
 #+begin_src emacs-lisp
   (defun recker/python-mode-hook ()
-    ;; disable fly* bullshit
-    (flymake-mode -1)
-    (flycheck-mode -1))
+    ;; disable flymake bullshit (native python mode always wants to turn it on)
+    (flymake-mode -1))
 
   (add-hook #'python-mode-hook #'recker/python-mode-hook)
   (add-hook 'python-mode-hook 'eglot-ensure)

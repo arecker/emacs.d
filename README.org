@@ -949,6 +949,7 @@ The capture feature is handy.  From anywhere in emacs, just hit =C-c c= and a se
   (setq org-capture-templates
         '(("t" "task" entry (file+olp+datetree "work.org") "* TODO %?\nSCHEDULED: %t")
           ("m" "meeting" entry (file+olp+datetree "work.org") "* TODO %?\nSCHEDULED: %t")
+          ("s" "standup" entry (file+olp+datetree "work.org") "* TODO Stand-up\nSCHEDULED: %t\n** Parking Lot [0/1]\n- [ ] %?")
           ("h" "habit" entry (file "daily.org")
            "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a> .+1d>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:END:")
           ("e" "emotions" plain (file+olp+datetree "emotions.org")

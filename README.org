@@ -502,6 +502,7 @@ Claude Code AI slop, via [[https://github.com/xenodium/agent-shell][agent-shell]
     :ensure t
     :bind ("C-c v" . agent-shell-anthropic-start-claude-code)
     :config
+    (keymap-set agent-shell-mode-map "C-c C-q" #'agent-shell-prompt-queue)
     (with-eval-after-load 'agent-shell-completion
       (defun recker/agent-shell-use-company (orig-fn)
         "Trigger company instead of the default completion UI, when available."

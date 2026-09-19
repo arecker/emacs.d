@@ -73,9 +73,21 @@ As far as package maintenance, I sometimes run =M-x package-list-packages= to br
 
 While we are still at the top, use this package to make sure Emacs is using the same PATH as our system.
 
+When running as a Flatpak (e.g. the org.gnu.emacs build on Steam Deck), $SHELL inside
+the sandbox is /bin/sh rather than bash, so exec-path-from-shell would otherwise ask
+/bin/sh for our PATH -- and /bin/sh never sources ~/.bashrc, so nvm-installed npm
+globals (like claude-agent-acp) never make it into Emacs's PATH. Force bash explicitly,
+but hunt for it rather than hardcoding /bin/bash so this also works on macOS with
+Homebrew bash (/opt/homebrew/bin/bash on Apple Silicon, /usr/local/bin/bash on Intel).
+
 #+begin_src emacs-lisp
   (use-package exec-path-from-shell
     :ensure t
+    :init (setq exec-path-from-shell-shell-name
+                (or (executable-find "bash")
+                    (seq-find #'file-executable-p
+                              '("/opt/homebrew/bin/bash" "/usr/local/bin/bash" "/bin/bash"))
+                    "/bin/bash"))
     :config (exec-path-from-shell-initialize))
 #+end_src
 
@@ -200,7 +212,9 @@ The [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html][bu
     (concat "\n"
             (recker/scratch-lisp-comment (format-time-string "%A, %B %-d %Y"))
             "\n\n"
-            (shell-command-to-string recker/scratch-message-command)))
+            (if (executable-find (car (split-string recker/scratch-message-command)))
+                (shell-command-to-string recker/scratch-message-command)
+              "")))
 
   (defun recker/scratch-lisp-comment (text)
     "Turn text into a lisp comment."
@@ -358,14 +372,18 @@ I make good use of the Emacs bookmarks system.  To create a bookmark for a file,
 
   (defun recker/list-entries-as-bookmarks (parent)
     "List all the entries in the PARENT directory as if they were bookmarks."
-    (mapcar #'(lambda (n) (concat parent n))
-            (cl-remove-if #'(lambda (f) (string-prefix-p "." f))
-                          (directory-files (expand-file-name (concat "~/" parent))))))
+    (let ((dir (expand-file-name (concat "~/" parent))))
+      (when (file-directory-p dir)
+        (mapcar #'(lambda (n) (concat parent n))
+                (cl-remove-if #'(lambda (f) (string-prefix-p "." f))
+                              (directory-files dir))))))
 
   (defun recker/list-files-as-bookmarks (parent pattern)
     "List all the files matching pattern as if they were bookmarks."
-    (mapcar #'(lambda (s) (string-remove-prefix (expand-file-name "~/") s))
-            (directory-files-recursively (expand-file-name (concat "~/" parent)) pattern nil)))
+    (let ((dir (expand-file-name (concat "~/" parent))))
+      (when (file-directory-p dir)
+        (mapcar #'(lambda (s) (string-remove-prefix (expand-file-name "~/") s))
+                (directory-files-recursively dir pattern nil)))))
 
   (defun recker/ido-bookmark-jump (bookmark)
     "Switch to bookmark BOOKMARK interactively using `ido'."
@@ -512,9 +530,9 @@ Claude Code AI slop, via [[https://github.com/xenodium/agent-shell][agent-shell]
           (funcall orig-fn)))
       (advice-add 'agent-shell--trigger-completion-at-point :around #'recker/agent-shell-use-company)))
 
-  (use-package agent-shell-macext
-    :vc (:url "https://github.com/cxa/agent-shell-macext")
-    :hook (agent-shell-mode . agent-shell-macext-setup))
+  ;; (use-package agent-shell-macext
+  ;;   :vc (:url "https://github.com/cxa/agent-shell-macext")
+  ;;   :hook (agent-shell-mode . agent-shell-macext-setup))
 #+end_src
 
 ** Python

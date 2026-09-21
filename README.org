@@ -309,6 +309,7 @@ Use [[https://github.com/bbatsov/projectile][projectile]] for moving around git 
     :ensure t
     :config
     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+    (define-key projectile-command-map (kbd "P") 'projectile-compile-project)
     :init (projectile-mode t))
 #+end_src
 
@@ -563,6 +564,8 @@ Next, setup eglot with a hierarchy of LSP programs it should prefer.  Why so man
 Now that eglot is happy, you have to setup your python environment (which ideally should be a virtualenv).  I run this function on a venv path to symlink to a place where Emacs can find it and activate it for eglot.
 
 #+begin_src emacs-lisp
+  (use-package pyvenv :ensure t)
+
   (defun recker/python-workon ()
     (interactive)
     "Activate a python environment.  If it's not in the WORKON_HOME list, create a symlink to a venv."

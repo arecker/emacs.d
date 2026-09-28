@@ -31,6 +31,7 @@ From here on, all lisp code snippets with syntax highlighting are run on startup
 One more note before we get going.  You are free to use this as a starting place for your own configuration.  All of my custom functions begin with the =recker/= prefix.  To change it, just perform a string replace on =(defun recker/= within this document.  Beyond that, just update these global variables with your own info.
 
 #+begin_src emacs-lisp
+  ;;; -*- lexical-binding: t; -*-
   (setq user-full-name "Alex Recker")
   (setq user-mail-address "alex@reckerfamily.com")
   (setq recker/work-mail-address "arecker@zendesk.com")
@@ -130,14 +131,9 @@ Default Emacs gets a lot of crap for its "ugly" UI.  I find it cozy and nostalgi
     ;; (unless (eq (frame-parameter (selected-frame) 'fullscreen) 'maximized)
     ;;   (toggle-frame-maximized))
 
-    ;; Use this package to hide minor modes.  I like to know which major
-    ;; mode I'm editing, but the minor mode list gets a little too
-    ;; cluttered trying to list all the plugins I have running.
-    (unless (bound-and-true-p rich-minority-mode) ;it breaks if it runs twice?
-      (use-package rich-minority
-        :ensure t
-        :init (rich-minority-mode 't)
-        :config (setq rm-blacklist ""))))
+    ;; hide all minor modes from the modeline (because they look like
+    ;; shit)
+    (setq mode-line-minor-modes nil))
 
   (recker/configure-appearance)
 #+end_src

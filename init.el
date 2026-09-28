@@ -1,3 +1,4 @@
+;;; init.el --- init -*- lexical-binding: t; -*-
 (defun recker/load-config ()
   "Tangle configuration and load it."
   (let ((config (concat (file-name-as-directory user-emacs-directory) "README.org")))

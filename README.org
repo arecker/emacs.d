@@ -251,35 +251,30 @@ I don't know what this mode does, but at this point I'm too afraid to ask (or ta
   (global-visual-line-mode)
 #+end_src
 
-In Emacs, you spend much of your time selecting things in the minibuffer.  "Interactive Do" ([[https://www.gnu.org/software/emacs/manual/html_mono/ido.html][IDO]] for short) can enhance this experience.  IDO comes with Emacs, but I install some packages to display options vertically instead of horizontally, and also to plug the interface in to [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Imenu.html][Imenu]].
+I am an IDO refugee.  Apparently they got rid of this, but this glob of settings makes my IDO muscle memory still work.  It's actually pretty slick I don't mind the new stuff.
 
 #+begin_src emacs-lisp
-  (defun recker/configure-ido ()
-    (setq ido-enable-flex-matching t)
-    (setq ido-everywhere t)
-    (ido-mode t)
-    (use-package ido-vertical-mode
-      :ensure t
-      :config (setq ido-vertical-define-keys 'C-n-and-C-p-only)
-      :init (ido-vertical-mode))
-    (use-package idomenu
-      :ensure t
-      :bind ("C-c i" . idomenu))
-    (use-package ido-completing-read+
-      :ensure t
-      :config (ido-ubiquitous-mode t)))
+  (defun recker/configure-completion ()
+    "Configure native minibuffer completion (ido replacement)."
+    ;; vertical candidates, displayed immediately, updated as I type
+    (setq completions-format 'vertical)
+    (setq completion-eager-display t)
+    (setq completion-eager-update t)
+    (setq minibuffer-visible-completions 'up-down)
+    ;; fuzzy matching (like ido-enable-flex-matching), ignoring case
+    (setq completion-styles
+          '(basic
+            (flex ((completion-ignore-case t)))))
+    ;; C-n/C-p to select candidates, RET to accept the highlighted one
+    (dolist (map '(minibuffer-local-completion-map
+                   minibuffer-local-must-match-map))
+      (define-key (symbol-value map) (kbd "C-n") 'minibuffer-next-completion)
+      (define-key (symbol-value map) (kbd "C-p") 'minibuffer-previous-completion)))
 
-  (recker/configure-ido)
-#+end_src
+  (recker/configure-completion)
 
-The =M-x= menu also carries a lot of weight in the Emacs workflow.  Transparently swapping out this command with the smex package adds value to this interface without changing the intuitive experience.
-
-#+begin_src emacs-lisp
-  (use-package smex
-    :ensure t
-    :init (smex-initialize)
-    :bind (("M-x" . 'smex)
-           ("M-X" . 'smex-major-mode-commands)))
+  ;; C-c i to jump around in the current buffer (replacing idomenu)
+  (global-set-key (kbd "C-c i") 'imenu)
 #+end_src
 
 For quickly jumping around a buffer, standard =isearch= can't be beat.  But as a small luxury, sometimes I use the swiper package to quickly fuzzy search a buffer.  I bind this to a similar keystroke as isearch so it's easy to remember.
@@ -344,7 +339,7 @@ Emacs has a great file manager called [[https://www.gnu.org/software/emacs/manua
   (add-hook 'dired-mode-hook 'dired-omit-mode)
 #+end_src
 
-I make good use of the Emacs bookmarks system.  To create a bookmark for a file, just press =C-x r m=.  To visit a bookmark, press =C-x r b= (with my customization in place, you will have the chance to choose a bookmark with IDO fuzzy search, so it's very convenient).  On top of that, every file/directory created in the following paths automatically gets a bookmark entry.  These entries blend seamlessly with your existing bookmarks.
+I make good use of the Emacs bookmarks system.  To create a bookmark for a file, just press =C-x r m=.  To visit a bookmark, press =C-x r b= (with my customization in place, you will have the chance to choose a bookmark with fuzzy search, so it's very convenient).  On top of that, every file/directory created in the following paths automatically gets a bookmark entry.  These entries blend seamlessly with your existing bookmarks.
 
 - =~/org"=
 - =~/src/=
@@ -382,16 +377,16 @@ I make good use of the Emacs bookmarks system.  To create a bookmark for a file,
         (mapcar #'(lambda (s) (string-remove-prefix (expand-file-name "~/") s))
                 (directory-files-recursively dir pattern nil)))))
 
-  (defun recker/ido-bookmark-jump (bookmark)
-    "Switch to bookmark BOOKMARK interactively using `ido'."
-    (interactive (list (ido-completing-read "Bookmark: " (recker/list-bookmarks) nil t)))
+  (defun recker/bookmark-jump (bookmark)
+    "Switch to bookmark BOOKMARK interactively."
+    (interactive (list (completing-read "Bookmark: " (recker/list-bookmarks) nil t)))
     (if (member bookmark (bookmark-all-names))
         (bookmark-jump bookmark)
       ;; If it's not in the actual bookmark file, just treat the key
       ;; like a relative path (ex. src/work/azdrain => ~/src/work/azdrain)
       (find-file (expand-file-name (concat "~/" bookmark)))))
 
-  (global-set-key (kbd "C-x r b") 'recker/ido-bookmark-jump)
+  (global-set-key (kbd "C-x r b") 'recker/bookmark-jump)
 #+end_src
 
 * Shell

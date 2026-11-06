@@ -138,6 +138,13 @@ Default Emacs gets a lot of crap for its "ugly" UI.  I find it cozy and nostalgi
   (recker/configure-appearance)
 #+end_src
 
+#+begin_src emacs-lisp
+  (use-package doric-themes
+    :ensure t
+    :config
+    (load-theme 'doric-almond t))
+#+end_src
+
 * Text
 
 Automatically clean-up whitespace on save.  Trailing whitespace is annoying, and it shouldn't be there in the first place.  Also, don't insert tabs unless the major mode really wants to (golang, for example, will do its own thing).
@@ -261,6 +268,8 @@ I am an IDO refugee.  Apparently they got rid of this, but this glob of settings
     (setq completion-eager-display t)
     (setq completion-eager-update t)
     (setq minibuffer-visible-completions 'up-down)
+    ;; don't ring the bell when nothing matches (ex. naming a new file)
+    (setq completion-fail-discreetly t)
     ;; fuzzy matching (like ido-enable-flex-matching), ignoring case
     (setq completion-styles
           '(basic
@@ -765,7 +774,9 @@ Without further ado, here are my very minimal settings for Gnus.  Let's get all 
 
   ;; powerful placebo settings for faster perceived speed
   (setq gnus-asynchronous t)
-  (setq gnus-use-cache t)
+  ;; nnimap is already the storage layer; local caching just adds
+  ;; bookkeeping and can drift from what's on the server
+  (setq gnus-use-cache nil)
   (setq gnus-check-new-newsgroups nil
         gnus-check-bogus-newsgroups nil)
   (setq gnus-show-threads nil
